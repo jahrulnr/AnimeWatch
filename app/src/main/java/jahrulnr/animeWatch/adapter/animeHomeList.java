@@ -18,12 +18,12 @@ import jahrulnr.animeWatch.R;
 
 public class animeHomeList extends BaseAdapter {
 
-    private Context context;
-    private List<animeList> animehomelist;
-    private JahrulnrLib it;
+    private final Context context;
+    private final List<animeList> animehomelist;
+    private final JahrulnrLib it;
     LayoutInflater inflter;
 
-    public animeHomeList(Context context, JahrulnrLib it, List<animeList> animehomelist){
+    public animeHomeList(Context context, JahrulnrLib it, List<animeList> animehomelist) {
         this.context = context;
         this.it = it;
         this.animehomelist = animehomelist;
@@ -55,7 +55,7 @@ public class animeHomeList extends BaseAdapter {
         TextView anime = view.findViewById(R.id.animeName);
         ImageView cover = view.findViewById(R.id.animeCover);
 
-        if(item.nama != null) {
+        if (item.nama != null) {
             anime.setText(item.nama);
             Picasso.get().load(item.img_link).into(cover);
         }

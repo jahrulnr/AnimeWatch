@@ -35,7 +35,7 @@ public class HomeFragment extends Fragment implements IOnBackPressed {
         it = new JahrulnrLib(this.getActivity());
         it.executer(() -> {
             String h = JahrulnrLib.getRequest(JahrulnrLib.config.updateList);
-            Matcher updateListM = it.preg_match(h, JahrulnrLib.config.update_pattern);
+            Matcher updateListM = JahrulnrLib.preg_match(h, JahrulnrLib.config.update_pattern);
 
             List<animeList> animelist = new ArrayList<>();
             while (updateListM.find()) {
@@ -51,14 +51,13 @@ public class HomeFragment extends Fragment implements IOnBackPressed {
                 GridView gridView = root.findViewById(R.id.animeHome);
                 gridView.setAdapter(adapter);
                 gridView.setOnItemClickListener((adapterView, view, i, l) -> {
-                    new animeClick(act, it, ((GridView) act.findViewById(R.id.animeHome)), animelist.get(i));
+                    new animeClick(act, it, act.findViewById(R.id.animeHome), animelist.get(i));
                 });
             });
         });
 
         return root;
     }
-
 
 
     @Override

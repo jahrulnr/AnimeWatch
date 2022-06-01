@@ -29,8 +29,10 @@ public class JahrulnrLib {
     private static Activity activity;
     private static String text = "";
 
-    public JahrulnrLib(){}
-    public JahrulnrLib(Activity act){
+    public JahrulnrLib() {
+    }
+
+    public JahrulnrLib(Activity act) {
         activity = act;
     }
 
@@ -72,13 +74,13 @@ public class JahrulnrLib {
                 "<div class=\"epl-title\">?(.*?)</div>";
     }
 
-    public static Matcher preg_match(String source, String pattern){
-        if(source != null) {
+    public static Matcher preg_match(String source, String pattern) {
+        if (source != null) {
             Pattern p = Pattern.compile(pattern);
             Matcher m = null;
             try {
                 m = p.matcher(source);
-            }catch (IllegalStateException e){
+            } catch (IllegalStateException e) {
                 Log.e("Preg_Match", e.toString());
             }
             return m;
@@ -86,14 +88,14 @@ public class JahrulnrLib {
         return null;
     }
 
-    public static boolean checkNetwork(Activity act){
+    public static boolean checkNetwork(Activity act) {
         boolean connected = false;
-        ConnectivityManager connectivityManager = (ConnectivityManager)act.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if(connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
+        ConnectivityManager connectivityManager = (ConnectivityManager) act.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
             connected = true;
             Log.i("Internet", "Connected");
-        }else{
+        } else {
             Toast.makeText(act.getApplicationContext(), "Internet tidak tersedia.", Toast.LENGTH_LONG).show();
             Log.i("Internet", "Not connected");
         }
@@ -101,7 +103,7 @@ public class JahrulnrLib {
         return connected;
     }
 
-    public void executer(Runnable run){
+    public void executer(Runnable run) {
         Executors.newSingleThreadExecutor().execute(run);
     }
 
@@ -130,7 +132,7 @@ public class JahrulnrLib {
             text = stringBuffer.toString();
         } catch (MalformedURLException e) {
             e.printStackTrace();
-        } catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
@@ -144,17 +146,17 @@ public class JahrulnrLib {
         StrictMode.setThreadPolicy(policy);
 
         config conf = new config();
-        BufferedReader reader=null;
+        BufferedReader reader = null;
         URL url = null;
         URLConnection conn = null;
 
-        try{
+        try {
             // Defined URL  where to send data
             url = new URL(config.host + api);
 
             // Send POST data request
             conn = url.openConnection();
-            conn.setConnectTimeout(5*1000);
+            conn.setConnectTimeout(5 * 1000);
             conn.setDoOutput(true);
 
             // Get the server response
@@ -163,40 +165,34 @@ public class JahrulnrLib {
             String line = null;
 
             // Read Server Response
-            while((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 // Append server response in string
                 sb.append(line + "\n");
             }
 
-            if(!sb.toString().isEmpty())
-                text = sb.substring(0, sb.length()-1);
+            if (!sb.toString().isEmpty())
+                text = sb.substring(0, sb.length() - 1);
             else
                 text = sb.toString();
-        }
-        catch (SocketTimeoutException e){
+        } catch (SocketTimeoutException e) {
             Log.e("SocketTimeoutException", e.toString());
             return null;
-        }
-        catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             Log.e("UnsupportedEncoding", e.toString());
             e.printStackTrace();
             return null;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.e("IOException", e.toString());
             e.printStackTrace();
             return null;
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             Log.e("getRequest_1", ex.getMessage());
             ex.printStackTrace();
             return null;
-        }
-
-        finally{
-            try{
+        } finally {
+            try {
                 reader.close();
-            }catch(Exception ex) {
+            } catch (Exception ex) {
                 Log.e("getRequest_2", ex.toString());
                 return null;
             }
@@ -213,20 +209,20 @@ public class JahrulnrLib {
         StrictMode.setThreadPolicy(policy);
 
         config conf = new config();
-        BufferedReader reader=null;
+        BufferedReader reader = null;
         URL url = null;
         URLConnection conn = null;
 
-        try{
+        try {
             // Defined URL  where to send data
             url = new URL(config.host + api);
 
             // Send POST data request
             conn = url.openConnection();
-            conn.setConnectTimeout(5*1000);
+            conn.setConnectTimeout(5 * 1000);
             conn.setDoOutput(true);
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-            wr.write( data );
+            wr.write(data);
             wr.flush();
 
             // Get the server response
@@ -235,44 +231,38 @@ public class JahrulnrLib {
             String line = null;
 
             // Read Server Response
-            while((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 // Append server response in string
                 sb.append(line + "\n");
             }
 
-            if(!sb.toString().isEmpty())
-                text = sb.substring(0, sb.length()-1);
+            if (!sb.toString().isEmpty())
+                text = sb.substring(0, sb.length() - 1);
             else
                 text = sb.toString();
-        }
-        catch (SocketTimeoutException e){
+        } catch (SocketTimeoutException e) {
             Log.e("SocketTimeoutException", e.toString());
             Toast.makeText(activity, "Koneksi timeout. Silakan refresh.", Toast.LENGTH_LONG).show();
             return null;
-        }
-        catch (UnsupportedEncodingException e) {
+        } catch (UnsupportedEncodingException e) {
             Log.e("UnsupportEncoding", e.toString());
             e.printStackTrace();
             Toast.makeText(activity, "Ada masalah, coba lagi.", Toast.LENGTH_LONG).show();
             return null;
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             Log.e("IOException", e.toString());
             e.printStackTrace();
             Toast.makeText(activity, "Ada masalah, coba lagi.", Toast.LENGTH_LONG).show();
             return null;
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             Log.e("getRequest_1", ex.getMessage());
             ex.printStackTrace();
             Toast.makeText(activity, "Ada masalah, coba lagi.", Toast.LENGTH_LONG).show();
             return null;
-        }
-
-        finally{
-            try{
+        } finally {
+            try {
                 reader.close();
-            }catch(Exception ex) {
+            } catch (Exception ex) {
                 Log.e("getRequest_2", ex.toString());
                 Toast.makeText(activity, "Ada masalah. Silakan refresh.", Toast.LENGTH_LONG).show();
                 return null;

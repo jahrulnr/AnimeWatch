@@ -18,7 +18,7 @@ public class animeEpsListAdapter extends BaseAdapter {
     List<episodeList> episodelist;
     LayoutInflater inflter;
 
-    public animeEpsListAdapter(Context context, List<episodeList> episodelist){
+    public animeEpsListAdapter(Context context, List<episodeList> episodelist) {
         this.context = context;
         this.episodelist = episodelist;
         inflter = LayoutInflater.from(context);
@@ -46,7 +46,7 @@ public class animeEpsListAdapter extends BaseAdapter {
         }
         episodeList item = episodelist.get(i);
         TextView episode = view.findViewById(R.id.episode);
-        if(item.episode != null)
+        if (item.episode != null)
             episode.setText(item.episode);
 
         return view;

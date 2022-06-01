@@ -15,8 +15,13 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 
+import jahrulnr.animeWatch.Class.animeList;
+import jahrulnr.animeWatch.Class.dbFiles;
+import jahrulnr.animeWatch.Class.episodeList;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
 
@@ -42,15 +47,21 @@ public class nontonView extends AppCompatActivity {
         it = new JahrulnrLib(this);
 
         Intent intent = getIntent();
-        String link = intent.getStringExtra("link");
+        String nama = intent.getStringExtra("nama"),
+                img_link = intent.getStringExtra("img_link"),
+                anime_link = intent.getStringExtra("anime_link"),
+                episode = intent.getStringExtra("episode"),
+                eps_link = intent.getStringExtra("eps_link");
+        animeList animelist = new animeList();
+        episodeList epsList = new episodeList();
         WebView webView = findViewById(R.id.nontonAnime);
-        if(link != null) {
-            it.executer(()->{
-                String h = JahrulnrLib.getUniversalRequest(link);
+        if (eps_link != null) {
+            it.executer(() -> {
+                String h = JahrulnrLib.getUniversalRequest(eps_link);
                 Matcher videoM = JahrulnrLib.preg_match(h,
                         "<iframe width=\"100%\" height=\"100%\" src=\"?(.*?)\" frameborder=\"0\"");
 
-                if(videoM.find()){
+                if (videoM.find()) {
                     runOnUiThread(() -> {
                         // set webview
                         webView.setNetworkAvailable(true);
@@ -60,16 +71,27 @@ public class nontonView extends AppCompatActivity {
                         webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
                         webView.getSettings().setBuiltInZoomControls(true);
                         webView.loadUrl(videoM.group(1));
+
+                        // save history
+                        animelist.nama = nama;
+                        animelist.img_link = img_link;
+                        animelist.link = anime_link;
+                        epsList.animeList = animelist;
+                        epsList.episode = episode;
+                        epsList.link = eps_link;
+                        dbFiles db = new dbFiles(this);
+                        db.add(epsList);
+                        db.save();
+
                     });
-                }
-                else{
+                } else {
                     runOnUiThread(() -> {
                         Toast.makeText(this, "Link not available", Toast.LENGTH_LONG).show();
                         finish();
                     });
                 }
             });
-        }else{
+        } else {
             Toast.makeText(this, "Link not available", Toast.LENGTH_LONG).show();
             finish();
         }

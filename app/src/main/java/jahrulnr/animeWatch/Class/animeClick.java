@@ -22,7 +22,7 @@ import jahrulnr.animeWatch.ui.nontonView;
 
 public class animeClick {
 
-    public animeClick(Activity act, JahrulnrLib it, ViewGroup viewGroup, animeList animelist){
+    public animeClick(Activity act, JahrulnrLib it, ViewGroup viewGroup, animeList animelist) {
         it.executer(() -> {
             String h = JahrulnrLib.getUniversalRequest(animelist.link);
             Matcher coverM = JahrulnrLib.preg_match(h, JahrulnrLib.config.img_pattern),
@@ -90,7 +90,11 @@ public class animeClick {
                 eps.setAdapter(adapter);
                 eps.setOnItemClickListener((adapterView, view, i, l) -> {
                     Intent intent = new Intent(act, nontonView.class);
-                    intent.putExtra("link", episodelist.get(i).link);
+                    intent.putExtra("nama", animelist.nama);
+                    intent.putExtra("img_link", animelist.img_link);
+                    intent.putExtra("anime_link", animelist.link);
+                    intent.putExtra("episode", episodelist.get(i).episode);
+                    intent.putExtra("eps_link", episodelist.get(i).link);
                     act.startActivity(intent);
                 });
             });
