@@ -1,0 +1,29 @@
+<GridLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="10dp"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:descendantFocusability="blocksDescendants">
+
+        <ImageView
+            android:id="@+id/animeCover"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="#00000000"/>
+
+        <TextView
+            android:id="@+id/animeName"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="10dp"
+            android:layout_centerHorizontal="true"
+            android:text="Nama"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="14dp"
+            android:layout_row="1"
+            android:layout_column="0"/>
+
+
+</GridLayout>

@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">AnimeWatch</string>
+    <string name="title_home">Beranda</string>
+    <string name="title_list">List</string>
+    <string name="title_history">History</string>
+    <string name="title_activity_nonton_view">Nonton</string>
+</resources>

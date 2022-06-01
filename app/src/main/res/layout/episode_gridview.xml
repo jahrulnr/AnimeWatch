@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/episode_view"
+    android:layout_margin="20dp"
+    android:visibility="gone">
+
+    <ImageView
+        android:layout_width="90dp"
+        android:layout_height="120dp"
+        android:id="@+id/animeEpsCover"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/no_image"/>
+
+    <LinearLayout
+        android:id="@+id/anime_detail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/animeEpsCover"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingBottom="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/animeTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Contoh nama Anime"
+            android:textSize="20dp"
+            android:fontFamily="sans-serif"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="27dp"
+                android:text="Status"
+                android:fontFamily="sans-serif"/>
+            <TextView
+                android:id="@+id/animeStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=": Contoh Status"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="30dp"
+                android:text="Genre"
+                android:fontFamily="sans-serif"/>
+            <TextView
+                android:id="@+id/animeGenre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=": Contoh Genre"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="27dp"
+                android:text="Studio"
+                android:fontFamily="sans-serif"/>
+            <TextView
+                android:id="@+id/animeStudio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=": Contoh Studio"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="41dp"
+                android:text="Rilis"
+                android:fontFamily="sans-serif"/>
+            <TextView
+                android:id="@+id/animeReleased"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=": Contoh Released"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingEnd="20dp"
+                android:text="Season"
+                android:fontFamily="sans-serif"/>
+            <TextView
+                android:id="@+id/animeSeason"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=": Contoh Season"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <GridView
+        android:id="@+id/episode_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/anime_detail"
+        android:numColumns="1"/>
+
+</RelativeLayout>
