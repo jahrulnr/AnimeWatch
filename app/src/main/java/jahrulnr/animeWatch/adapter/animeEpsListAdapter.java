@@ -47,7 +47,7 @@ public class animeEpsListAdapter extends BaseAdapter {
         episodeList item = episodelist.get(i);
         TextView episode = view.findViewById(R.id.episode);
         if (item.episode != null)
-            episode.setText(item.episode);
+            episode.setText(item.episode.replace("Subtitle Indonesia", ""));
 
         return view;
     }

@@ -53,7 +53,7 @@ public class animeHistory extends BaseAdapter {
         ImageView imageView = view.findViewById(R.id.animeCover);
         TextView eps = view.findViewById(R.id.episode_list);
         Picasso.get().load(epsList.get(i).getImg_link()).into(imageView);
-        eps.setText(epsList.get(i).episode);
+        eps.setText(epsList.get(i).episode.replace("Subtitle Indonesia", ""));
 
         return view;
     }
