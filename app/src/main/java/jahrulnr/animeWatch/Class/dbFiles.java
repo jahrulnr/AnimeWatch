@@ -41,8 +41,8 @@ public class dbFiles {
     public void add(episodeList episodelist){
         if(epsList.isEmpty())
             epsList = getList();
-        if(epsList.contains(episodelist)) {
-            epsList.remove(episodelist);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            epsList.removeIf(episodeList -> episodeList.getLink().equals(episodelist.link));
         }
         epsList.add(episodelist);
     }
