@@ -7,12 +7,28 @@ public class episodeList implements Serializable {
     public String episode, link;
     public animeList animeList = new animeList();
 
-    public void setAnimeList(animeList animeList) {
-        this.animeList = animeList;
+    public void setNama(String nama) {
+        this.animeList.nama = nama;
     }
 
-    public animeList getAnimeList() {
-        return animeList;
+    public String getNama() {
+        return animeList.nama;
+    }
+
+    public void setAnime_Link(String link) {
+        this.animeList.link = link;
+    }
+
+    public String getAnime_Link() {
+        return animeList.link;
+    }
+
+    public void setImg_link(String img_link) {
+        this.animeList.img_link = img_link;
+    }
+
+    public String getImg_link() {
+        return animeList.img_link;
     }
 
     public void setEpisode(String episode) {

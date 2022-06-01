@@ -18,6 +18,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import jahrulnr.animeWatch.Class.IOnBackPressed;
+import jahrulnr.animeWatch.Class.animeList;
 import jahrulnr.animeWatch.adapter.animeHistory;
 import jahrulnr.animeWatch.Class.dbFiles;
 import jahrulnr.animeWatch.Class.episodeList;
@@ -48,8 +49,13 @@ public class HistoryFragment extends Fragment implements IOnBackPressed {
             gridView.setAdapter(adapter);
             gridView.setOnItemClickListener((adapterView, view, i, l) -> {
                 episodeList eps = epsList.get(i);
+                animeList animelist = eps.animeList;
                 Intent intent = new Intent(act, nontonView.class);
-                intent.putExtra("link", eps.link);
+                intent.putExtra("nama", animelist.nama);
+                intent.putExtra("img_link", animelist.img_link);
+                intent.putExtra("anime_link", animelist.link);
+                intent.putExtra("episode", eps.episode);
+                intent.putExtra("eps_link", eps.link);
                 act.startActivity(intent);
             });
             textView.setVisibility(View.GONE);

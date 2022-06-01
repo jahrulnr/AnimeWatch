@@ -7,8 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -47,9 +50,10 @@ public class animeHistory extends BaseAdapter {
         if(view == null)
             view = layoutInflater.inflate(R.layout.history_list, null);
 
+        ImageView imageView = view.findViewById(R.id.animeCover);
         TextView eps = view.findViewById(R.id.episode_list);
+        Picasso.get().load(epsList.get(i).getImg_link()).into(imageView);
         eps.setText(epsList.get(i).episode);
-        Log.e("historyList", epsList.get(i).toString());
 
         return view;
     }
