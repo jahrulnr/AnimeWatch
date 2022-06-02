@@ -36,6 +36,10 @@ public class animeAllListAdapter extends BaseAdapter {
         return animelist.get(i);
     }
 
+    public List<animeList> getItems(){
+        return animelist;
+    }
+
     @Override
     public long getItemId(int i) {
         return i;

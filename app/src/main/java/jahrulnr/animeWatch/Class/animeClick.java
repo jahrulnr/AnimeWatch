@@ -29,6 +29,14 @@ public class animeClick {
 
     public animeClick(Activity act, JahrulnrLib it, ViewGroup viewGroup, animeList animelist) {
         this.viewGroup = viewGroup;
+        animeDetailView = act.findViewById(R.id.episode_view);
+        ImageView iv_cover = act.findViewById(R.id.animeEpsCover);
+        TextView tv_title = act.findViewById(R.id.animeTitle);
+        TextView tv_status = act.findViewById(R.id.animeStatus);
+        TextView tv_genre = act.findViewById(R.id.animeGenre);
+        TextView tv_studio = act.findViewById(R.id.animeStudio);
+        TextView tv_rilis = act.findViewById(R.id.animeReleased);
+        TextView tv_season = act.findViewById(R.id.animeSeason);
         it.executer(() -> {
             String h = JahrulnrLib.getUniversalRequest(animelist.link);
             Matcher coverM = JahrulnrLib.preg_match(h, JahrulnrLib.config.img_pattern),
@@ -61,15 +69,6 @@ public class animeClick {
             // Detail
             String finalStudioText = studioText;
             act.runOnUiThread(() -> {
-                animeDetailView = act.findViewById(R.id.episode_view);
-                ImageView iv_cover = act.findViewById(R.id.animeEpsCover);
-                TextView tv_title = act.findViewById(R.id.animeTitle);
-                TextView tv_status = act.findViewById(R.id.animeStatus);
-                TextView tv_genre = act.findViewById(R.id.animeGenre);
-                TextView tv_studio = act.findViewById(R.id.animeStudio);
-                TextView tv_rilis = act.findViewById(R.id.animeReleased);
-                TextView tv_season = act.findViewById(R.id.animeSeason);
-
                 Picasso.get().load(cover).into(iv_cover);
                 tv_title.setText(animelist.nama);
                 tv_status.setText(": " + status);

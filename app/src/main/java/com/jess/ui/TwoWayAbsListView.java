@@ -35,9 +35,6 @@
 package com.jess.ui;
 
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -51,6 +48,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -60,11 +58,13 @@ import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.Adapter;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.Scroller;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import jahrulnr.animeWatch.R;
 

@@ -3,13 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.HistoryFragment"
-    android:layout_margin="10dp">
+    android:padding="20dp"
+    tools:context=".ui.HistoryFragment">
 
     <GridView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="20dp"
         android:id="@+id/historyWatch"
         android:animateLayoutChanges="true"/>
 
@@ -17,7 +16,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/emptyList"
-        android:layout_marginBottom="20dp"
         android:text="Tidak ada history"
         android:textAlignment="center"
         android:textSize="20dp"

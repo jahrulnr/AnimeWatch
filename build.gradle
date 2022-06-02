@@ -10,8 +10,7 @@ task clean(type: Delete) {
 
 /*
  bug
- - searching
- - movie
- - home img
- - 
+ - searching v
+ - movie v
+ - home img v
  */

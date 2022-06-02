@@ -44,7 +44,6 @@ public class ListFragment extends Fragment{
         View root = binding.getRoot();
         act = getActivity();
 
-
         RelativeLayout loading = root.findViewById(R.id.loadingContainer);
         LinearLayout linearLayout = root.findViewById(R.id.animeListContainer);
         GridView gridView = root.findViewById(R.id.animeList);
@@ -92,9 +91,8 @@ public class ListFragment extends Fragment{
                     }
                 });
                 gridView.setOnItemClickListener((adapterView, view, i, l) -> {
-                    linearLayout.setVisibility(View.GONE);
                     animeClicked = true;
-                    animeClick = new animeClick(act, it, ((GridView) act.findViewById(R.id.animeList)), animelist.get(i));
+                    animeClick = new animeClick(act, it, linearLayout, adapter.getItems().get(i));
                 });
                 loading.setVisibility(View.GONE);
             });

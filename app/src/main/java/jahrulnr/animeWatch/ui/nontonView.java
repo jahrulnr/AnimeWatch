@@ -7,14 +7,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.Button;
-import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -24,7 +20,6 @@ import com.jess.ui.TwoWayGridView;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.regex.Matcher;
 
@@ -50,22 +45,34 @@ public class nontonView extends AppCompatActivity {
     List<episodeList> eps = new ArrayList<>();
     int idEps = -1;
 
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         View decorView = getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY // hide status bar and nav bar after a short delay, or if the user interacts with the middle of the screen
+                );
         getSupportActionBar().hide();
         if (Build.VERSION.SDK_INT < 16) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nonton_view);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         act = this;
         it = new JahrulnrLib(this);
-
         Intent intent = getIntent();
         String nama = intent.getStringExtra("nama"),
                 img_link = intent.getStringExtra("img_link"),
@@ -82,6 +89,14 @@ public class nontonView extends AppCompatActivity {
                 Matcher videoM = JahrulnrLib.preg_match(h,
                         "<iframe width=\"100%\" height=\"100%\" src=\"?(.*?)\" frameborder=\"0\"");
 
+                boolean found = videoM.find();
+                if(!found){
+                    videoM = JahrulnrLib.preg_match(h,
+                            "<IFRAME SRC=\"?(.*?)\" allowfullscreen=\"true\"");
+                    found = videoM.find();
+                    System.out.println(videoM.group(1));
+                }
+
                 // set history
                 animelist.nama = nama;
                 animelist.img_link = img_link;
@@ -90,16 +105,20 @@ public class nontonView extends AppCompatActivity {
                 epsList.episode = episode;
                 epsList.link = eps_link;
 
-                if (videoM.find()) {
+                if (found) {
+                    Matcher finalVideoM = videoM;
                     runOnUiThread(() -> {
                         // set webview
                         webView.setNetworkAvailable(true);
                         webView.getSettings().setJavaScriptEnabled(true);
+                        webView.getSettings().setDomStorageEnabled(true);
+                        webView.getSettings().setUseWideViewPort(true);
+                        webView.getSettings().setLoadWithOverviewMode(true);
                         webView.getSettings().setAppCacheEnabled(true);
                         webView.getSettings().setAppCachePath(act.getCacheDir().getPath());
                         webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
                         webView.getSettings().setBuiltInZoomControls(true);
-                        webView.loadUrl(videoM.group(1));
+                        webView.loadUrl(finalVideoM.group(1));
 
                         // save history
                         dbFiles db = new dbFiles(this);
