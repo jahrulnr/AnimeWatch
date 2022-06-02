@@ -45,7 +45,6 @@ public class nontonView extends AppCompatActivity {
     List<episodeList> eps = new ArrayList<>();
     int idEps = -1;
 
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -86,16 +85,19 @@ public class nontonView extends AppCompatActivity {
         if (eps_link != null) {
             it.executer(() -> {
                 String h = JahrulnrLib.getUniversalRequest(eps_link);
-                Matcher videoM = JahrulnrLib.preg_match(h,
-                        "<iframe width=\"100%\" height=\"100%\" src=\"?(.*?)\" frameborder=\"0\"");
+                Matcher videoM = null;
+                boolean found = false;
+                if(h != null){
+                    videoM =JahrulnrLib.preg_match(h,
+                            "<iframe width=\"100%\" height=\"100%\" src=\"?(.*?)\" frameborder=\"0\"");
 
-                boolean found = videoM.find();
-                if(!found){
-                    videoM = JahrulnrLib.preg_match(h,
-                            "<IFRAME SRC=\"?(.*?)\" allowfullscreen=\"true\"");
-                    found = videoM.find();
-                    System.out.println(videoM.group(1));
-                }
+                    found =  videoM.find();
+                    if(!found){
+                        videoM = JahrulnrLib.preg_match(h,
+                                "<IFRAME SRC=\"?(.*?)\" allowfullscreen=\"true\"");
+                        found =  videoM.find();
+                    }
+                } 
 
                 // set history
                 animelist.nama = nama;
@@ -107,24 +109,30 @@ public class nontonView extends AppCompatActivity {
 
                 if (found) {
                     Matcher finalVideoM = videoM;
-                    runOnUiThread(() -> {
-                        // set webview
-                        webView.setNetworkAvailable(true);
-                        webView.getSettings().setJavaScriptEnabled(true);
-                        webView.getSettings().setDomStorageEnabled(true);
-                        webView.getSettings().setUseWideViewPort(true);
-                        webView.getSettings().setLoadWithOverviewMode(true);
-                        webView.getSettings().setAppCacheEnabled(true);
-                        webView.getSettings().setAppCachePath(act.getCacheDir().getPath());
-                        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-                        webView.getSettings().setBuiltInZoomControls(true);
-                        webView.loadUrl(finalVideoM.group(1));
+                    if(finalVideoM != null)
+                        runOnUiThread(() -> {
+                            // set webview
+                            webView.setNetworkAvailable(true);
+                            webView.getSettings().setJavaScriptEnabled(true);
+                            webView.getSettings().setDomStorageEnabled(true);
+                            webView.getSettings().setUseWideViewPort(true);
+                            webView.getSettings().setLoadWithOverviewMode(true);
+                            webView.getSettings().setAppCacheEnabled(true);
+                            webView.getSettings().setAppCachePath(act.getCacheDir().getPath());
+                            webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+                            webView.getSettings().setBuiltInZoomControls(true);
+                            try {
+                                webView.loadUrl(finalVideoM.group(1));
+                            } catch (IllegalStateException e){
+                                e.printStackTrace();
+                                finish();
+                            }
 
-                        // save history
-                        dbFiles db = new dbFiles(this);
-                        db.add(epsList);
-                        db.save();
-                    });
+                            // save history
+                            dbFiles db = new dbFiles(this);
+                            db.add(epsList);
+                            db.save();
+                        });
                 } else {
                     runOnUiThread(() -> {
                         Toast.makeText(this, "Link not available", Toast.LENGTH_LONG).show();

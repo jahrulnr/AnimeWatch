@@ -60,15 +60,17 @@ public class HomeFragment extends Fragment {
     private List<animeList> getAnime(String link){
         String h = JahrulnrLib.getRequest(link);
         Matcher updateListM = JahrulnrLib.preg_match(h, JahrulnrLib.config.update_pattern);
-
         List<animeList> animelist = new ArrayList<>();
-        while (updateListM.find()) {
-            animeList al = new animeList();
-            al.nama = updateListM.group(6);
-            al.img_link = updateListM.group(4);
-            al.link = updateListM.group(1);
-            al.status = updateListM.group(3);
-            animelist.add(al);
+
+        if(updateListM != null){
+            while (updateListM.find()) {
+                animeList al = new animeList();
+                al.nama = updateListM.group(6);
+                al.img_link = updateListM.group(4);
+                al.link = updateListM.group(1);
+                al.status = updateListM.group(3);
+                animelist.add(al);
+            }
         }
 
         return animelist;

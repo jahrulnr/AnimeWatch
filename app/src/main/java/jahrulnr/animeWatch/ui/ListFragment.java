@@ -65,11 +65,13 @@ public class ListFragment extends Fragment{
             String h = JahrulnrLib.getRequest(JahrulnrLib.config.list);
             Matcher m = JahrulnrLib.preg_match(h, JahrulnrLib.config.list_pattern);
             List<animeList> animelist = new ArrayList<>();
-            while (m.find()) {
-                animeList al = new animeList();
-                al.nama = m.group(3);
-                al.link = m.group(2);
-                animelist.add(al);
+            if(m != null){
+                while (m.find()) {
+                    animeList al = new animeList();
+                    al.nama = m.group(3);
+                    al.link = m.group(2);
+                    animelist.add(al);
+                }
             }
             animeAllListAdapter adapter = new animeAllListAdapter(getContext(), animelist);
             act.runOnUiThread(() -> {
