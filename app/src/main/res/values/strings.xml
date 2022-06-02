@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">AnimeWatch</string>
-    <string name="title_home">Beranda</string>
-    <string name="title_list">List</string>
-    <string name="title_history">History</string>
-    <string name="title_activity_nonton_view">Nonton</string>
+    <string name="title_home">Baru Update</string>
+    <string name="title_list">Daftar Anime</string>
+    <string name="searchHint">Cari Judul...</string>
+    <string name="title_history">History Tontonan</string>
+    <string name="title_activity_nonton_view"></string>
 </resources>

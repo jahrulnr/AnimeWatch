@@ -12,7 +12,7 @@
         android:id="@+id/animeHome"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:numColumns="2"
+        android:numColumns="3"
         android:layout_margin="20dp"/>
 
     <include layout="@layout/episode_gridview"/>

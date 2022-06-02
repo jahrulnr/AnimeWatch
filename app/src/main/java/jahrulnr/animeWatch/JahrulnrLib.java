@@ -48,12 +48,15 @@ public class JahrulnrLib {
                 "?(.*?)" + // url 1
                 "\" itemprop=\"url\" title" +
                 "?(.*?)" + // trash 2
-                "</div> <img src=\"" +
-                "?(.*?)" + // cover 3
+                "class=\"epx\">" +
+                "?(.*?)" + // ongoing/complete 3
+                "</span></div> " +
+                "<img src=\"" +
+                "?(.*?)" + // cover 4
                 "\" class=\"ts-post-image wp-post-image attachment-medium_large size-medium_large\" loading=\"lazy" +
-                "?(.*?)" + // trash 4
+                "?(.*?)" + // trash 5
                 "<div class=\"tt\"> " +
-                "?(.*?)" + // title 5
+                "?(.*?)" + // title 6
                 "<h2 itemprop=\"headline\"";
 
         // Dashboard
@@ -130,6 +133,8 @@ public class JahrulnrLib {
             }
             in.close();
             text = stringBuffer.toString();
+        }catch (SocketTimeoutException e){
+            e.printStackTrace();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (FileNotFoundException e) {

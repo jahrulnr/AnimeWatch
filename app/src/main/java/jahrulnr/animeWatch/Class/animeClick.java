@@ -22,7 +22,11 @@ import jahrulnr.animeWatch.ui.nontonView;
 
 public class animeClick {
 
+    private ViewGroup viewGroup;
+    private RelativeLayout animeDetailView;
+
     public animeClick(Activity act, JahrulnrLib it, ViewGroup viewGroup, animeList animelist) {
+        this.viewGroup = viewGroup;
         it.executer(() -> {
             String h = JahrulnrLib.getUniversalRequest(animelist.link);
             Matcher coverM = JahrulnrLib.preg_match(h, JahrulnrLib.config.img_pattern),
@@ -55,7 +59,7 @@ public class animeClick {
             // Detail
             String finalStudioText = studioText;
             act.runOnUiThread(() -> {
-                RelativeLayout animeDetailView = act.findViewById(R.id.episode_view);
+                animeDetailView = act.findViewById(R.id.episode_view);
                 ImageView iv_cover = act.findViewById(R.id.animeEpsCover);
                 TextView tv_title = act.findViewById(R.id.animeTitle);
                 TextView tv_status = act.findViewById(R.id.animeStatus);
@@ -79,8 +83,7 @@ public class animeClick {
             List<episodeList> episodelist = new ArrayList<>();
             while (episodes.find()) {
                 episodeList al = new episodeList();
-                al.episode = episodes.group(4)
-                        .replace("&#8211;", "-");
+                al.episode = "Episode " + episodes.group(3);
                 al.link = episodes.group(2);
                 episodelist.add(al);
             }
@@ -91,7 +94,7 @@ public class animeClick {
                 eps.setOnItemClickListener((adapterView, view, i, l) -> {
                     Intent intent = new Intent(act, nontonView.class);
                     intent.putExtra("nama", animelist.nama);
-                    intent.putExtra("img_link", animelist.img_link);
+                    intent.putExtra("img_link", cover);
                     intent.putExtra("anime_link", animelist.link);
                     intent.putExtra("episode", episodelist.get(i).episode);
                     intent.putExtra("eps_link", episodelist.get(i).link);
@@ -99,5 +102,10 @@ public class animeClick {
                 });
             });
         });
+    }
+
+    public void close(){
+        viewGroup.setVisibility(View.VISIBLE);
+        animeDetailView.setVisibility(View.GONE);
     }
 }

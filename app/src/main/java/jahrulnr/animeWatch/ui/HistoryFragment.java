@@ -5,28 +5,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
 
-import jahrulnr.animeWatch.Class.IOnBackPressed;
 import jahrulnr.animeWatch.Class.animeList;
-import jahrulnr.animeWatch.adapter.animeHistory;
 import jahrulnr.animeWatch.Class.dbFiles;
 import jahrulnr.animeWatch.Class.episodeList;
-import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
+import jahrulnr.animeWatch.adapter.animeHistory;
 import jahrulnr.animeWatch.databinding.FragmentHistoryBinding;
 
-public class HistoryFragment extends Fragment implements IOnBackPressed {
+public class HistoryFragment extends Fragment {
 
     private FragmentHistoryBinding binding;
     private GridView gridView;
@@ -38,7 +32,6 @@ public class HistoryFragment extends Fragment implements IOnBackPressed {
         View root = binding.getRoot();
 
         Activity act = getActivity();
-        JahrulnrLib it = new JahrulnrLib(act);
         gridView = root.findViewById(R.id.historyWatch);
         TextView textView = root.findViewById(R.id.emptyList);
 
@@ -72,10 +65,5 @@ public class HistoryFragment extends Fragment implements IOnBackPressed {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    @Override
-    public boolean onBackPressed() {
-        return false;
     }
 }

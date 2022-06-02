@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import jahrulnr.animeWatch.Class.IOnBackPressed;
 import jahrulnr.animeWatch.Class.animeClick;
 import jahrulnr.animeWatch.Class.animeList;
 import jahrulnr.animeWatch.JahrulnrLib;
@@ -21,11 +21,13 @@ import jahrulnr.animeWatch.R;
 import jahrulnr.animeWatch.adapter.animeHomeList;
 import jahrulnr.animeWatch.databinding.FragmentHomeBinding;
 
-public class HomeFragment extends Fragment implements IOnBackPressed {
+public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
     private Activity act;
     private JahrulnrLib it;
+    private boolean animeClicked = false;
+    private animeClick animeClick = null;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -40,9 +42,10 @@ public class HomeFragment extends Fragment implements IOnBackPressed {
             List<animeList> animelist = new ArrayList<>();
             while (updateListM.find()) {
                 animeList al = new animeList();
-                al.nama = updateListM.group(5);
-                al.img_link = updateListM.group(3);
+                al.nama = updateListM.group(6);
+                al.img_link = updateListM.group(4);
                 al.link = updateListM.group(1);
+                al.status = updateListM.group(3);
                 animelist.add(al);
             }
 
@@ -51,7 +54,8 @@ public class HomeFragment extends Fragment implements IOnBackPressed {
                 GridView gridView = root.findViewById(R.id.animeHome);
                 gridView.setAdapter(adapter);
                 gridView.setOnItemClickListener((adapterView, view, i, l) -> {
-                    new animeClick(act, it, act.findViewById(R.id.animeHome), animelist.get(i));
+                    animeClicked = true;
+                    animeClick = new animeClick(act, it, gridView, animelist.get(i));
                 });
             });
         });
@@ -59,15 +63,31 @@ public class HomeFragment extends Fragment implements IOnBackPressed {
         return root;
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-//        binding = null;
+        binding = null;
     }
 
     @Override
-    public boolean onBackPressed() {
-        return false;
+    public void onResume() {
+        super.onResume();
+
+        if(getView() == null){
+            return;
+        }
+
+        getView().setFocusableInTouchMode(true);
+        getView().requestFocus();
+        getView().setOnKeyListener((v, keyCode, event) -> {
+            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK){
+                if(animeClicked && animeClick != null){
+                    animeClick.close();
+                    animeClicked = false;
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 }

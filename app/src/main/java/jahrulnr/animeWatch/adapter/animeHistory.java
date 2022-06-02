@@ -51,9 +51,12 @@ public class animeHistory extends BaseAdapter {
             view = layoutInflater.inflate(R.layout.history_list, null);
 
         ImageView imageView = view.findViewById(R.id.animeCover);
-        TextView eps = view.findViewById(R.id.episode_list);
-        Picasso.get().load(epsList.get(i).getImg_link()).into(imageView);
-        eps.setText(epsList.get(i).episode.replace("Subtitle Indonesia", ""));
+        TextView anime = view.findViewById(R.id.anime);
+        TextView episode = view.findViewById(R.id.episode);
+        if(epsList.get(i).getImg_link() != null)
+            Picasso.get().load(epsList.get(i).getImg_link()).into(imageView);
+        anime.setText(epsList.get(i).getNama());
+        episode.setText(epsList.get(i).episode);
 
         return view;
     }

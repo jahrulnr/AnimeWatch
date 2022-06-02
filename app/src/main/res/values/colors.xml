@@ -13,15 +13,19 @@
     <color name="red">#dc3545</color>
     <color name="orange">#fd7e14</color>
     <color name="green">#198754</color>
-    <color name="gray">#6c757d</color>
+    <color name="gray">#6C757D</color>
     <color name="primary">#0d6efd</color>
     <color name="secondary">#6c757d</color>
     <color name="success">#198754</color>
+    <color name="info">#0dcaf0</color>
     <color name="warning">#ffc107</color>
     <color name="danger">#dc3545</color>
+    <color name="light">#f8f9fa</color>
     <color name="dark">#212529</color>
 
+    <color name="gray_500">#adb5bd</color>
     <color name="gray_600">#6c757d</color>
+    <color name="gray_700">#495057</color>
     <color name="light_blue_600">#FF039BE5</color>
     <color name="light_blue_900">#FF01579B</color>
     <color name="light_blue_A200">#FF40C4FF</color>

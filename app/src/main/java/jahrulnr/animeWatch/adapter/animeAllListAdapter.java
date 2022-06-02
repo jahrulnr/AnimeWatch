@@ -1,12 +1,16 @@
 package jahrulnr.animeWatch.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jahrulnr.animeWatch.Class.animeList;
@@ -15,12 +19,13 @@ import jahrulnr.animeWatch.R;
 public class animeAllListAdapter extends BaseAdapter {
 
     Context context;
-    List<animeList> animelist;
+    List<animeList> animelist, animelists_original;
     LayoutInflater inflter;
 
-    public animeAllListAdapter(Context applicationContext, List<animeList> animelist) {
+    public animeAllListAdapter(Context applicationContext, List<animeList> animelist_in) {
         this.context = applicationContext;
-        this.animelist = animelist;
+        this.animelists_original = animelist_in;
+        this.animelist = animelists_original;
         inflter = (LayoutInflater.from(applicationContext));
     }
 
@@ -47,7 +52,21 @@ public class animeAllListAdapter extends BaseAdapter {
         animeList item = animelist.get(i);
         TextView namaAnime = view.findViewById(R.id.animeName);
 
-        namaAnime.setText(item.nama);
+        namaAnime.setText(item.nama.replace("Sub Indonesia", ""));
         return view;
+    }
+
+    public void filter(String text){
+        String query = text.toLowerCase();
+        animelist = new ArrayList<>();
+        if(text.length() == 0){
+            animelist = animelists_original;
+        } else {
+            for(animeList m : animelists_original){
+                if(m.nama.toLowerCase().contains(query)){
+                    animelist.add(m);
+                }
+            }
+        }
     }
 }

@@ -1,5 +1,6 @@
 package jahrulnr.animeWatch;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -33,20 +34,16 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);
-
-//        getSupportActionBar().hide();
     }
 
     @Override
     public void onBackPressed() {
-//        Fragment homeFragment = getSupportFragmentManager().findFragmentById(R.id.navigation_home);
-//        Fragment listFragment = getSupportFragmentManager().findFragmentById(R.id.navigation_list);
-//        Fragment historyFragment = getSupportFragmentManager().findFragmentById(R.id.navigation_history);
-//        boolean home = !(homeFragment instanceof IOnBackPressed) || !((IOnBackPressed) homeFragment).onBackPressed(),
-//                list = !(listFragment instanceof IOnBackPressed) || !((IOnBackPressed) listFragment).onBackPressed(),
-//                history = !(historyFragment instanceof IOnBackPressed) || !((IOnBackPressed) historyFragment).onBackPressed();
-//        if (home || list || history) {
-//            super.onBackPressed();
-//        }
+        new AlertDialog.Builder(this)
+                .setTitle("Konfirmasi")
+                .setMessage("Ingin keluar dari aplikasi ini?")
+                .setPositiveButton("Tidak", null)
+                .setNegativeButton("Ya", (dialogInterface, i) -> {
+                    super.onBackPressed();
+                }).show();
     }
 }
