@@ -5,9 +5,6 @@ plugins {
 android {
     compileSdk 32
 
-    aaptOptions.cruncherEnabled false
-    aaptOptions.useNewCruncher false
-
     defaultConfig {
         applicationId "jahrulnr.animeWatch"
         minSdk 24
@@ -50,6 +47,7 @@ dependencies {
     implementation 'android.arch.navigation:navigation-fragment:1.0.0'
     implementation 'android.arch.navigation:navigation-ui:1.0.0'
     testImplementation 'junit:junit:4.13.2'
+    //noinspection GradleCompatible
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
