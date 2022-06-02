@@ -15,8 +15,6 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 
 import jahrulnr.animeWatch.Class.animeList;
