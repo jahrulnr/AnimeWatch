@@ -13,8 +13,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:numColumns="3"
-        android:layout_margin="20dp"/>
+        android:layout_margin="20dp"
+        android:animateLayoutChanges="true"/>
 
     <include layout="@layout/episode_gridview"/>
+
+    <include layout="@layout/loading"/>
 
 </RelativeLayout>

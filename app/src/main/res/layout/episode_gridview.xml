@@ -5,6 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/episode_view"
     android:layout_margin="20dp"
+    android:animateLayoutChanges="true"
     android:visibility="gone">
 
     <android.support.v7.widget.CardView
@@ -154,6 +155,7 @@
         android:layout_below="@+id/detailCard"
         android:paddingStart="-2dp"
         android:paddingEnd="-2dp"
-        android:numColumns="2"/>
+        android:numColumns="2"
+        android:animateLayoutChanges="true"/>
 
 </RelativeLayout>

@@ -25,6 +25,8 @@ public class animeClick {
     private ViewGroup viewGroup;
     private RelativeLayout animeDetailView;
 
+    public animeClick(){};
+
     public animeClick(Activity act, JahrulnrLib it, ViewGroup viewGroup, animeList animelist) {
         this.viewGroup = viewGroup;
         it.executer(() -> {
@@ -79,14 +81,7 @@ public class animeClick {
                 animeDetailView.setVisibility(View.VISIBLE);
             });
 
-            Matcher episodes = JahrulnrLib.preg_match(h, JahrulnrLib.config.episode_pattern);
-            List<episodeList> episodelist = new ArrayList<>();
-            while (episodes.find()) {
-                episodeList al = new episodeList();
-                al.episode = "Episode " + episodes.group(3);
-                al.link = episodes.group(2);
-                episodelist.add(al);
-            }
+            List<episodeList> episodelist = getEpisode(h);
             animeEpsListAdapter adapter = new animeEpsListAdapter(act, episodelist);
             act.runOnUiThread(() -> {
                 GridView eps = act.findViewById(R.id.episode_list);
@@ -102,6 +97,18 @@ public class animeClick {
                 });
             });
         });
+    }
+
+    public List<episodeList> getEpisode(String source){
+        Matcher episodes = JahrulnrLib.preg_match(source, JahrulnrLib.config.episode_pattern);
+        List<episodeList> episodelist = new ArrayList<>();
+        while (episodes.find()) {
+            episodeList al = new episodeList();
+            al.episode = "Episode " + episodes.group(3);
+            al.link = episodes.group(2);
+            episodelist.add(al);
+        }
+        return episodelist;
     }
 
     public void close(){

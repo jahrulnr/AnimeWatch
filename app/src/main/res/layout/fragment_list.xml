@@ -34,9 +34,12 @@
         <GridView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/animeList"/>
+            android:id="@+id/animeList"
+            android:animateLayoutChanges="true"/>
     </LinearLayout>
 
     <include layout="@layout/episode_gridview"/>
+
+    <include layout="@layout/loading" />
 
 </RelativeLayout>

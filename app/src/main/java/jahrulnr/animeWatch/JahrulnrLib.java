@@ -39,7 +39,7 @@ public class JahrulnrLib {
     public static class config {
         public static String userAgent = "Mozilla/5.0 (Linux; Android 9; SAMSUNG SM-A505F Build/PPR1.180610.011) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/9.4 Chrome/87.0.3396.87 Mobile Safari/537.36";
         public static String host = "https://oploverz.asia/";
-        public static String updateList = "anime/?order=update#";
+        public static String updateList = "anime/?order=update&";
         public static String homeList = "anime/list-mode/#";
         public static String list = "anime/list-mode/#";
 

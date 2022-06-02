@@ -6,6 +6,10 @@ public class animeList implements Serializable {
     private static final long serialVersionUID = 60599L;
     public String nama, link, img_link, status;
 
+    public boolean isEmpty(){
+        return nama == null;
+    }
+
     public void setNama(String nama) {
         this.nama = nama;
     }

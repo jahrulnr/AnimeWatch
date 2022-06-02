@@ -8,9 +8,4 @@
         <item name="android:colorBackground">@color/dark</item>
         <!-- Customize your theme here. -->
     </style>
-
-    <style name="ThemeOverlay.AnimeWatch.FullscreenContainer" parent="">
-        <item name="fullscreenBackgroundColor">@color/dark</item>
-        <item name="fullscreenTextColor">@color/white</item>
-    </style>
 </resources>

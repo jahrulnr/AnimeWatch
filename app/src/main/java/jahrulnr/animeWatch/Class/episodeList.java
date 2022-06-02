@@ -49,9 +49,10 @@ public class episodeList implements Serializable {
 
     @Override
     public String toString() {
+        String animelist = animeList.isEmpty() ? "" : animeList.toString() + ", ";
         return "episodeList{" +
-                animeList.toString() +
-                ", episode='" + episode + '\'' +
+                animelist +
+                "episode='" + episode + '\'' +
                 ", link='" + link + '\'' +
                 '}';
     }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -17,7 +18,7 @@ import jahrulnr.animeWatch.Class.animeList;
 import jahrulnr.animeWatch.Class.dbFiles;
 import jahrulnr.animeWatch.Class.episodeList;
 import jahrulnr.animeWatch.R;
-import jahrulnr.animeWatch.adapter.animeHistory;
+import jahrulnr.animeWatch.adapter.animeHistoryAdapter;
 import jahrulnr.animeWatch.databinding.FragmentHistoryBinding;
 
 public class HistoryFragment extends Fragment {
@@ -32,13 +33,15 @@ public class HistoryFragment extends Fragment {
         View root = binding.getRoot();
 
         Activity act = getActivity();
+        RelativeLayout loading = root.findViewById(R.id.loadingContainer);
         gridView = root.findViewById(R.id.historyWatch);
         TextView textView = root.findViewById(R.id.emptyList);
+        loading.setVisibility(View.VISIBLE);
 
         dbFiles dbFiles = new dbFiles(act);
         List<episodeList> epsList = dbFiles.getList();
         if(!epsList.isEmpty()) {
-            animeHistory adapter = new animeHistory(getActivity(), epsList);
+            animeHistoryAdapter adapter = new animeHistoryAdapter(getActivity(), epsList);
             gridView.setAdapter(adapter);
             gridView.setOnItemClickListener((adapterView, view, i, l) -> {
                 episodeList eps = epsList.get(i);
@@ -57,6 +60,7 @@ public class HistoryFragment extends Fragment {
             gridView.setVisibility(View.GONE);
             textView.setVisibility(View.VISIBLE);
         }
+        loading.setVisibility(View.GONE);
 
         return root;
     }

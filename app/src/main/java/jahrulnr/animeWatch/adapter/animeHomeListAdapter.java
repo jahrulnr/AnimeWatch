@@ -16,14 +16,14 @@ import jahrulnr.animeWatch.Class.animeList;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
 
-public class animeHomeList extends BaseAdapter {
+public class animeHomeListAdapter extends BaseAdapter {
 
     private final Context context;
     private final List<animeList> animehomelist;
     private final JahrulnrLib it;
     LayoutInflater inflter;
 
-    public animeHomeList(Context context, JahrulnrLib it, List<animeList> animehomelist) {
+    public animeHomeListAdapter(Context context, JahrulnrLib it, List<animeList> animehomelist) {
         this.context = context;
         this.it = it;
         this.animehomelist = animehomelist;
@@ -54,10 +54,12 @@ public class animeHomeList extends BaseAdapter {
         animeList item = animehomelist.get(i);
         TextView anime = view.findViewById(R.id.animeName);
         ImageView cover = view.findViewById(R.id.animeCover);
+        TextView status = view.findViewById(R.id.status);
 
         if (item.nama != null) {
             anime.setText(item.nama);
             Picasso.get().load(item.img_link).into(cover);
+            status.setText(item.status);
         }
 
         return view;

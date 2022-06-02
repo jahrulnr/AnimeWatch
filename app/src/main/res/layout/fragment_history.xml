@@ -10,7 +10,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="20dp"
-        android:id="@+id/historyWatch"/>
+        android:id="@+id/historyWatch"
+        android:animateLayoutChanges="true"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -20,6 +21,9 @@
         android:text="Tidak ada history"
         android:textAlignment="center"
         android:textSize="20dp"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        android:animateLayoutChanges="true"/>
+
+    <include layout="@layout/loading" />
 
 </RelativeLayout>

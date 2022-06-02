@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
+import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +19,7 @@ import jahrulnr.animeWatch.Class.animeClick;
 import jahrulnr.animeWatch.Class.animeList;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
-import jahrulnr.animeWatch.adapter.animeHomeList;
+import jahrulnr.animeWatch.adapter.animeHomeListAdapter;
 import jahrulnr.animeWatch.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
@@ -33,23 +34,15 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        RelativeLayout loading = root.findViewById(R.id.loadingContainer);
+        loading.setVisibility(View.VISIBLE);
         act = getActivity();
         it = new JahrulnrLib(this.getActivity());
         it.executer(() -> {
-            String h = JahrulnrLib.getRequest(JahrulnrLib.config.updateList);
-            Matcher updateListM = JahrulnrLib.preg_match(h, JahrulnrLib.config.update_pattern);
-
-            List<animeList> animelist = new ArrayList<>();
-            while (updateListM.find()) {
-                animeList al = new animeList();
-                al.nama = updateListM.group(6);
-                al.img_link = updateListM.group(4);
-                al.link = updateListM.group(1);
-                al.status = updateListM.group(3);
-                animelist.add(al);
-            }
-
-            animeHomeList adapter = new animeHomeList(getContext(), it, animelist);
+            List<animeList> animelist = getAnime(JahrulnrLib.config.updateList);
+            animelist.addAll(getAnime(JahrulnrLib.config.updateList + "page=2"));
+            animelist.addAll(getAnime(JahrulnrLib.config.updateList + "page=3"));
+            animeHomeListAdapter adapter = new animeHomeListAdapter(getContext(), it, animelist);
             act.runOnUiThread(() -> {
                 GridView gridView = root.findViewById(R.id.animeHome);
                 gridView.setAdapter(adapter);
@@ -57,10 +50,28 @@ public class HomeFragment extends Fragment {
                     animeClicked = true;
                     animeClick = new animeClick(act, it, gridView, animelist.get(i));
                 });
+                loading.setVisibility(View.GONE);
             });
         });
 
         return root;
+    }
+
+    private List<animeList> getAnime(String link){
+        String h = JahrulnrLib.getRequest(link);
+        Matcher updateListM = JahrulnrLib.preg_match(h, JahrulnrLib.config.update_pattern);
+
+        List<animeList> animelist = new ArrayList<>();
+        while (updateListM.find()) {
+            animeList al = new animeList();
+            al.nama = updateListM.group(6);
+            al.img_link = updateListM.group(4);
+            al.link = updateListM.group(1);
+            al.status = updateListM.group(3);
+            animelist.add(al);
+        }
+
+        return animelist;
     }
 
     @Override

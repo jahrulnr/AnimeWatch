@@ -1,6 +1,7 @@
 package jahrulnr.animeWatch.ui;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -8,9 +9,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -41,9 +44,12 @@ public class ListFragment extends Fragment{
         View root = binding.getRoot();
         act = getActivity();
 
+
+        RelativeLayout loading = root.findViewById(R.id.loadingContainer);
         LinearLayout linearLayout = root.findViewById(R.id.animeListContainer);
         GridView gridView = root.findViewById(R.id.animeList);
         SearchView searchView = root.findViewById(R.id.searchAnime);
+        loading.setVisibility(View.VISIBLE);
         int iconId = searchView.getContext().getResources().getIdentifier("android:id/search_mag_icon", null, null);
         int iconCloseId = searchView.getContext().getResources().getIdentifier("android:id/search_close_btn", null, null);
         int textViewId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
@@ -90,6 +96,7 @@ public class ListFragment extends Fragment{
                     animeClicked = true;
                     animeClick = new animeClick(act, it, ((GridView) act.findViewById(R.id.animeList)), animelist.get(i));
                 });
+                loading.setVisibility(View.GONE);
             });
         });
         return root;
@@ -99,6 +106,11 @@ public class ListFragment extends Fragment{
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     @Override

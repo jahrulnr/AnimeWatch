@@ -5,28 +5,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import jahrulnr.animeWatch.Class.animeList;
 import jahrulnr.animeWatch.Class.episodeList;
 import jahrulnr.animeWatch.R;
 
-public class animeHistory extends BaseAdapter {
+public class nontonEpsListAdapter extends BaseAdapter {
 
     private Activity activity;
+    private animeList animelist;
     private List<episodeList> epsList;
     private LayoutInflater layoutInflater;
 
-    public animeHistory(Activity activity, List<episodeList> epsList) {
+    public nontonEpsListAdapter(Activity activity, animeList animelist, List<episodeList> epsList) {
         this.activity = activity;
+        this.animelist = animelist;
         this.epsList = epsList;
         this.layoutInflater = LayoutInflater.from(activity);
     }
-
     @Override
     public int getCount() {
         return epsList.size();
@@ -45,14 +44,9 @@ public class animeHistory extends BaseAdapter {
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         if(view == null)
-            view = layoutInflater.inflate(R.layout.history_list, null);
+            view = layoutInflater.inflate(R.layout.nontoneps_list, null);
 
-        ImageView imageView = view.findViewById(R.id.animeCover);
-        TextView anime = view.findViewById(R.id.anime);
         TextView episode = view.findViewById(R.id.episode);
-        if(epsList.get(i).getImg_link() != null)
-            Picasso.get().load(epsList.get(i).getImg_link()).into(imageView);
-        anime.setText(epsList.get(i).getNama());
         episode.setText(epsList.get(i).episode);
 
         return view;
