@@ -1,9 +1,7 @@
 package jahrulnr.animeWatch.Class;
 
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.Intent;
-import android.util.JsonReader;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.GridView;
@@ -17,19 +15,14 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import in.srain.cube.views.GridViewWithHeaderAndFooter;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
 import jahrulnr.animeWatch.adapter.animeEpsListAdapter;
-import jahrulnr.animeWatch.ui.nontonView;
 
 public class animeClick {
 
@@ -44,7 +37,6 @@ public class animeClick {
     public animeClick(Activity act, JahrulnrLib it, ViewGroup viewGroup, animeList animelist) {
         this.act = act;
         this.viewGroup = viewGroup;
-        LinearLayout gridView = act.findViewById(R.id.animeListContainer);
         animeDetailView = act.findViewById(R.id.episode_view);
         ImageView iv_cover = act.findViewById(R.id.animeClickCover);
         TextView tv_title = act.findViewById(R.id.animeClickTitle);
@@ -89,14 +81,15 @@ public class animeClick {
                     tv_rilis.setText(": " + rilis);
                     eps.setAdapter(adapter);
                     eps.setOnItemClickListener((adapterView, view, i, l) -> {
+                        episodeClicked = true;
                         animeList epsPrev = animelist;
                         epsPrev.img_link = cover;
                         epsPrev.link = episodelist.get(i).link;
-                        episodePreview = new episodePreview(act, it, animeDetailView, epsPrev);
-                        episodeClicked = true;
+                        episodePreview = new episodePreview(act, it, animeDetailView, epsPrev, this);
                     });
                     viewGroup.setVisibility(View.GONE);
                     animeDetailView.setVisibility(View.VISIBLE);
+                    new onBackPress(animeDetailView, () -> close());
                 });
             }
         });
@@ -138,8 +131,9 @@ public class animeClick {
 
     public void close(){
         episodeClicked = false;
+        if(episodePreview != null)
+            episodePreview.close();
         animeDetailView.setVisibility(View.GONE);
-        episodePreview.close();
         viewGroup.setVisibility(View.VISIBLE);
         viewGroup.startLayoutAnimation();
     }

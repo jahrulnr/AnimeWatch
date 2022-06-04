@@ -3,6 +3,7 @@ package jahrulnr.animeWatch.ui;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -40,9 +41,11 @@ public class HomeFragment extends Fragment {
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.grid_animation);
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
         ((RelativeLayout) root.findViewById(R.id.episode_preview)).setVisibility(View.GONE);
         RelativeLayout loading = root.findViewById(R.id.loadingContainer);
         GridViewWithHeaderAndFooter gridView = root.findViewById(R.id.animeHome);
@@ -66,7 +69,7 @@ public class HomeFragment extends Fragment {
                 gridView.setAdapter(adapter);
                 gridView.setOnItemClickListener((adapterView, view, i, l) -> {
                     animeClicked = true;
-                    episodePreview = new episodePreview(act, it, gridView, animelist.get(i));
+                    episodePreview = new episodePreview(act, it, gridView, animelist.get(i), null);
                 });
 
                 loadMore.setOnClickListener(view -> {
@@ -118,13 +121,8 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-        if(getView() == null){
-            return;
-        }
-
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         getView().setFocusableInTouchMode(true);
         getView().requestFocus();
         getView().setOnKeyListener((v, keyCode, event) -> {

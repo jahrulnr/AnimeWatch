@@ -1,6 +1,7 @@
 package jahrulnr.animeWatch.Class;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,10 +29,10 @@ public class episodePreview {
     private RelativeLayout relativeLayout;
     private ViewGroup viewGroup;
     private RelativeLayout episode_preview;
+    private animeClick ac;
 
-    public episodePreview(){};
-
-    public episodePreview(Activity act, JahrulnrLib it, ViewGroup viewGroup, animeList animelist) {
+    public episodePreview(Activity act, JahrulnrLib it, ViewGroup viewGroup, animeList animelist, @Nullable animeClick ac) {
+        this.ac = ac;
         this.viewGroup = viewGroup;
         relativeLayout = act.findViewById(R.id.loadingContainer);
         episode_preview = act.findViewById(R.id.episode_preview);
@@ -58,6 +59,9 @@ public class episodePreview {
                 nama = animelist.nama;
             }
 
+            List<episodeServerList> episodeServerLists = getServer(h);
+            episodeServerAdapter adapter = new episodeServerAdapter(act, episodeServerLists);
+
             // Detail
             act.runOnUiThread(() -> {
                 Animation animation = AnimationUtils.loadAnimation(act,R.anim.grid_animation);
@@ -68,11 +72,7 @@ public class episodePreview {
                 viewGroup.setVisibility(View.GONE);
                 episode_preview.setLayoutAnimation(controller);
                 episode_preview.setVisibility(View.VISIBLE);
-            });
 
-            List<episodeServerList> episodeServerLists = getServer(h);
-            episodeServerAdapter adapter = new episodeServerAdapter(act, episodeServerLists);
-            act.runOnUiThread(() -> {
                 GridView sgv = act.findViewById(R.id.serverGridview);
                 sgv.setAdapter(adapter);
 //                eps.setOnItemClickListener((adapterView, view, i, l) -> {
@@ -85,6 +85,9 @@ public class episodePreview {
 //                    act.startActivity(intent);
 //                });
                 relativeLayout.setVisibility(View.GONE);
+                new onBackPress(episode_preview, () -> {
+                    this.close();
+                });
             });
         });
     }
@@ -154,9 +157,13 @@ public class episodePreview {
     }
 
     public void close(){
+        episode_preview.setVisibility(View.GONE);
         viewGroup.setVisibility(View.VISIBLE);
         viewGroup.startLayoutAnimation();
-        episode_preview.setVisibility(View.GONE);
+        if(ac != null)
+            new onBackPress(viewGroup, () -> {
+                ac.close();
+            });
     }
 }
 

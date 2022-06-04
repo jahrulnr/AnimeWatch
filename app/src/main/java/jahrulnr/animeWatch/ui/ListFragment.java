@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import java.util.regex.Matcher;
 
 import jahrulnr.animeWatch.Class.animeClick;
 import jahrulnr.animeWatch.Class.animeList;
+import jahrulnr.animeWatch.Class.onBackPress;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
 import jahrulnr.animeWatch.databinding.FragmentListBinding;
@@ -43,6 +45,7 @@ public class ListFragment extends Fragment{
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
         this.container = container;
         binding = FragmentListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -176,37 +179,11 @@ public class ListFragment extends Fragment{
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+
         View view = getActivity().getCurrentFocus();
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        if(getView() == null){
-            return;
-        }
-
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
-        getView().setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK){
-                if(animeClicked && animeClick.isEpisodeClicked()){
-                    animeClick.closeEpisodeView();
-                    return true;
-                }
-                else if(animeClicked && animeClick != null){
-                    animeClick.close();
-                    gridView.startLayoutAnimation();
-                    animeClicked = false;
-                    return true;
-                }
-            }
-            return false;
-        });
     }
 }
