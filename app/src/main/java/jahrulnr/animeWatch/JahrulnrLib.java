@@ -19,7 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,61 +28,21 @@ public class JahrulnrLib {
     @SuppressLint("StaticFieldLeak")
     private static Activity activity;
     private static String text = "";
+    public static config config = new config();
 
-    public JahrulnrLib() {
-    }
+    public JahrulnrLib() {}
 
     public JahrulnrLib(Activity act) {
         activity = act;
     }
 
-    public static class config {
-        public static String userAgent = "Mozilla/5.0 (Linux; Android 9; SAMSUNG SM-A505F Build/PPR1.180610.011) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/9.4 Chrome/87.0.3396.87 Mobile Safari/537.36";
-        public static String host = "https://oploverz.asia/";
-        public static String updateList = "anime/?order=update&";
-        public static String homeList = "anime/list-mode/#";
-        public static String list = "anime/list-mode/#";
-
-        // Home
-        public static String update_pattern = "div class=\"bsx\"> <a href=\"" +
-                "?(.*?)" + // url 1
-                "\" itemprop=\"url\" title" +
-                "?(.*?)" + // trash 2
-                "class=\"epx\">" +
-                "?(.*?)" + // ongoing/complete 3
-                "</span></div> " +
-                "<img src=\"" +
-                "?(.*?)" + // cover 4
-                "\" class=\"ts-post-image wp-post-image attachment-medium_large size-medium_large\" loading=\"lazy" +
-                "?(.*?)" + // trash 5
-                "<div class=\"tt\"> " +
-                "?(.*?)" + // title 6
-                "<h2 itemprop=\"headline\"";
-
-        // Dashboard
-        public static String list_pattern = "class=\"tip series\" rel=\"?(.*?)\" href=\"" +
-                "?(.*?)\">?(.*?)</a>";
-        public static String img_pattern = "ImageObject\"> <img src=\"?(.*?)\" " +
-                "class=\"ts-post-image wp-post-image attachment-medium_large size-medium_large\" " +
-                "loading=\"lazy\"";
-        public static String status_pattern = "<b>Status:</b> ?(.*?)</span>";
-        public static String studio_pattern = "<b>Studio:</b> ?(.*?)</span> ";
-        public static String rilis_pattern = "<b>Released:</b> ?(.*?)</span>";
-        public static String season_pattern = "<b>Season:</b> <a href=\"?(.*?)\" rel=\"tag\">?(.*?)</a></span>";
-        public static String genre_pattern = "<div class=\"genxed\">" +
-                "<a href=\"?(.*?)\" rel=\"tag\">?(.*?)</a>";
-        public static String episode_pattern = "<li data-index=\"?(.*?)\"> " +
-                "<a href=\"?(.*?)\">" +
-                "<div class=\"epl-num\">?(.*?)</div>" +
-                "<div class=\"epl-title\">?(.*?)</div>";
-    }
-
     public static Matcher preg_match(String source, String pattern) {
         if (source != null) {
+//            Pattern p = Pattern.compile(pattern, Pattern.CASE_INSENSITIVE);
             Pattern p = Pattern.compile(pattern);
             Matcher m = null;
             try {
-                m = p.matcher(source);
+                m = p.matcher(source.replaceAll("\n", ""));
             } catch (IllegalStateException e) {
                 Log.e("Preg_Match", e.toString());
             }
@@ -110,8 +70,24 @@ public class JahrulnrLib {
         Executors.newSingleThreadExecutor().execute(run);
     }
 
+    private static HashMap<String, String> getRequestProperties(HashMap<String, String> properties){
+        HashMap<String, String> requestProperties = new HashMap<>();
+        requestProperties.put("User-Agent", config.userAgent);
+//        requestProperties.put("X-Requested-With", "XMLHttpRequest");
+
+        if(properties != null){
+            requestProperties.putAll(properties);
+        }
+
+        return requestProperties;
+    }
+
+    public static String getUniversalRequest(String link){
+        return getRequest(link, null);
+    }
+
     // Without Data
-    public static String getUniversalRequest(String link) {
+    public static String getRequest(String link, HashMap<String, String> properties) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
@@ -121,10 +97,15 @@ public class JahrulnrLib {
             url = new URL(link);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches( true );
+            urlConnection.setDefaultUseCaches( true );
+            urlConnection.setReadTimeout(60000);
+            urlConnection.setConnectTimeout(5 * 1000);
             urlConnection.setRequestMethod("GET");
             urlConnection.addRequestProperty("User-Agent", config.userAgent);
-            urlConnection.addRequestProperty("Referer", config.host);
-            urlConnection.setReadTimeout(10000);
+            getRequestProperties(properties).forEach((s, s2) -> {
+                urlConnection.addRequestProperty(s, s2);
+            });
             BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             String input;
             StringBuffer stringBuffer = new StringBuffer();
@@ -132,6 +113,7 @@ public class JahrulnrLib {
                 stringBuffer.append(input);
             }
             in.close();
+            urlConnection.disconnect();
             text = stringBuffer.toString();
         }catch (SocketTimeoutException e){
             e.printStackTrace();
@@ -142,109 +124,48 @@ public class JahrulnrLib {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return text;
-    }
-
-    // Without Data
-    public static String getRequest(String api) {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-        StrictMode.setThreadPolicy(policy);
-
-        config conf = new config();
-        BufferedReader reader = null;
-        URL url = null;
-        URLConnection conn = null;
-
-        try {
-            // Defined URL  where to send data
-            url = new URL(config.host + api);
-
-            // Send POST data request
-            conn = url.openConnection();
-            conn.setConnectTimeout(5 * 1000);
-            conn.setDoOutput(true);
-
-            // Get the server response
-            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder sb = new StringBuilder();
-            String line = null;
-
-            // Read Server Response
-            while ((line = reader.readLine()) != null) {
-                // Append server response in string
-                sb.append(line + "\n");
-            }
-
-            if (!sb.toString().isEmpty())
-                text = sb.substring(0, sb.length() - 1);
-            else
-                text = sb.toString();
-        } catch (SocketTimeoutException e) {
-            Log.e("SocketTimeoutException", e.toString());
-            return null;
-        } catch (UnsupportedEncodingException e) {
-            Log.e("UnsupportedEncoding", e.toString());
-            e.printStackTrace();
-            return null;
-        } catch (IOException e) {
-            Log.e("IOException", e.toString());
-            e.printStackTrace();
-            return null;
-        } catch (Exception ex) {
-            Log.e("getRequest_1", ex.getMessage());
-            ex.printStackTrace();
-            return null;
-        } finally {
-            try {
-                reader.close();
-            } catch (Exception ex) {
-                Log.e("getRequest_2", ex.toString());
-                return null;
-            }
-        }
-
-        // return response
-//        Log.d("getRequest_3", text);
-        return text;
+        return text.replaceAll("\n", "").replaceAll("  +", " ");
     }
 
     // With Data
-    public static String getRequest(String api, String data) {
+    public static String getRequest(String link, String data, HashMap<String, String> properties) {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        config conf = new config();
         BufferedReader reader = null;
         URL url = null;
-        URLConnection conn = null;
-
         try {
             // Defined URL  where to send data
-            url = new URL(config.host + api);
+            url = new URL(link);
 
             // Send POST data request
-            conn = url.openConnection();
-            conn.setConnectTimeout(5 * 1000);
-            conn.setDoOutput(true);
-            OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+            HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setDoOutput(true);
+            urlConnection.setUseCaches(true);
+            urlConnection.setDefaultUseCaches( true );
+            urlConnection.setReadTimeout(60000);
+            urlConnection.setConnectTimeout(5 * 1000);
+            urlConnection.setRequestMethod("POST");
+            urlConnection.addRequestProperty("User-Agent", config.userAgent);
+            getRequestProperties(properties).forEach((s, s2) -> {
+                urlConnection.addRequestProperty(s, s2);
+            });
+
+            OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
             wr.write(data);
             wr.flush();
 
             // Get the server response
-            reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             StringBuilder sb = new StringBuilder();
             String line = null;
 
             // Read Server Response
             while ((line = reader.readLine()) != null) {
                 // Append server response in string
-                sb.append(line + "\n");
+                sb.append(line);
             }
-
-            if (!sb.toString().isEmpty())
-                text = sb.substring(0, sb.length() - 1);
-            else
-                text = sb.toString();
+            text = sb.toString();
         } catch (SocketTimeoutException e) {
             Log.e("SocketTimeoutException", e.toString());
             Toast.makeText(activity, "Koneksi timeout. Silakan refresh.", Toast.LENGTH_LONG).show();
@@ -274,6 +195,6 @@ public class JahrulnrLib {
             }
         }
 
-        return text;
+        return text.replaceAll("\n", "").replaceAll("  +", " ");
     }
 }

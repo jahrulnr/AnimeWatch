@@ -2,7 +2,6 @@ package jahrulnr.animeWatch;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 
 import androidx.navigation.NavController;
@@ -24,10 +23,6 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         new JahrulnrLib().checkNetwork(this);
-
-        BottomNavigationView navView = findViewById(R.id.nav_view);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home, R.id.navigation_list, R.id.navigation_history)
                 .build();
@@ -43,7 +38,7 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage("Ingin keluar dari aplikasi ini?")
                 .setPositiveButton("Tidak", null)
                 .setNegativeButton("Ya", (dialogInterface, i) -> {
-                    super.onBackPressed();
+                    finish();
                 }).show();
     }
 }

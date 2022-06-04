@@ -56,10 +56,14 @@ public class animeHomeListAdapter extends BaseAdapter {
         ImageView cover = view.findViewById(R.id.animeCover);
         TextView status = view.findViewById(R.id.status);
 
-        if (item.nama != null) {
-            anime.setText(item.nama);
-            Picasso.get().load(item.img_link).into(cover);
-            status.setText(item.status);
+        try {
+            if (item.nama != null) {
+                anime.setText(item.nama);
+                Picasso.get().load(item.img_link).into(cover);
+                status.setText(item.status);
+            }
+        } catch (java.lang.NullPointerException e){
+            e.printStackTrace();
         }
 
         return view;

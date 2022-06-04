@@ -39,7 +39,9 @@
             android:animateLayoutChanges="true"/>
     </LinearLayout>
 
-    <include layout="@layout/episode_gridview"/>
+    <include layout="@layout/episode_home"/>
+
+    <include layout="@layout/episode_preview"/>
 
     <include layout="@layout/loading" />
 

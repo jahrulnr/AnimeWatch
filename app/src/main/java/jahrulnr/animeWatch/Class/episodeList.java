@@ -4,8 +4,18 @@ import java.io.Serializable;
 
 public class episodeList implements Serializable {
     private static final long serialVersionUID = 61198L;
-    public String episode, link;
+    public String episode;
+    public String upload;
+    public String link;
     public animeList animeList = new animeList();
+
+    public String getUpload() {
+        return upload;
+    }
+
+    public void setUpload(String upload) {
+        this.upload = upload;
+    }
 
     public void setNama(String nama) {
         this.animeList.nama = nama;

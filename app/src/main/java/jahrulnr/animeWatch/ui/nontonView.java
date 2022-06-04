@@ -1,6 +1,5 @@
 package jahrulnr.animeWatch.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
@@ -20,7 +19,9 @@ import com.jess.ui.TwoWayGridView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 import jahrulnr.animeWatch.Class.animeClick;
@@ -34,7 +35,6 @@ import jahrulnr.animeWatch.adapter.nontonEpsListAdapter;
 public class nontonView extends AppCompatActivity {
 
     private static JahrulnrLib it;
-    private Activity act;
     private ImageButton moreEps;
     private WebView webView;
     private RelativeLayout epsContainer;
@@ -70,7 +70,13 @@ public class nontonView extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        act = this;
+        // find by id
+        epsContainer = findViewById(R.id.EpsContainer);
+        gridView = findViewById(R.id.EpsGridview);
+        webView = findViewById(R.id.nontonAnime);
+        moreEps = findViewById(R.id.moreEps);
+        TextView thisEps = findViewById(R.id.thisEps);
+
         it = new JahrulnrLib(this);
         Intent intent = getIntent();
         String nama = intent.getStringExtra("nama"),
@@ -78,17 +84,15 @@ public class nontonView extends AppCompatActivity {
                 anime_link = intent.getStringExtra("anime_link"),
                 episode = intent.getStringExtra("episode"),
                 eps_link = intent.getStringExtra("eps_link");
-        epsContainer = findViewById(R.id.EpsContainer);
-        gridView = findViewById(R.id.EpsGridview);
         epsContainer.setVisibility(View.GONE);
-        webView = findViewById(R.id.nontonAnime);
+
         if (eps_link != null) {
             it.executer(() -> {
                 String h = JahrulnrLib.getUniversalRequest(eps_link);
                 Matcher videoM = null;
                 boolean found = false;
                 if(h != null){
-                    videoM =JahrulnrLib.preg_match(h,
+                    videoM = JahrulnrLib.preg_match(h,
                             "<iframe width=\"100%\" height=\"100%\" src=\"?(.*?)\" frameborder=\"0\"");
 
                     found =  videoM.find();
@@ -107,23 +111,26 @@ public class nontonView extends AppCompatActivity {
                 epsList.episode = episode;
                 epsList.link = eps_link;
 
-                if (found) {
+                if (found && videoM != null) {
                     Matcher finalVideoM = videoM;
-                    if(finalVideoM != null)
-                        runOnUiThread(() -> {
+                    runOnUiThread(() -> {
+                        if(webView.getUrl() == null) {
                             // set webview
+                            Map<String, String> extraHeaders = new HashMap<String, String>();
+                            extraHeaders.put("Referer", "http://www.referer.tld/login.html");
                             webView.setNetworkAvailable(true);
-                            webView.getSettings().setJavaScriptEnabled(true);
-                            webView.getSettings().setDomStorageEnabled(true);
                             webView.getSettings().setUseWideViewPort(true);
-                            webView.getSettings().setLoadWithOverviewMode(true);
                             webView.getSettings().setAppCacheEnabled(true);
-                            webView.getSettings().setAppCachePath(act.getCacheDir().getPath());
-                            webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+                            webView.getSettings().setJavaScriptEnabled(true);
                             webView.getSettings().setBuiltInZoomControls(true);
+                            webView.getSettings().setDomStorageEnabled(true);
+                            webView.getSettings().setLoadWithOverviewMode(true);
+                            webView.getSettings().setAppCachePath(getCacheDir().getPath());
+                            webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+                            webView.getSettings().setUserAgentString(new WebView(this).getSettings().getUserAgentString());
                             try {
                                 webView.loadUrl(finalVideoM.group(1));
-                            } catch (IllegalStateException e){
+                            } catch (IllegalStateException e) {
                                 e.printStackTrace();
                                 finish();
                             }
@@ -132,7 +139,8 @@ public class nontonView extends AppCompatActivity {
                             dbFiles db = new dbFiles(this);
                             db.add(epsList);
                             db.save();
-                        });
+                        }
+                    });
                 } else {
                     runOnUiThread(() -> {
                         Toast.makeText(this, "Link not available", Toast.LENGTH_LONG).show();
@@ -166,14 +174,10 @@ public class nontonView extends AppCompatActivity {
             finish();
         }
 
-        moreEps = findViewById(R.id.moreEps);
-        TextView thisEps = findViewById(R.id.thisEps);
-        moreEps.setOnClickListener(view -> {
-            epsMenu();
-        });
+        moreEps.setOnClickListener(view -> epsMenu());
         thisEps.setText(episode);
         thisEps.setOnClickListener(view -> {
-            if(!eps.isEmpty()){
+            if (!eps.isEmpty()) {
                 gridView.smoothScrollToPosition(idEps);
             }
         });
@@ -187,6 +191,7 @@ public class nontonView extends AppCompatActivity {
             i.putExtra("episode", eps.episode);
             i.putExtra("eps_link", eps.link);
             startActivity(i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+            finish();
         });
         epsContainer.setOnClickListener(view -> {
             epsMenu();
@@ -195,45 +200,45 @@ public class nontonView extends AppCompatActivity {
 
     private void epsMenu(){
         if (epsShow) {
-            webView.onResume();
-            webView.setClickable(true);
-            webView.setFocusable(true);
-            webView.setFocusableInTouchMode(true);
-            webView.setActivated(true);
+            webView.resumeTimers();
             moreEps.setColorFilter(getResources().getColor(R.color.white));
             epsContainer.setVisibility(View.GONE);
-            this.epsShow = false;
+            epsShow = false;
             return;
         }
 
-        webView.onPause();
-        webView.setClickable(false);
-        webView.setFocusable(false);
-        webView.setFocusableInTouchMode(false);
-        webView.setActivated(false);
+        webView.pauseTimers();
         moreEps.setColorFilter(getResources().getColor(R.color.info));
         epsContainer.setVisibility(View.VISIBLE);
-        this.epsShow = true;
+        epsShow = true;
         if(idEps > -1) {
-            act.runOnUiThread(() -> {
-                gridView.post(() -> {
-                    int tempId = idEps;
-                    if(tempId + 3 < eps.size()){
-                        tempId += 3;
-                    }
-                    gridView.smoothScrollToPosition(tempId);
-                });
+            gridView.post(() -> {
+                int tempId = idEps;
+                if(tempId + 3 < eps.size()){
+                    tempId += 3;
+                }
+                gridView.smoothScrollToPosition(tempId);
             });
         }
     }
 
     @Override
     public void onBackPressed() {
-        if(epsShow){
+        if(epsShow)
             epsMenu();
-        }else {
+        else
             finish();
-            super.onBackPressed();
-        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        webView.pauseTimers();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        webView.resumeTimers();
     }
 }

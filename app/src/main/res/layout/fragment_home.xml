@@ -4,19 +4,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
-    android:gravity="center"
+    android:gravity="center|top"
     android:padding="20dp"
-    tools:context=".ui.HomeFragment">
+    tools:context=".ui.HomeFragment"
+    android:id="@+id/fragment_home">
 
-    <GridView
-        android:id="@+id/animeHome"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:numColumns="3"
-        android:animationCache="true"
-        android:animateLayoutChanges="true"/>
+        <in.srain.cube.views.GridViewWithHeaderAndFooter
+            android:id="@+id/animeHome"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:numColumns="auto_fit"
+            android:animationCache="true"
+            android:animateLayoutChanges="true"/>
 
-    <include layout="@layout/episode_gridview"/>
+    <include layout="@layout/episode_preview"/>
 
     <include layout="@layout/loading"/>
 

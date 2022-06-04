@@ -26,7 +26,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerCrop"
-                android:id="@+id/animeEpsCover"
+                android:id="@+id/animeClickCover"
                 android:background="@drawable/no_image"/>
         </android.support.v7.widget.CardView>
 
@@ -34,7 +34,7 @@
             android:id="@+id/anime_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/animeEpsCover"
+            android:layout_toRightOf="@id/animeClickCover"
             android:layout_marginStart="90dp"
             android:paddingTop="7dp"
             android:paddingLeft="10dp"
@@ -43,7 +43,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/animeTitle"
+                android:id="@+id/animeClickTitle"
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
                 android:gravity="start|top"
@@ -54,24 +54,6 @@
                 android:autoSizeMaxTextSize="20dp"
                 android:fontFamily="sans-serif"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingEnd="27dp"
-                    android:text="Status"
-                    android:textColor="@color/white"
-                    android:fontFamily="sans-serif"/>
-                <TextView
-                    android:id="@+id/animeStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text=": Contoh Status"/>
-            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -126,24 +108,6 @@
                     android:textColor="@color/white"
                     android:text=": Contoh Released"/>
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingEnd="20dp"
-                    android:text="Season"
-                    android:textColor="@color/white"
-                    android:fontFamily="sans-serif"/>
-                <TextView
-                    android:id="@+id/animeSeason"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text=": Contoh Season"/>
-            </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>
 
@@ -152,6 +116,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/detailCard"
+        android:layout_marginTop="10dp"
         android:paddingStart="-2dp"
         android:paddingEnd="-2dp"
         android:numColumns="2"

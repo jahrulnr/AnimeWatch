@@ -9,7 +9,11 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.GridLayoutAnimationController;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,7 +29,6 @@ import jahrulnr.animeWatch.Class.animeClick;
 import jahrulnr.animeWatch.Class.animeList;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
-import jahrulnr.animeWatch.adapter.animeAllListAdapter;
 import jahrulnr.animeWatch.databinding.FragmentListBinding;
 
 public class ListFragment extends Fragment{
@@ -34,6 +37,7 @@ public class ListFragment extends Fragment{
     private FragmentListBinding binding;
     private JahrulnrLib it;
     private ViewGroup container;
+    private GridView gridView;
     private boolean animeClicked = false;
     private animeClick animeClick = null;
 
@@ -44,11 +48,14 @@ public class ListFragment extends Fragment{
         View root = binding.getRoot();
         act = getActivity();
 
+        ((RelativeLayout) root.findViewById(R.id.episode_preview)).setVisibility(View.GONE);
+        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.grid_animation);
         RelativeLayout loading = root.findViewById(R.id.loadingContainer);
         LinearLayout linearLayout = root.findViewById(R.id.animeListContainer);
-        GridView gridView = root.findViewById(R.id.animeList);
+        gridView = root.findViewById(R.id.animeList);
         SearchView searchView = root.findViewById(R.id.searchAnime);
         loading.setVisibility(View.VISIBLE);
+
         int iconId = searchView.getContext().getResources().getIdentifier("android:id/search_mag_icon", null, null);
         int iconCloseId = searchView.getContext().getResources().getIdentifier("android:id/search_close_btn", null, null);
         int textViewId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
@@ -57,12 +64,14 @@ public class ListFragment extends Fragment{
         ImageView iconCSV = searchView.findViewById(iconCloseId);
         iconSV.setColorFilter(getResources().getColor(R.color.white));
         iconCSV.setColorFilter(getResources().getColor(R.color.white));
+
         textView.setHint(R.string.searchHint);
         textView.setTextColor(getResources().getColor(R.color.white));
         textView.setHintTextColor(getResources().getColor(R.color.gray_600));
+
         it = new JahrulnrLib(this.getActivity());
         it.executer(() -> {
-            String h = JahrulnrLib.getRequest(JahrulnrLib.config.list);
+            String h = JahrulnrLib.getRequest(JahrulnrLib.config.list, null);
             Matcher m = JahrulnrLib.preg_match(h, JahrulnrLib.config.list_pattern);
             List<animeList> animelist = new ArrayList<>();
             if(m != null){
@@ -75,6 +84,8 @@ public class ListFragment extends Fragment{
             }
             animeAllListAdapter adapter = new animeAllListAdapter(getContext(), animelist);
             act.runOnUiThread(() -> {
+                GridLayoutAnimationController animationController = new GridLayoutAnimationController(animation, .0f, .025f);
+                gridView.setLayoutAnimation(animationController);
                 gridView.setAdapter(adapter);
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
@@ -102,6 +113,65 @@ public class ListFragment extends Fragment{
         return root;
     }
 
+    class animeAllListAdapter extends BaseAdapter {
+
+        Context context;
+        List<animeList> animelist, animelists_original;
+        LayoutInflater inflter;
+
+        public animeAllListAdapter(Context applicationContext, List<animeList> animelist_in) {
+            this.context = applicationContext;
+            this.animelists_original = animelist_in;
+            this.animelist = animelists_original;
+            inflter = (LayoutInflater.from(applicationContext));
+        }
+
+        @Override
+        public int getCount() {
+            return animelist.size();
+        }
+
+        @Override
+        public animeList getItem(int i) {
+            return animelist.get(i);
+        }
+
+        public List<animeList> getItems(){
+            return animelist;
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return i;
+        }
+
+        @Override
+        public View getView(int i, View view, ViewGroup viewGroup) {
+            if (view == null) {
+                view = inflter.inflate(R.layout.animealllist_view, null);
+            }
+            animeList item = animelist.get(i);
+            TextView namaAnime = view.findViewById(R.id.animeName);
+
+            namaAnime.setText(item.nama.replace("Sub Indonesia", ""));
+            return view;
+        }
+
+        public void filter(String text){
+            String query = text.toLowerCase();
+            animelist = new ArrayList<>();
+            if(text.length() == 0){
+                animelist = animelists_original;
+            } else {
+                for(animeList m : animelists_original){
+                    if(m.nama.toLowerCase().contains(query)){
+                        animelist.add(m);
+                    }
+                }
+            }
+        }
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
@@ -125,8 +195,13 @@ public class ListFragment extends Fragment{
         getView().requestFocus();
         getView().setOnKeyListener((v, keyCode, event) -> {
             if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK){
-                if(animeClicked && animeClick != null){
+                if(animeClicked && animeClick.isEpisodeClicked()){
+                    animeClick.closeEpisodeView();
+                    return true;
+                }
+                else if(animeClicked && animeClick != null){
                     animeClick.close();
+                    gridView.startLayoutAnimation();
                     animeClicked = false;
                     return true;
                 }

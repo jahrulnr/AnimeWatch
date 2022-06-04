@@ -16,9 +16,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingStart="3dp"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"
+            android:padding="10dp"
             android:text="Episode 1"
             android:textSize="20dp"
             android:textColor="@color/white"
