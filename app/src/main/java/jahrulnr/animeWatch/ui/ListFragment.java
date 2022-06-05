@@ -4,15 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.GridLayoutAnimationController;
 import android.view.animation.LayoutAnimationController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
@@ -29,7 +26,6 @@ import java.util.regex.Matcher;
 
 import jahrulnr.animeWatch.Class.animeClick;
 import jahrulnr.animeWatch.Class.animeList;
-import jahrulnr.animeWatch.Class.onBackPress;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
 import jahrulnr.animeWatch.databinding.FragmentListBinding;
@@ -93,18 +89,16 @@ public class ListFragment extends Fragment{
             act.runOnUiThread(() -> {
                 gridView.setAdapter(adapter);
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-
                     @Override
                     public boolean onQueryTextSubmit(String newText) {
                         adapter.filter(newText);
-                        gridView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
                         return false;
                     }
-
                     @Override
                     public boolean onQueryTextChange(String query) {
                         adapter.filter(query);
-                        gridView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
                         return false;
                     }
                 });

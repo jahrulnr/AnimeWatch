@@ -1,7 +1,6 @@
 package jahrulnr.animeWatch.ui;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import jahrulnr.animeWatch.Class.animeList;
 import jahrulnr.animeWatch.Class.dbFiles;
 import jahrulnr.animeWatch.Class.episodeList;
 import jahrulnr.animeWatch.Class.episodePreview;

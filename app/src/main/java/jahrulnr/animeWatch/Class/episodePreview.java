@@ -17,8 +17,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -61,10 +59,12 @@ public class episodePreview {
                 cover = coverM.find() ? coverM.group(1) + "." + coverM.group(2) : "";
                 nama = namaM.find() ? namaM.group(1) : "";
                 animeLink = animeLinkM.find() ? "https://75.119.159.228/anime/" + animeLinkM.group(1) : "";
+                System.out.println("animeLink1" +animeLink);
             }else{
                 cover = animelist.img_link;
                 nama = animelist.nama;
                 animeLink = animelist.link;
+                System.out.println("animeLink2" +animeLink);
             }
 
             List<episodeServerList> episodeServerLists = getServer(h);
@@ -76,9 +76,10 @@ public class episodePreview {
                 LayoutAnimationController controller = new LayoutAnimationController(animation);
                 Picasso.get().load(cover).into(iv_cover);
                 String epsPattern = "(.*?)\\s+Episode\\s+([0-9]+)?( ?Sub Indo)?";
-                episode.replaceAll("  +", " ");
-                String e = episode.replaceAll(epsPattern, "Episode $2");
-                tv_title.setText(nama.replaceAll(epsPattern, "$1"));
+                String spacePattern = "  +";
+                String finalNama = nama.replaceAll(spacePattern,  "").replaceAll(epsPattern, "$1");
+                String e = episode.replaceAll(spacePattern,  "").replaceAll(epsPattern, "Episode $2");
+                tv_title.setText(finalNama);
                 tv_episode.setText(": " + e);
                 viewGroup.setVisibility(View.GONE);
                 episode_preview.setLayoutAnimation(controller);
@@ -88,13 +89,13 @@ public class episodePreview {
                 sgv.setAdapter(adapter);
                 sgv.setOnItemClickListener((adapterView, view, i, l) -> {
                     Intent intent = new Intent(act, nontonView.class);
-                    intent.putExtra("nama", episodelist.episode);
+                    intent.putExtra("nama", finalNama);
                     intent.putExtra("img_link", cover);
                     intent.putExtra("anime_link", animeLink);
                     intent.putExtra("episode", "Episode " + e);
                     intent.putExtra("episode_link", episodelist.link);
                     intent.putExtra("server", episodeServerLists.get(i).server);
-                    act.startActivity(intent);
+                    act.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 });
                 relativeLayout.setVisibility(View.GONE);
                 new onBackPress(episode_preview, () -> {
@@ -113,7 +114,7 @@ public class episodePreview {
         }
     }
 
-    public List<episodeServerList> getServer(String source){
+    public static List<episodeServerList> getServer(String source){
         Matcher server = JahrulnrLib.preg_match(source,
                 Pattern.quote("id=\"player-option-") + "([0-9])" +
                         Pattern.quote("\" data-post=\"") + "([0-9]+)" +
@@ -136,12 +137,12 @@ public class episodePreview {
         return serverLists;
     }
 
-    private class episodeServerAdapter extends BaseAdapter{
+    public static class episodeServerAdapter extends BaseAdapter{
 
         Activity activity;
         List<episodeServerList> episodeServerLists;
         LayoutInflater inflater;
-        private episodeServerAdapter(Activity activity, List<episodeServerList> episodeServerLists){
+        public episodeServerAdapter(Activity activity, List<episodeServerList> episodeServerLists){
             this.activity = activity;
             this.episodeServerLists = episodeServerLists;
             inflater = LayoutInflater.from(activity);

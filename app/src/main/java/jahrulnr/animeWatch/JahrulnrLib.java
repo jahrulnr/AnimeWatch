@@ -7,6 +7,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.StrictMode;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
@@ -34,6 +36,21 @@ public class JahrulnrLib {
 
     public JahrulnrLib(Activity act) {
         activity = act;
+    }
+
+    public void animate(ViewGroup view, boolean start){
+        if(start)
+            view.animate()
+                    .alpha(1)
+                    .withStartAction(() -> {
+                        view.setVisibility(View.VISIBLE);
+                        view.startLayoutAnimation();
+                    });
+        else
+            view.animate()
+                .alpha(0)
+                .setDuration(1000)
+                .withEndAction(() -> view.setVisibility(View.GONE));
     }
 
     public static Matcher preg_match(String source, String pattern) {
@@ -80,10 +97,6 @@ public class JahrulnrLib {
         }
 
         return requestProperties;
-    }
-
-    public static String getUniversalRequest(String link){
-        return getRequest(link, null);
     }
 
     // Without Data

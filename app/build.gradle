@@ -5,6 +5,10 @@ plugins {
 android {
     compileSdk 32
 
+    lint {
+        baseline = file("lint-baseline.xml")
+    }
+
     lintOptions {
         abortOnError false
     }
@@ -17,6 +21,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testFunctionalTest true
+        multiDexEnabled true
     }
 
     buildTypes {

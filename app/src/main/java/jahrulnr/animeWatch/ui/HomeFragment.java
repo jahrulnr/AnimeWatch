@@ -23,7 +23,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 
 import in.srain.cube.views.GridViewWithHeaderAndFooter;
-import jahrulnr.animeWatch.Class.animeList;
 import jahrulnr.animeWatch.Class.episodeList;
 import jahrulnr.animeWatch.Class.episodePreview;
 import jahrulnr.animeWatch.JahrulnrLib;
@@ -59,8 +58,9 @@ public class HomeFragment extends Fragment {
         act = getActivity();
         it = new JahrulnrLib(this.getActivity());
         AtomicInteger page = new AtomicInteger();
-        it.executer(() -> {
-            List<episodeList> episodelist = getAnime(JahrulnrLib.config.apiLink, "action=loadmore&page="+page.getAndIncrement()+"&type=home");
+        String post = "action=loadmore&type=home&page=";
+                it.executer(() -> {
+            List<episodeList> episodelist = getAnime(JahrulnrLib.config.apiLink, post+page.getAndIncrement());
 
             animeHomeListAdapter adapter = new animeHomeListAdapter(act, it, episodelist);
             act.runOnUiThread(() -> {
@@ -77,7 +77,7 @@ public class HomeFragment extends Fragment {
                     gridLoad.setVisibility(View.VISIBLE);
                     loadMore.setVisibility(View.GONE);
                     it.executer(() -> {
-                        List<episodeList> addAnime = getAnime(JahrulnrLib.config.apiLink, "action=loadmore&page="+page.getAndIncrement()+"&type=home");
+                        List<episodeList> addAnime = getAnime(JahrulnrLib.config.apiLink, post+page.getAndIncrement());
                         act.runOnUiThread(() -> {
                             episodelist.addAll(addAnime);
                             adapter.notifyDataSetChanged();
@@ -98,7 +98,7 @@ public class HomeFragment extends Fragment {
         p.put("Referer", "https://75.119.159.228/");
         List<episodeList> episodeLists = new ArrayList<>();
         String h = JahrulnrLib.getRequest(link, post, p);
-        h = h.replaceAll(".jpg?h=", ".jpg?").replaceAll("  +", " ");
+        h = h.replaceAll("\\Q.jpg?h=\\E([0-9]*)", ".jpg?h=1024").replaceAll("  +", " ");
         Matcher updateListM = JahrulnrLib.preg_match(h, JahrulnrLib.config.update_pattern);
 
         if(updateListM != null) {

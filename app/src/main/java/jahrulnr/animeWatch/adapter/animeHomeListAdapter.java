@@ -12,7 +12,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-import jahrulnr.animeWatch.Class.animeList;
 import jahrulnr.animeWatch.Class.episodeList;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
