@@ -61,18 +61,20 @@ public class dbFiles {
 
     public List<episodeList> getList(){
         List<episodeList> epsList = new ArrayList<>();
-        ObjectInputStream in = null;
-        try {
-            in = new ObjectInputStream(new FileInputStream(path()));
 
-            epsList = (List<episodeList>) in.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        if(new File(path()).exists()){
+            ObjectInputStream in = null;
+            try {
+                in = new ObjectInputStream(new FileInputStream(path()));
+                epsList = (List<episodeList>) in.readObject();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+            Collections.reverse(epsList);
         }
 
-        Collections.reverse(epsList);
         return epsList;
     }
 
