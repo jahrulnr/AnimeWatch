@@ -13,17 +13,18 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import jahrulnr.animeWatch.Class.animeList;
+import jahrulnr.animeWatch.Class.episodeList;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
 
 public class animeHomeListAdapter extends BaseAdapter {
 
     private final Context context;
-    private final List<animeList> animehomelist;
+    private final List<episodeList> animehomelist;
     private final JahrulnrLib it;
     LayoutInflater inflter;
 
-    public animeHomeListAdapter(Context context, JahrulnrLib it, List<animeList> animehomelist) {
+    public animeHomeListAdapter(Context context, JahrulnrLib it, List<episodeList> animehomelist) {
         this.context = context;
         this.it = it;
         this.animehomelist = animehomelist;
@@ -51,16 +52,16 @@ public class animeHomeListAdapter extends BaseAdapter {
             view = inflter.inflate(R.layout.animelist_view, null);
         }
 
-        animeList item = animehomelist.get(i);
+        episodeList item = animehomelist.get(i);
         TextView anime = view.findViewById(R.id.animeName);
         ImageView cover = view.findViewById(R.id.animeCover);
         TextView status = view.findViewById(R.id.status);
 
         try {
-            if (item.nama != null) {
-                anime.setText(item.nama);
-                Picasso.get().load(item.img_link).into(cover);
-                status.setText(item.status);
+            if (item.episode != null) {
+                anime.setText(item.episode);
+                Picasso.get().load(item.animeList.img_link).into(cover);
+                status.setText(item.animeList.status);
             }
         } catch (java.lang.NullPointerException e){
             e.printStackTrace();

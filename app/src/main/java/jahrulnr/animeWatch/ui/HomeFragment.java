@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 
 import in.srain.cube.views.GridViewWithHeaderAndFooter;
 import jahrulnr.animeWatch.Class.animeList;
+import jahrulnr.animeWatch.Class.episodeList;
 import jahrulnr.animeWatch.Class.episodePreview;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
@@ -59,26 +60,26 @@ public class HomeFragment extends Fragment {
         it = new JahrulnrLib(this.getActivity());
         AtomicInteger page = new AtomicInteger();
         it.executer(() -> {
-            List<animeList> animelist = getAnime(JahrulnrLib.config.apiLink, "action=loadmore&page="+page.getAndIncrement()+"&type=home");
+            List<episodeList> episodelist = getAnime(JahrulnrLib.config.apiLink, "action=loadmore&page="+page.getAndIncrement()+"&type=home");
 
-            animeHomeListAdapter adapter = new animeHomeListAdapter(getContext(), it, animelist);
+            animeHomeListAdapter adapter = new animeHomeListAdapter(act, it, episodelist);
             act.runOnUiThread(() -> {
-                GridLayoutAnimationController gridLayoutAnimationController = new GridLayoutAnimationController(animation, .2f, .2f);
+                GridLayoutAnimationController gridLayoutAnimationController = new GridLayoutAnimationController(animation, .1f, .2f);
                 gridView.setLayoutAnimation(gridLayoutAnimationController);
                 gridView.addFooterView(footerView);
                 gridView.setAdapter(adapter);
                 gridView.setOnItemClickListener((adapterView, view, i, l) -> {
                     animeClicked = true;
-                    episodePreview = new episodePreview(act, it, gridView, animelist.get(i), null);
+                    episodePreview = new episodePreview(act, it, gridView, episodelist.get(i), null);
                 });
 
                 loadMore.setOnClickListener(view -> {
                     gridLoad.setVisibility(View.VISIBLE);
                     loadMore.setVisibility(View.GONE);
                     it.executer(() -> {
-                        List<animeList> addAnime = getAnime(JahrulnrLib.config.apiLink, "action=loadmore&page="+page.getAndIncrement()+"&type=home");
+                        List<episodeList> addAnime = getAnime(JahrulnrLib.config.apiLink, "action=loadmore&page="+page.getAndIncrement()+"&type=home");
                         act.runOnUiThread(() -> {
-                            animelist.addAll(addAnime);
+                            episodelist.addAll(addAnime);
                             adapter.notifyDataSetChanged();
                             gridLoad.setVisibility(View.GONE);
                             loadMore.setVisibility(View.VISIBLE);
@@ -92,26 +93,26 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private List<animeList> getAnime(String link, String post){
+    private List<episodeList> getAnime(String link, String post){
         HashMap<String, String> p = new HashMap<>();
         p.put("Referer", "https://75.119.159.228/");
-        List<animeList> animelist = new ArrayList<>();
+        List<episodeList> episodeLists = new ArrayList<>();
         String h = JahrulnrLib.getRequest(link, post, p);
-        h = h.replaceAll(".jpg?h=", ".jpg?");
+        h = h.replaceAll(".jpg?h=", ".jpg?").replaceAll("  +", " ");
         Matcher updateListM = JahrulnrLib.preg_match(h, JahrulnrLib.config.update_pattern);
 
         if(updateListM != null) {
             while (updateListM.find()) {
-                animeList al = new animeList();
-                al.nama = updateListM.group(8);
-                al.img_link = updateListM.group(6);
+                episodeList al = new episodeList();
+                al.episode = updateListM.group(8);
+                al.animeList.img_link = updateListM.group(6);
                 al.link = updateListM.group(2);
-                al.status = updateListM.group(4);
-                animelist.add(al);
+                al.animeList.status = updateListM.group(4);
+                episodeLists.add(al);
             }
         }
 
-        return animelist;
+        return episodeLists;
     }
 
     @Override

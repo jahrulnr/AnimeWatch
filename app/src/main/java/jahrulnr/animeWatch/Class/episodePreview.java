@@ -1,6 +1,7 @@
 package jahrulnr.animeWatch.Class;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -23,6 +26,7 @@ import java.util.regex.Pattern;
 
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
+import jahrulnr.animeWatch.ui.nontonView;
 
 public class episodePreview {
 
@@ -31,9 +35,10 @@ public class episodePreview {
     private RelativeLayout episode_preview;
     private animeClick ac;
 
-    public episodePreview(Activity act, JahrulnrLib it, ViewGroup viewGroup, animeList animelist, @Nullable animeClick ac) {
+    public episodePreview(Activity act, JahrulnrLib it, ViewGroup viewGroup, episodeList episodelist, @Nullable animeClick ac) {
         this.ac = ac;
         this.viewGroup = viewGroup;
+        animeList animelist = episodelist.animeList;
         relativeLayout = act.findViewById(R.id.loadingContainer);
         episode_preview = act.findViewById(R.id.episode_preview);
         ImageView iv_cover = act.findViewById(R.id.animeEpsCover);
@@ -42,21 +47,24 @@ public class episodePreview {
 
         relativeLayout.setVisibility(View.VISIBLE);
         it.executer(() -> {
-            String h = JahrulnrLib.getRequest(animelist.link, null).replaceAll("\n", "");
-            Matcher coverM, namaM, episodeM;
-            String cover, nama, episode;
+            String h = JahrulnrLib.getRequest(episodelist.link, null).replaceAll("\n", "");
+            Matcher coverM, namaM, animeLinkM, episodeM;
+            String cover, nama, animeLink, episode;
 
             episodeM = JahrulnrLib.preg_match(h, "\\\"episodeNumber\\\":\\\"?(.*?)\\\"");
             episode = episodeM.find() ? episodeM.group(1) : "";
             if(animelist.nama == null) {
                 coverM = JahrulnrLib.preg_match(h, Pattern.quote("\"primaryImageOfPage\":{\"@id\":\"") + "?(.*?).(jpe?g|png)" + Pattern.quote("\"}"));
                 namaM = JahrulnrLib.preg_match(h, Pattern.quote("\"caption\":\"") + "?(.*?)" + Pattern.quote("\","));
+                animeLinkM = JahrulnrLib.preg_match(h, "\\Q\"url\":\"https://75.119.159.228/anime/\\E(.*?)\\Q\"},\"video\"\\E");
 
                 cover = coverM.find() ? coverM.group(1) + "." + coverM.group(2) : "";
                 nama = namaM.find() ? namaM.group(1) : "";
+                animeLink = animeLinkM.find() ? "https://75.119.159.228/anime/" + animeLinkM.group(1) : "";
             }else{
                 cover = animelist.img_link;
                 nama = animelist.nama;
+                animeLink = animelist.link;
             }
 
             List<episodeServerList> episodeServerLists = getServer(h);
@@ -67,23 +75,27 @@ public class episodePreview {
                 Animation animation = AnimationUtils.loadAnimation(act,R.anim.grid_animation);
                 LayoutAnimationController controller = new LayoutAnimationController(animation);
                 Picasso.get().load(cover).into(iv_cover);
-                tv_title.setText(nama);
-                tv_episode.setText(": " + episode);
+                String epsPattern = "(.*?)\\s+Episode\\s+([0-9]+)?( ?Sub Indo)?";
+                episode.replaceAll("  +", " ");
+                String e = episode.replaceAll(epsPattern, "Episode $2");
+                tv_title.setText(nama.replaceAll(epsPattern, "$1"));
+                tv_episode.setText(": " + e);
                 viewGroup.setVisibility(View.GONE);
                 episode_preview.setLayoutAnimation(controller);
                 episode_preview.setVisibility(View.VISIBLE);
 
                 GridView sgv = act.findViewById(R.id.serverGridview);
                 sgv.setAdapter(adapter);
-//                eps.setOnItemClickListener((adapterView, view, i, l) -> {
-//                    Intent intent = new Intent(act, nontonView.class);
-//                    intent.putExtra("nama", animelist.nama);
-//                    intent.putExtra("img_link", cover);
-//                    intent.putExtra("anime_link", animelist.link);
-//                    intent.putExtra("episode", episodelist.get(i).episode);
-//                    intent.putExtra("eps_link", episodelist.get(i).link);
-//                    act.startActivity(intent);
-//                });
+                sgv.setOnItemClickListener((adapterView, view, i, l) -> {
+                    Intent intent = new Intent(act, nontonView.class);
+                    intent.putExtra("nama", episodelist.episode);
+                    intent.putExtra("img_link", cover);
+                    intent.putExtra("anime_link", animeLink);
+                    intent.putExtra("episode", "Episode " + e);
+                    intent.putExtra("episode_link", episodelist.link);
+                    intent.putExtra("server", episodeServerLists.get(i).server);
+                    act.startActivity(intent);
+                });
                 relativeLayout.setVisibility(View.GONE);
                 new onBackPress(episode_preview, () -> {
                     this.close();
@@ -92,8 +104,13 @@ public class episodePreview {
         });
     }
 
-    public class episodeServerList {
+    public static class episodeServerList {
         public String nama, server;
+
+        @Override
+        public String toString() {
+            return "{\"nama\":\"" + nama + "\", \"server\":\"" + server + "\"}";
+        }
     }
 
     public List<episodeServerList> getServer(String source){
@@ -158,8 +175,8 @@ public class episodePreview {
 
     public void close(){
         episode_preview.setVisibility(View.GONE);
-        viewGroup.setVisibility(View.VISIBLE);
         viewGroup.startLayoutAnimation();
+        viewGroup.setVisibility(View.VISIBLE);
         if(ac != null)
             new onBackPress(viewGroup, () -> {
                 ac.close();

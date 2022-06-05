@@ -15,11 +15,12 @@
         app:cardCornerRadius="5dp">
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="50dp"
             android:padding="10dp"
             android:text="Episode 1"
             android:textSize="20dp"
             android:textColor="@color/white"
+            android:autoSizeTextType="uniform"
             android:id="@+id/episode"/>
     </android.support.v7.widget.CardView>
 

@@ -17,17 +17,24 @@ import android.widget.Toast;
 
 import com.jess.ui.TwoWayGridView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 
 import jahrulnr.animeWatch.Class.animeClick;
 import jahrulnr.animeWatch.Class.animeList;
 import jahrulnr.animeWatch.Class.dbFiles;
 import jahrulnr.animeWatch.Class.episodeList;
+import jahrulnr.animeWatch.Class.episodePreview;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
 import jahrulnr.animeWatch.adapter.nontonEpsListAdapter;
@@ -83,25 +90,14 @@ public class nontonView extends AppCompatActivity {
                 img_link = intent.getStringExtra("img_link"),
                 anime_link = intent.getStringExtra("anime_link"),
                 episode = intent.getStringExtra("episode"),
-                eps_link = intent.getStringExtra("eps_link");
+                episode_link = intent.getStringExtra("episode_link"),
+                server = intent.getStringExtra("server");
+
         epsContainer.setVisibility(View.GONE);
 
-        if (eps_link != null) {
+        if (server != null) {
             it.executer(() -> {
-                String h = JahrulnrLib.getUniversalRequest(eps_link);
-                Matcher videoM = null;
-                boolean found = false;
-                if(h != null){
-                    videoM = JahrulnrLib.preg_match(h,
-                            "<iframe width=\"100%\" height=\"100%\" src=\"?(.*?)\" frameborder=\"0\"");
-
-                    found =  videoM.find();
-                    if(!found){
-                        videoM = JahrulnrLib.preg_match(h,
-                                "<IFRAME SRC=\"?(.*?)\" allowfullscreen=\"true\"");
-                        found =  videoM.find();
-                    }
-                } 
+                AtomicReference<String> h = new AtomicReference<>(JahrulnrLib.getRequest(JahrulnrLib.config.apiLink, server, null));
 
                 // set history
                 animelist.nama = nama;
@@ -109,49 +105,59 @@ public class nontonView extends AppCompatActivity {
                 animelist.link = anime_link;
                 epsList.animeList = animelist;
                 epsList.episode = episode;
-                epsList.link = eps_link;
+                epsList.link = episode_link;
 
-                if (found && videoM != null) {
-                    Matcher finalVideoM = videoM;
-                    runOnUiThread(() -> {
-                        if(webView.getUrl() == null) {
-                            // set webview
-                            Map<String, String> extraHeaders = new HashMap<String, String>();
-                            extraHeaders.put("Referer", "http://www.referer.tld/login.html");
-                            webView.setNetworkAvailable(true);
-                            webView.getSettings().setUseWideViewPort(true);
-                            webView.getSettings().setAppCacheEnabled(true);
-                            webView.getSettings().setJavaScriptEnabled(true);
-                            webView.getSettings().setBuiltInZoomControls(true);
-                            webView.getSettings().setDomStorageEnabled(true);
-                            webView.getSettings().setLoadWithOverviewMode(true);
-                            webView.getSettings().setAppCachePath(getCacheDir().getPath());
-                            webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-                            webView.getSettings().setUserAgentString(new WebView(this).getSettings().getUserAgentString());
-                            try {
-                                webView.loadUrl(finalVideoM.group(1));
-                            } catch (IllegalStateException e) {
-                                e.printStackTrace();
-                                finish();
-                            }
-
-                            // save history
-                            dbFiles db = new dbFiles(this);
-                            db.add(epsList);
-                            db.save();
+                runOnUiThread(() -> {
+                    if(webView.getUrl() == null) {
+                        // set webview
+                        Map<String, String> extraHeaders = new HashMap<String, String>();
+                        extraHeaders.put("Referer", JahrulnrLib.config.home);
+                        webView.setNetworkAvailable(true);
+                        webView.getSettings().setUseWideViewPort(true);
+                        webView.getSettings().setAppCacheEnabled(true);
+                        webView.getSettings().setJavaScriptEnabled(true);
+                        webView.getSettings().setBuiltInZoomControls(true);
+                        webView.getSettings().setDomStorageEnabled(true);
+                        webView.getSettings().setLoadWithOverviewMode(true);
+                        webView.getSettings().setAppCachePath(getCacheDir().getPath());
+                        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+                        webView.getSettings().setUserAgentString(new WebView(this).getSettings().getUserAgentString());
+                        try {
+                            h.set("<body style=\"padding: 0; margin: 0;\">" + h + "</body>");
+                            webView.loadData(h.get(), "text/html", "UTF-8");
+                        } catch (IllegalStateException e) {
+                            e.printStackTrace();
+                            finish();
                         }
-                    });
-                } else {
-                    runOnUiThread(() -> {
-                        Toast.makeText(this, "Link not available", Toast.LENGTH_LONG).show();
-                        finish();
-                    });
-                }
 
+                        // save history
+                        dbFiles db = new dbFiles(this);
+                        db.add(epsList);
+                        db.save();
+                    }
+                });
+
+                boolean pattern = false;
                 if(eps.isEmpty()) {
                     animeClick anm = new animeClick();
-                    String s = it.getUniversalRequest(anime_link);
-                    eps = anm.getEpisode(s);
+                    String s = it.getRequest(anime_link, null);
+                    Matcher getAnimeID = it.preg_match(s.replaceAll("\n", ""),
+                            "\\Qname=\"series_id\" value=\"\\E([0-9]+?)\\Q\">\\E");
+                    System.out.println("anime_link "+anime_link);
+                    if(getAnimeID.find()) {
+                        String p = "misha_number_of_results=100000" +
+                                "&misha_order_by=date-DESC" +
+                                "&action=mishafilter" +
+                                "&series_id=" + getAnimeID.group(1);
+                        eps = anm.getEpisode(p, JahrulnrLib.config.episode_pattern1, true);
+                        System.out.println("Im pattern 1");
+                        if(eps != null) pattern = true;
+                    }else {
+                        eps = anm.getEpisode(s, JahrulnrLib.config.episode_pattern2, false);
+                        System.out.println("Im pattern 2");
+                        if(eps != null) pattern = true;
+                    }
+                    System.out.println("eps.size() " + eps.size());
                     Collections.reverse(eps);
                     idEps = 0;
                     for (episodeList e : this.eps) {

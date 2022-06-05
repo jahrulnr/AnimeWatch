@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.GridLayoutAnimationController;
+import android.view.animation.LayoutAnimationController;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
@@ -53,10 +54,12 @@ public class ListFragment extends Fragment{
 
         ((RelativeLayout) root.findViewById(R.id.episode_preview)).setVisibility(View.GONE);
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.grid_animation);
+        LayoutAnimationController animationController = new LayoutAnimationController(animation);
         RelativeLayout loading = root.findViewById(R.id.loadingContainer);
         LinearLayout linearLayout = root.findViewById(R.id.animeListContainer);
         gridView = root.findViewById(R.id.animeList);
         SearchView searchView = root.findViewById(R.id.searchAnime);
+        linearLayout.setVisibility(View.GONE);
         loading.setVisibility(View.VISIBLE);
 
         int iconId = searchView.getContext().getResources().getIdentifier("android:id/search_mag_icon", null, null);
@@ -85,10 +88,9 @@ public class ListFragment extends Fragment{
                     animelist.add(al);
                 }
             }
-            animeAllListAdapter adapter = new animeAllListAdapter(getContext(), animelist);
+
+            animeAllListAdapter adapter = new animeAllListAdapter(act, animelist);
             act.runOnUiThread(() -> {
-                GridLayoutAnimationController animationController = new GridLayoutAnimationController(animation, .0f, .025f);
-                gridView.setLayoutAnimation(animationController);
                 gridView.setAdapter(adapter);
                 searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
@@ -111,6 +113,8 @@ public class ListFragment extends Fragment{
                     animeClick = new animeClick(act, it, linearLayout, adapter.getItems().get(i));
                 });
                 loading.setVisibility(View.GONE);
+                linearLayout.setLayoutAnimation(animationController);
+                linearLayout.setVisibility(View.VISIBLE);
             });
         });
         return root;
