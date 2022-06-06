@@ -2,7 +2,6 @@ package jahrulnr.animeWatch.ui;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -39,7 +38,7 @@ import jahrulnr.animeWatch.adapter.nontonEpsListAdapter;
 
 public class nontonView extends AppCompatActivity {
 
-    private static JahrulnrLib it;
+    private JahrulnrLib it;
     private RelativeLayout loading;
     private ImageButton moreEps, serverBtn;
     private WebView webView;
@@ -65,10 +64,8 @@ public class nontonView extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY // hide status bar and nav bar after a short delay, or if the user interacts with the middle of the screen
                 );
         getSupportActionBar().hide();
-        if (Build.VERSION.SDK_INT < 16) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nonton_view);
     }
@@ -138,7 +135,7 @@ public class nontonView extends AppCompatActivity {
             it.executer(() -> {
                 // set history
                 System.out.println("finalServer: " + finalServer);
-                AtomicReference<String> h = new AtomicReference<>(JahrulnrLib.getRequest(JahrulnrLib.config.apiLink, finalServer, null));
+                AtomicReference<String> h = new AtomicReference<>(it.getRequest(JahrulnrLib.config.apiLink, finalServer, null));
                 runOnUiThread(() -> {
                     animelist.nama = nama;
                     animelist.img_link = img_link;
@@ -243,12 +240,11 @@ public class nontonView extends AppCompatActivity {
             }
         });
 
-        List<episodePreview.episodeServerList> finalServerList = serverList;
         serverGridView.setOnItemClickListener((adapterView, view, i, l) -> {
             try {
                 AtomicReference<String> s = new AtomicReference<>();
                 it.executer(() -> {
-                    s.set(it.getRequest(it.config.apiLink, finalServerList.get(i).server, null)
+                    s.set(it.getRequest(it.config.apiLink, serverList.get(i).server, null)
                             .replaceAll("\\Q<script\\E(.*?)\\Q</script>\\E", ""));
                     Matcher sM = it.preg_match(s.get(), "(.*)\\Qsrc=\"\\E((http)?(s)?(:)?//.*?/.*?)\\\" ?");
                     runOnUiThread(() -> {
@@ -288,9 +284,7 @@ public class nontonView extends AppCompatActivity {
             finish();
         });
 
-        epsContainer.setOnClickListener(view -> {
-            epsMenu();
-        });
+        epsContainer.setOnClickListener(view -> epsMenu());
     }
 
     private void epsMenu(){
