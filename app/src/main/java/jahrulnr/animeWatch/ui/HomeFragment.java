@@ -97,7 +97,7 @@ public class HomeFragment extends Fragment {
         HashMap<String, String> p = new HashMap<>();
         p.put("Referer", "https://75.119.159.228/");
         List<episodeList> episodeLists = new ArrayList<>();
-        String h = JahrulnrLib.getRequest(link, post, p);
+        String h = it.getRequest(link, post, p);
         h = h.replaceAll("\\Q.jpg?h=\\E([0-9]*)", ".jpg?h=1024").replaceAll("  +", " ");
         Matcher updateListM = JahrulnrLib.preg_match(h, JahrulnrLib.config.update_pattern);
 

@@ -126,7 +126,8 @@ public class nontonView extends AppCompatActivity {
         serverGridView.setAdapter(new episodePreview.episodeServerAdapter(this, serverList));
         if(server == null && !serverList.isEmpty()){
             // default get 0
-            server = it.getRequest(JahrulnrLib.config.apiLink, serverList.get(0).server, null);
+            server = serverList.get(0).server;
+//            server = it.getRequest(JahrulnrLib.config.apiLink, serverList.get(0).server, null);
         }
 
         epsContainer.setVisibility(View.GONE);
@@ -136,6 +137,7 @@ public class nontonView extends AppCompatActivity {
             nameEps.setText(nama);
             it.executer(() -> {
                 // set history
+                System.out.println("finalServer: " + finalServer);
                 AtomicReference<String> h = new AtomicReference<>(JahrulnrLib.getRequest(JahrulnrLib.config.apiLink, finalServer, null));
                 runOnUiThread(() -> {
                     animelist.nama = nama;
@@ -275,6 +277,7 @@ public class nontonView extends AppCompatActivity {
         gridView.setOnItemClickListener((parent, view, position, id) -> {
             episodeList eps = this.eps.get(position);
             animeList animelist = this.animelist;
+            System.out.println(eps);
             Intent i = new Intent(nontonView.this, nontonView.class);
             i.putExtra("nama", animelist.nama);
             i.putExtra("img_link", animelist.img_link);

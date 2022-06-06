@@ -182,29 +182,29 @@ public class JahrulnrLib {
         } catch (SocketTimeoutException e) {
             Log.e("SocketTimeoutException", e.toString());
             Toast.makeText(activity, "Koneksi timeout. Silakan refresh.", Toast.LENGTH_LONG).show();
-            return null;
+            return "";
         } catch (UnsupportedEncodingException e) {
             Log.e("UnsupportEncoding", e.toString());
             e.printStackTrace();
             Toast.makeText(activity, "Ada masalah, coba lagi.", Toast.LENGTH_LONG).show();
-            return null;
+            return "";
         } catch (IOException e) {
             Log.e("IOException", e.toString());
             e.printStackTrace();
             Toast.makeText(activity, "Ada masalah, coba lagi.", Toast.LENGTH_LONG).show();
-            return null;
+            return "";
         } catch (Exception ex) {
             Log.e("getRequest_1", ex.getMessage());
             ex.printStackTrace();
             Toast.makeText(activity, "Ada masalah, coba lagi.", Toast.LENGTH_LONG).show();
-            return null;
+            return "";
         } finally {
             try {
                 reader.close();
             } catch (Exception ex) {
                 Log.e("getRequest_2", ex.toString());
                 Toast.makeText(activity, "Ada masalah. Silakan refresh.", Toast.LENGTH_LONG).show();
-                return null;
+                return "";
             }
         }
 
