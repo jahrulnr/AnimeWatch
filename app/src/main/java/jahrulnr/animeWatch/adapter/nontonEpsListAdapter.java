@@ -15,10 +15,10 @@ import jahrulnr.animeWatch.R;
 
 public class nontonEpsListAdapter extends BaseAdapter {
 
-    private Activity activity;
-    private animeList animelist;
-    private List<episodeList> epsList;
-    private LayoutInflater layoutInflater;
+    private final Activity activity;
+    private final animeList animelist;
+    private final List<episodeList> epsList;
+    private final LayoutInflater layoutInflater;
 
     public nontonEpsListAdapter(Activity activity, animeList animelist, List<episodeList> epsList) {
         this.activity = activity;

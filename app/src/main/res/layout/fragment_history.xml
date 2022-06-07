@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
-    tools:context=".ui.HistoryFragment">
+    tools:context=".ui.HistoryFragment"
+    android:id="@+id/fragment_history">
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -17,9 +17,9 @@ import jahrulnr.animeWatch.R;
 
 public class animeHistoryAdapter extends BaseAdapter {
 
-    private Activity activity;
-    private List<episodeList> epsList;
-    private LayoutInflater layoutInflater;
+    private final Activity activity;
+    private final List<episodeList> epsList;
+    private final LayoutInflater layoutInflater;
 
     public animeHistoryAdapter(Activity activity, List<episodeList> epsList) {
         this.activity = activity;

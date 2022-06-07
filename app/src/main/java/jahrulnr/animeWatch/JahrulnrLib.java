@@ -22,6 +22,8 @@ import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,11 +33,26 @@ public class JahrulnrLib {
     private static Activity activity;
     private static String text = "";
     public static config config = new config();
+    private Timer T;
 
     public JahrulnrLib() {}
 
     public JahrulnrLib(Activity act) {
         activity = act;
+    }
+
+    public void timerExecuter(Runnable execute, int delay, int period){
+        T = new Timer();
+        T.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                execute.run();
+            }
+        }, delay, period);
+    }
+
+    public void timerCancel(){
+        if(T != null) T.cancel();
     }
 
     public void animate(ViewGroup view, boolean start){
@@ -89,7 +106,7 @@ public class JahrulnrLib {
 
     private static HashMap<String, String> getRequestProperties(HashMap<String, String> properties){
         HashMap<String, String> requestProperties = new HashMap<>();
-        requestProperties.put("User-Agent", config.userAgent);
+        requestProperties.put("User-Agent", jahrulnr.animeWatch.config.userAgent);
 //        requestProperties.put("X-Requested-With", "XMLHttpRequest");
 
         if(properties != null){
@@ -115,7 +132,7 @@ public class JahrulnrLib {
             urlConnection.setReadTimeout(60000);
             urlConnection.setConnectTimeout(5 * 1000);
             urlConnection.setRequestMethod("GET");
-            urlConnection.addRequestProperty("User-Agent", config.userAgent);
+            urlConnection.addRequestProperty("User-Agent", jahrulnr.animeWatch.config.userAgent);
             getRequestProperties(properties).forEach((s, s2) -> {
                 urlConnection.addRequestProperty(s, s2);
             });
@@ -159,7 +176,7 @@ public class JahrulnrLib {
             urlConnection.setReadTimeout(60000);
             urlConnection.setConnectTimeout(5 * 1000);
             urlConnection.setRequestMethod("POST");
-            urlConnection.addRequestProperty("User-Agent", config.userAgent);
+            urlConnection.addRequestProperty("User-Agent", jahrulnr.animeWatch.config.userAgent);
             getRequestProperties(properties).forEach((s, s2) -> {
                 urlConnection.addRequestProperty(s, s2);
             });

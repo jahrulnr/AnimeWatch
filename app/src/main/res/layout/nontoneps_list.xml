@@ -9,7 +9,7 @@
     android:paddingBottom="2dp"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="160dp"
         android:layout_height="match_parent"
         app:cardBackgroundColor="@color/gray_700"
@@ -34,7 +34,7 @@
                 android:autoSizeTextType="uniform"
                 android:id="@+id/episode"/>
         </RelativeLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 
 </LinearLayout>

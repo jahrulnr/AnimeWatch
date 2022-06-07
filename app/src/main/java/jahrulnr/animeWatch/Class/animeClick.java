@@ -1,7 +1,6 @@
 package jahrulnr.animeWatch.Class;
 
 import android.app.Activity;
-import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -11,6 +10,8 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.squareup.picasso.Picasso;
 
@@ -25,6 +26,7 @@ import java.util.regex.Matcher;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
 import jahrulnr.animeWatch.adapter.animeEpsListAdapter;
+import jahrulnr.animeWatch.config;
 
 public class animeClick {
 
@@ -33,13 +35,17 @@ public class animeClick {
     private RelativeLayout loading;
     private RelativeLayout animeDetailView;
     private episodePreview episodePreview = null;
+    private JahrulnrLib it;
     private boolean episodeClicked = false;
 
-    public animeClick(){};
+    public animeClick(){}
 
     public animeClick(Activity act, JahrulnrLib it, ViewGroup viewGroup, animeList animelist) {
         this.act = act;
+        this.it = it;
         this.viewGroup = viewGroup;
+        Animation animation = AnimationUtils.loadAnimation(act,R.anim.grid_animation);
+        LayoutAnimationController controller = new LayoutAnimationController(animation);
         loading = act.findViewById(R.id.loadingContainer);
         animeDetailView = act.findViewById(R.id.episode_view);
         ImageView iv_cover = act.findViewById(R.id.animeClickCover);
@@ -47,14 +53,15 @@ public class animeClick {
         TextView tv_genre = act.findViewById(R.id.animeGenre);
         TextView tv_studio = act.findViewById(R.id.animeStudio);
         TextView tv_rilis = act.findViewById(R.id.animeReleased);
-        loading.setVisibility(View.VISIBLE);
+        animeDetailView.setLayoutAnimation(controller);
+        it.animate(loading, true);
 
         it.executer(() -> {
             String h = JahrulnrLib.getRequest(animelist.link, null);
-            Matcher coverM = JahrulnrLib.preg_match(h, JahrulnrLib.config.img_pattern),
-                    studioM = JahrulnrLib.preg_match(h, JahrulnrLib.config.studio_pattern),
-                    rilisM = JahrulnrLib.preg_match(h, JahrulnrLib.config.rilis_pattern),
-                    genre = JahrulnrLib.preg_match(h, JahrulnrLib.config.genre_pattern);
+            Matcher coverM = JahrulnrLib.preg_match(h, config.img_pattern),
+                    studioM = JahrulnrLib.preg_match(h, config.studio_pattern),
+                    rilisM = JahrulnrLib.preg_match(h, config.rilis_pattern),
+                    genre = JahrulnrLib.preg_match(h, config.genre_pattern);
 
             String cover = coverM.find() ? coverM.group(1) : "",
                     studio = studioM.find() ? studioM.group(1) : "",
@@ -69,17 +76,17 @@ public class animeClick {
 
             boolean pattern = false;
             List<episodeList> episodelist;
-            Matcher getAnimeID = it.preg_match(h.replaceAll("\n", ""),
+            Matcher getAnimeID = JahrulnrLib.preg_match(h.replaceAll("\n", ""),
                     "\\Qname=\"series_id\" value=\"\\E([0-9]+?)\\Q\">\\E");
             if(getAnimeID.find()) {
                 String p = "misha_number_of_results=100000" +
                         "&misha_order_by=date-DESC" +
                         "&action=mishafilter" +
                         "&series_id=" + getAnimeID.group(1);
-                episodelist = getEpisode(p, JahrulnrLib.config.episode_pattern1, true);
+                episodelist = getEpisode(p, config.episode_pattern1, true);
                 if(episodelist != null) pattern = true;
             }else {
-                episodelist = getEpisode(h, JahrulnrLib.config.episode_pattern2, false);
+                episodelist = getEpisode(h, config.episode_pattern2, false);
                 if(episodelist != null) pattern = true;
             }
 
@@ -87,8 +94,6 @@ public class animeClick {
                 // Detail
                 animeEpsListAdapter adapter = new animeEpsListAdapter(act, episodelist);
                 act.runOnUiThread(() -> {
-                    Animation animation = AnimationUtils.loadAnimation(act,R.anim.grid_animation);
-                    LayoutAnimationController controller = new LayoutAnimationController(animation);
                     GridView eps = act.findViewById(R.id.episode_list);
                     Picasso.get().load(cover).into(iv_cover);
                     tv_title.setText(animelist.nama);
@@ -105,10 +110,8 @@ public class animeClick {
                         episodePreview = new episodePreview(act, it, animeDetailView, epsPrev, this);
                     });
                     viewGroup.setVisibility(View.GONE);
-                    loading.setVisibility(View.GONE);
-                    animeDetailView.setLayoutAnimation(controller);
-                    animeDetailView.setVisibility(View.VISIBLE);
-                    new onBackPress(animeDetailView, () -> close());
+                    it.animate(loading, false);
+                    it.animate(animeDetailView, true);
                 });
             }
         });
@@ -121,7 +124,7 @@ public class animeClick {
 
         String h;
         if(useLink == true) {
-            h = JahrulnrLib.getRequest(JahrulnrLib.config.apiLink, post, p);
+            h = JahrulnrLib.getRequest(config.apiLink, post, p);
             JSONObject epsData = null;
             try {
                 epsData = new JSONObject(h);
@@ -143,21 +146,5 @@ public class animeClick {
             episodelist.add(al);
         }
         return episodelist;
-    }
-
-    public void closeEpisodeView(){
-        if(episodeClicked){
-            episodePreview.close();
-            episodeClicked = false;
-        }
-    }
-
-    public void close(){
-        episodeClicked = false;
-        if(episodePreview != null)
-            closeEpisodeView();
-        animeDetailView.setVisibility(View.GONE);
-        viewGroup.startLayoutAnimation();
-        viewGroup.setVisibility(View.VISIBLE);
     }
 }

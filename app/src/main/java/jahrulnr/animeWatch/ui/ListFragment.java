@@ -3,8 +3,6 @@ package jahrulnr.animeWatch.ui;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,12 +18,16 @@ import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
 import jahrulnr.animeWatch.Class.animeClick;
 import jahrulnr.animeWatch.Class.animeList;
+import jahrulnr.animeWatch.Class.dbFiles;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
 import jahrulnr.animeWatch.databinding.FragmentListBinding;
@@ -37,7 +39,6 @@ public class ListFragment extends Fragment{
     private JahrulnrLib it;
     private ViewGroup container;
     private GridView gridView;
-    private boolean animeClicked = false;
     private animeClick animeClick = null;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -72,11 +73,17 @@ public class ListFragment extends Fragment{
         textView.setHintTextColor(getResources().getColor(R.color.gray_600));
 
         it = new JahrulnrLib(this.getActivity());
+        List<animeList> animelist = new ArrayList<>();
+        animeAllListAdapter adapter = new animeAllListAdapter(act, animelist);
+        String h = new dbFiles(act).readSource(dbFiles.listSource);
         it.executer(() -> {
-            String h = JahrulnrLib.getRequest(JahrulnrLib.config.list, null);
-            Matcher m = JahrulnrLib.preg_match(h, JahrulnrLib.config.list_pattern);
-            List<animeList> animelist = new ArrayList<>();
-            if(m != null){
+            Matcher m;
+            if(!h.isEmpty())
+                m = JahrulnrLib.preg_match(h, JahrulnrLib.config.list_pattern);
+            else
+                m = JahrulnrLib.preg_match(JahrulnrLib.getRequest(JahrulnrLib.config.list, null),
+                        JahrulnrLib.config.list_pattern);
+            if(m != null) {
                 while (m.find()) {
                     animeList al = new animeList();
                     al.nama = m.group(3);
@@ -84,38 +91,38 @@ public class ListFragment extends Fragment{
                     animelist.add(al);
                 }
             }
-
-            animeAllListAdapter adapter = new animeAllListAdapter(act, animelist);
             act.runOnUiThread(() -> {
                 gridView.setAdapter(adapter);
-                searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                    @Override
-                    public boolean onQueryTextSubmit(String newText) {
-                        adapter.filter(newText);
-                        adapter.notifyDataSetChanged();
-                        return false;
-                    }
-                    @Override
-                    public boolean onQueryTextChange(String query) {
-                        adapter.filter(query);
-                        adapter.notifyDataSetChanged();
-                        return false;
-                    }
-                });
-                gridView.setOnItemClickListener((adapterView, view, i, l) -> {
-                    animeClicked = true;
-                    animeClick = new animeClick(act, it, linearLayout, adapter.getItems().get(i));
-                });
-                loading.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
+                it.animate(loading, false);
                 linearLayout.setLayoutAnimation(animationController);
                 linearLayout.setVisibility(View.VISIBLE);
             });
         });
+
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String newText) {
+                adapter.filter(newText);
+                adapter.notifyDataSetChanged();
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String query) {
+                adapter.filter(query);
+                adapter.notifyDataSetChanged();
+                return false;
+            }
+        });
+
+        gridView.setOnItemClickListener((adapterView, view, i, l) -> {
+            animeClick = new animeClick(act, it, linearLayout, adapter.getItems().get(i));
+        });
+
         return root;
     }
 
     class animeAllListAdapter extends BaseAdapter {
-
         Context context;
         List<animeList> animelist, animelists_original;
         LayoutInflater inflter;

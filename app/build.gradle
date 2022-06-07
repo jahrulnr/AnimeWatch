@@ -2,7 +2,21 @@ plugins {
     id 'com.android.application'
 }
 
+// Load keystore
+def keystorePropertiesFile = rootProject.file("keystore.properties");
+def keystoreProperties = new Properties()
+if ( keystorePropertiesFile.exists() )
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
+    signingConfigs {
+        release {
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+        }
+    }
     compileSdk 32
 
     lintOptions {
@@ -16,17 +30,12 @@ android {
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         testFunctionalTest true
         multiDexEnabled true
+        signingConfig signingConfigs.debug
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -37,17 +46,27 @@ android {
     dataBinding{
         enabled true
     }
+    buildTypes {
+        release {
+            debuggable false
+            signingConfig signingConfigs.release
+        }
+        debug {
+            debuggable true
+        }
+    }
 }
 
 dependencies {
 
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'in.srain.cube:grid-view-with-header-footer:1.0.12'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
 
-    implementation 'android.arch.lifecycle:livedata:1.1.1'
-    implementation 'android.arch.lifecycle:viewmodel:1.1.1'
-    implementation 'android.arch.navigation:navigation-fragment:1.0.0'
-    implementation 'android.arch.navigation:navigation-ui:1.0.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.0.0'
+    implementation 'androidx.navigation:navigation-fragment:2.0.0-rc02'
+    implementation 'androidx.navigation:navigation-ui:2.0.0-rc02'
     testImplementation 'junit:junit:4.13.2'
 
 }

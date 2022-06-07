@@ -1,24 +1,30 @@
 package jahrulnr.animeWatch.Class;
 
 import android.app.Activity;
-import android.os.Build;
+import android.content.Context;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutput;
 import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class dbFiles {
+    public static String updateSource = "updateSource";
+    public static String listSource = "listSource";
     private String db = "/db.json";
-    private Activity activity;
-    private File dbFile;
+    private final Activity activity;
+    private final File dbFile;
     private List<episodeList> epsList = new ArrayList<>();
 
     public dbFiles(Activity activity){
@@ -39,9 +45,7 @@ public class dbFiles {
     public void add(episodeList episodelist){
         if(epsList.isEmpty())
             epsList = getList();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            epsList.removeIf(episodeList -> episodeList.getLink().equals(episodelist.link));
-        }
+        epsList.removeIf(episodeList -> episodeList.getLink().equals(episodelist.link));
         epsList.add(episodelist);
     }
 
@@ -81,5 +85,49 @@ public class dbFiles {
     public episodeList getItem(int i){
         List<episodeList> epsList = getList();
         return epsList.get(i);
+    }
+
+    public boolean writeSource(String source, String filename){
+        boolean success = false;
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
+                    activity.openFileOutput(filename, Context.MODE_PRIVATE));
+            outputStreamWriter.write(source);
+            outputStreamWriter.close();
+            success = true;
+        }
+        catch (IOException | IllegalArgumentException e) {
+            System.err.println("dbFiles: File write failed: " + e);
+        }
+
+        return success;
+    }
+
+    public String readSource(String filename){
+        String ret = "";
+        try {
+            InputStream inputStream = activity.openFileInput(filename);
+
+            if ( inputStream != null ) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String receiveString = "";
+                StringBuilder stringBuilder = new StringBuilder();
+
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    stringBuilder.append(receiveString);
+                }
+
+                inputStream.close();
+                ret = stringBuilder.toString();
+            }
+        }
+        catch (FileNotFoundException e) {
+            System.err.println("dbFiles: File not found: " + e);
+        } catch (IOException e) {
+            System.err.println("dbFiles: Can not read file: " + e);
+        }
+
+        return ret;
     }
 }

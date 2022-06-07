@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="20dp"
-    tools:context=".ui.ListFragment">
+    tools:context=".ui.ListFragment"
+    android:id="@+id/fragment_list">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +16,7 @@
         android:animateLayoutChanges="true"
         android:animationCache="true"
         android:id="@+id/animeListContainer">
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -30,7 +31,7 @@
                 android:iconifiedByDefault="false"
                 android:clickable="true"
                 android:id="@+id/searchAnime"/>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
         <GridView
             android:layout_width="match_parent"

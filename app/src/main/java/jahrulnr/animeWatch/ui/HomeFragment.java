@@ -2,10 +2,6 @@ package jahrulnr.animeWatch.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +12,10 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,11 +23,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 
 import in.srain.cube.views.GridViewWithHeaderAndFooter;
+import jahrulnr.animeWatch.Class.dbFiles;
 import jahrulnr.animeWatch.Class.episodeList;
 import jahrulnr.animeWatch.Class.episodePreview;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
 import jahrulnr.animeWatch.adapter.animeHomeListAdapter;
+import jahrulnr.animeWatch.config;
 import jahrulnr.animeWatch.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
@@ -35,8 +37,7 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private Activity act;
     private JahrulnrLib it;
-    private boolean animeClicked = false;
-    private episodePreview episodePreview = null;
+    private final episodePreview episodePreview = null;
     private TextView loadMore;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -46,6 +47,7 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        SwipeRefreshLayout refreshLayout = root.findViewById(R.id.pullRefresh);
         ((RelativeLayout) root.findViewById(R.id.episode_preview)).setVisibility(View.GONE);
         RelativeLayout loading = root.findViewById(R.id.loadingContainer);
         GridViewWithHeaderAndFooter gridView = root.findViewById(R.id.animeHome);
@@ -55,52 +57,69 @@ public class HomeFragment extends Fragment {
         loadMore = footerView.findViewById(R.id.loadMore);
         loading.setVisibility(View.VISIBLE);
 
+        GridLayoutAnimationController gridLayoutAnimationController = new GridLayoutAnimationController(animation, .1f, .2f);
+        gridView.setLayoutAnimation(gridLayoutAnimationController);
+        gridView.addFooterView(footerView);
+
         act = getActivity();
         it = new JahrulnrLib(this.getActivity());
-        AtomicInteger page = new AtomicInteger();
+        List<episodeList> episodelist = new ArrayList<>();
+        animeHomeListAdapter adapter = new animeHomeListAdapter(act, it, episodelist);
         String post = "action=loadmore&type=home&page=";
-                it.executer(() -> {
-            List<episodeList> episodelist = getAnime(JahrulnrLib.config.apiLink, post+page.getAndIncrement());
+        String source = new dbFiles(act).readSource(dbFiles.updateSource);
+        it.executer(() -> {
+            if(!source.isEmpty()){
+                episodelist.clear();
+                episodelist.addAll(getAnime(source));
+            }
+            else{
+                episodelist.clear();
+                episodelist.addAll(getAnime(config.apiLink, post + 0));
+            }
 
-            animeHomeListAdapter adapter = new animeHomeListAdapter(act, it, episodelist);
+            episodelist.addAll(episodelist);
             act.runOnUiThread(() -> {
-                GridLayoutAnimationController gridLayoutAnimationController = new GridLayoutAnimationController(animation, .1f, .2f);
-                gridView.setLayoutAnimation(gridLayoutAnimationController);
-                gridView.addFooterView(footerView);
                 gridView.setAdapter(adapter);
-                gridView.setOnItemClickListener((adapterView, view, i, l) -> {
-                    animeClicked = true;
-                    episodePreview = new episodePreview(act, it, gridView, episodelist.get(i), null);
-                });
-
-                loadMore.setOnClickListener(view -> {
-                    gridLoad.setVisibility(View.VISIBLE);
-                    loadMore.setVisibility(View.GONE);
-                    it.executer(() -> {
-                        List<episodeList> addAnime = getAnime(JahrulnrLib.config.apiLink, post+page.getAndIncrement());
-                        act.runOnUiThread(() -> {
-                            episodelist.addAll(addAnime);
-                            adapter.notifyDataSetChanged();
-                            gridLoad.setVisibility(View.GONE);
-                            loadMore.setVisibility(View.VISIBLE);
-                        });
-                    });
-                });
-                loading.setVisibility(View.GONE);
+                adapter.notifyDataSetChanged();
+                it.animate(loading, false);
             });
+        });
+
+        gridView.setOnItemClickListener((adapterView, view, i, l) -> {
+            new episodePreview(act, it, refreshLayout, episodelist.get(i), null);
+        });
+
+        AtomicInteger page = new AtomicInteger(1);
+        loadMore.setOnClickListener(view -> {
+            gridLoad.setVisibility(View.VISIBLE);
+            loadMore.setVisibility(View.GONE);
+            it.executer(() -> {
+                List<episodeList> addAnime = getAnime(config.apiLink, post+page.getAndIncrement());
+                act.runOnUiThread(() -> {
+                    episodelist.addAll(addAnime);
+                    adapter.notifyDataSetChanged();
+                    gridLoad.setVisibility(View.GONE);
+                    loadMore.setVisibility(View.VISIBLE);
+                });
+            });
+        });
+
+        refreshLayout.setOnRefreshListener(() -> {
+            episodelist.clear();
+            episodelist.addAll(getAnime(config.apiLink, post + 0));
+            gridView.startLayoutAnimation();
+            adapter.notifyDataSetChanged();
+            refreshLayout.setRefreshing(false);
         });
 
         return root;
     }
 
-    private List<episodeList> getAnime(String link, String post){
-        HashMap<String, String> p = new HashMap<>();
-        p.put("Referer", "https://75.119.159.228/");
+    private List<episodeList> getAnime(String source){
         List<episodeList> episodeLists = new ArrayList<>();
-        String h = it.getRequest(link, post, p);
-        h = h.replaceAll("\\Q.jpg?h=\\E([0-9]*)", ".jpg?h=1024").replaceAll("  +", " ");
-        Matcher updateListM = JahrulnrLib.preg_match(h, JahrulnrLib.config.update_pattern);
-
+        Matcher updateListM = JahrulnrLib.preg_match(source.replaceAll("\\Q.jpg?h=\\E([0-9]*)", ".jpg?h=1024").replaceAll("  +", " ")
+                .replaceAll("\\Q.jpg?h=\\E([0-9]*)", ".jpg?h=1024").replaceAll("  +", " "),
+                config.update_pattern);
         if(updateListM != null) {
             while (updateListM.find()) {
                 episodeList al = new episodeList();
@@ -115,26 +134,15 @@ public class HomeFragment extends Fragment {
         return episodeLists;
     }
 
+    private List<episodeList> getAnime(String link, String post){
+        HashMap<String, String> p = new HashMap<>();
+        p.put("Referer", "https://75.119.159.228/");
+        return getAnime(JahrulnrLib.getRequest(link, post, p));
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getView().setFocusableInTouchMode(true);
-        getView().requestFocus();
-        getView().setOnKeyListener((v, keyCode, event) -> {
-            if (event.getAction() == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_BACK){
-                if(animeClicked && episodePreview != null){
-                    episodePreview.close();
-                    animeClicked = false;
-                    return true;
-                }
-            }
-            return false;
-        });
     }
 }

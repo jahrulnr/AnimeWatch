@@ -23,10 +23,10 @@ public class animeHomeListAdapter extends BaseAdapter {
     private final JahrulnrLib it;
     LayoutInflater inflter;
 
-    public animeHomeListAdapter(Context context, JahrulnrLib it, List<episodeList> animehomelist) {
+    public animeHomeListAdapter(Context context, JahrulnrLib it, List<episodeList> episodelist) {
         this.context = context;
         this.it = it;
-        this.animehomelist = animehomelist;
+        this.animehomelist = episodelist;
         inflter = LayoutInflater.from(context);
     }
 

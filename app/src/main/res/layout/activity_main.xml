@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:theme="@style/Theme.AppCompat.NoActionBar">
 
-    <android.support.design.widget.BottomNavigationView
+    <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -28,7 +28,9 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/nav_view"
         app:defaultNavHost="true"
-
         app:navGraph="@navigation/mobile_navigation" />
+
+    <include
+        layout="@layout/splash_screen"/>
 
 </RelativeLayout>

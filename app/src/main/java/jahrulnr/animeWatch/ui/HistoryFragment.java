@@ -2,8 +2,6 @@ package jahrulnr.animeWatch.ui;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +11,9 @@ import android.view.animation.LayoutAnimationController;
 import android.widget.GridView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 
 import java.util.List;
 
@@ -69,7 +70,7 @@ public class HistoryFragment extends Fragment {
             gridView.setVisibility(View.GONE);
             textView.setVisibility(View.VISIBLE);
         }
-        loading.setVisibility(View.GONE);
+        it.animate(loading, false);
 
         return root;
     }
