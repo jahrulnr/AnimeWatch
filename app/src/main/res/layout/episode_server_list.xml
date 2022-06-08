@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -12,13 +11,14 @@
         android:layout_margin="10dp"
         app:cardCornerRadius="10dp"
         app:cardBackgroundColor="@color/dark">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
             android:padding="10dp"
             android:text="Contoh Server"
-            android:id="@+id/serverName"/>
+            android:id="@+id/serverName" />
     </androidx.cardview.widget.CardView>
 
 </LinearLayout>

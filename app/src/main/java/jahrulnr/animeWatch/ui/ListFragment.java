@@ -32,7 +32,7 @@ import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
 import jahrulnr.animeWatch.databinding.FragmentListBinding;
 
-public class ListFragment extends Fragment{
+public class ListFragment extends Fragment {
 
     private Activity act;
     private FragmentListBinding binding;
@@ -78,12 +78,12 @@ public class ListFragment extends Fragment{
         String h = new dbFiles(act).readSource(dbFiles.listSource);
         it.executer(() -> {
             Matcher m;
-            if(!h.isEmpty())
+            if (!h.isEmpty())
                 m = JahrulnrLib.preg_match(h, JahrulnrLib.config.list_pattern);
             else
                 m = JahrulnrLib.preg_match(JahrulnrLib.getRequest(JahrulnrLib.config.list, null),
                         JahrulnrLib.config.list_pattern);
-            if(m != null) {
+            if (m != null) {
                 while (m.find()) {
                     animeList al = new animeList();
                     al.nama = m.group(3);
@@ -107,6 +107,7 @@ public class ListFragment extends Fragment{
                 adapter.notifyDataSetChanged();
                 return false;
             }
+
             @Override
             public boolean onQueryTextChange(String query) {
                 adapter.filter(query);
@@ -144,7 +145,7 @@ public class ListFragment extends Fragment{
             return animelist.get(i);
         }
 
-        public List<animeList> getItems(){
+        public List<animeList> getItems() {
             return animelist;
         }
 
@@ -165,14 +166,14 @@ public class ListFragment extends Fragment{
             return view;
         }
 
-        public void filter(String text){
+        public void filter(String text) {
             String query = text.toLowerCase();
             animelist = new ArrayList<>();
-            if(text.length() == 0){
+            if (text.length() == 0) {
                 animelist = animelists_original;
             } else {
-                for(animeList m : animelists_original){
-                    if(m.nama.toLowerCase().contains(query)){
+                for (animeList m : animelists_original) {
+                    if (m.nama.toLowerCase().contains(query)) {
                         animelist.add(m);
                     }
                 }

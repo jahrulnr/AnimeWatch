@@ -48,7 +48,7 @@ public class HomeFragment extends Fragment {
         View root = binding.getRoot();
 
         SwipeRefreshLayout refreshLayout = root.findViewById(R.id.pullRefresh);
-        ((RelativeLayout) root.findViewById(R.id.episode_preview)).setVisibility(View.GONE);
+        root.findViewById(R.id.episode_preview).setVisibility(View.GONE);
         RelativeLayout loading = root.findViewById(R.id.loadingContainer);
         GridViewWithHeaderAndFooter gridView = root.findViewById(R.id.animeHome);
         View footerView = LayoutInflater.from(getContext()).inflate(R.layout.more_text, null, false);
@@ -68,11 +68,10 @@ public class HomeFragment extends Fragment {
         String post = "action=loadmore&type=home&page=";
         String source = new dbFiles(act).readSource(dbFiles.updateSource);
         it.executer(() -> {
-            if(!source.isEmpty()){
+            if (!source.isEmpty()) {
                 episodelist.clear();
                 episodelist.addAll(getAnime(source));
-            }
-            else{
+            } else {
                 episodelist.clear();
                 episodelist.addAll(getAnime(config.apiLink, post + 0));
             }
@@ -94,7 +93,7 @@ public class HomeFragment extends Fragment {
             gridLoad.setVisibility(View.VISIBLE);
             loadMore.setVisibility(View.GONE);
             it.executer(() -> {
-                List<episodeList> addAnime = getAnime(config.apiLink, post+page.getAndIncrement());
+                List<episodeList> addAnime = getAnime(config.apiLink, post + page.getAndIncrement());
                 act.runOnUiThread(() -> {
                     episodelist.addAll(addAnime);
                     adapter.notifyDataSetChanged();
@@ -115,12 +114,12 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    private List<episodeList> getAnime(String source){
+    private List<episodeList> getAnime(String source) {
         List<episodeList> episodeLists = new ArrayList<>();
         Matcher updateListM = JahrulnrLib.preg_match(source.replaceAll("\\Q.jpg?h=\\E([0-9]*)", ".jpg?h=1024").replaceAll("  +", " ")
-                .replaceAll("\\Q.jpg?h=\\E([0-9]*)", ".jpg?h=1024").replaceAll("  +", " "),
+                        .replaceAll("\\Q.jpg?h=\\E([0-9]*)", ".jpg?h=1024").replaceAll("  +", " "),
                 config.update_pattern);
-        if(updateListM != null) {
+        if (updateListM != null) {
             while (updateListM.find()) {
                 episodeList al = new episodeList();
                 al.episode = updateListM.group(8);
@@ -134,7 +133,7 @@ public class HomeFragment extends Fragment {
         return episodeLists;
     }
 
-    private List<episodeList> getAnime(String link, String post){
+    private List<episodeList> getAnime(String link, String post) {
         HashMap<String, String> p = new HashMap<>();
         p.put("Referer", "https://75.119.159.228/");
         return getAnime(JahrulnrLib.getRequest(link, post, p));

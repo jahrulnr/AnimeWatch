@@ -12,12 +12,12 @@
         android:clickable="true"
         android:focusedByDefault="true"
         android:focusableInTouchMode="true"
-        android:keepScreenOn="true"/>
+        android:keepScreenOn="true" />
 
     <ProgressBar
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_centerInParent="true"
-        android:alpha="1"/>
+        android:alpha="1" />
 
 </RelativeLayout>

@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:padding="10dp"
         android:indeterminateTint="@color/gray_500"
-        android:id="@+id/loadData"/>
+        android:id="@+id/loadData" />
 
     <TextView
         android:layout_width="match_parent"
@@ -21,6 +21,6 @@
         android:padding="10dp"
         android:textColor="@color/info"
         android:text="Selanjutnya"
-        android:id="@+id/loadMore"/>
+        android:id="@+id/loadMore" />
 
 </LinearLayout>

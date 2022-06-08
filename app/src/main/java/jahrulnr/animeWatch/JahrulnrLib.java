@@ -35,13 +35,14 @@ public class JahrulnrLib {
     public static config config = new config();
     private Timer T;
 
-    public JahrulnrLib() {}
+    public JahrulnrLib() {
+    }
 
     public JahrulnrLib(Activity act) {
         activity = act;
     }
 
-    public void timerExecuter(Runnable execute, int delay, int period){
+    public void timerExecuter(Runnable execute, int delay, int period) {
         T = new Timer();
         T.scheduleAtFixedRate(new TimerTask() {
             @Override
@@ -51,12 +52,12 @@ public class JahrulnrLib {
         }, delay, period);
     }
 
-    public void timerCancel(){
-        if(T != null) T.cancel();
+    public void timerCancel() {
+        if (T != null) T.cancel();
     }
 
-    public void animate(ViewGroup view, boolean start){
-        if(start)
+    public void animate(ViewGroup view, boolean start) {
+        if (start)
             view.animate()
                     .alpha(1)
                     .withStartAction(() -> {
@@ -65,9 +66,9 @@ public class JahrulnrLib {
                     });
         else
             view.animate()
-                .alpha(0)
-                .setDuration(1000)
-                .withEndAction(() -> view.setVisibility(View.GONE));
+                    .alpha(0)
+                    .setDuration(1000)
+                    .withEndAction(() -> view.setVisibility(View.GONE));
     }
 
     public static Matcher preg_match(String source, String pattern) {
@@ -104,12 +105,12 @@ public class JahrulnrLib {
         Executors.newSingleThreadExecutor().execute(run);
     }
 
-    private static HashMap<String, String> getRequestProperties(HashMap<String, String> properties){
+    private static HashMap<String, String> getRequestProperties(HashMap<String, String> properties) {
         HashMap<String, String> requestProperties = new HashMap<>();
         requestProperties.put("User-Agent", jahrulnr.animeWatch.config.userAgent);
 //        requestProperties.put("X-Requested-With", "XMLHttpRequest");
 
-        if(properties != null){
+        if (properties != null) {
             requestProperties.putAll(properties);
         }
 
@@ -127,8 +128,8 @@ public class JahrulnrLib {
             url = new URL(link);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setDoOutput(true);
-            urlConnection.setUseCaches( true );
-            urlConnection.setDefaultUseCaches( true );
+            urlConnection.setUseCaches(true);
+            urlConnection.setDefaultUseCaches(true);
             urlConnection.setReadTimeout(60000);
             urlConnection.setConnectTimeout(5 * 1000);
             urlConnection.setRequestMethod("GET");
@@ -145,7 +146,7 @@ public class JahrulnrLib {
             in.close();
             urlConnection.disconnect();
             text = stringBuffer.toString();
-        }catch (SocketTimeoutException e){
+        } catch (SocketTimeoutException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -172,7 +173,7 @@ public class JahrulnrLib {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setDoOutput(true);
             urlConnection.setUseCaches(true);
-            urlConnection.setDefaultUseCaches( true );
+            urlConnection.setDefaultUseCaches(true);
             urlConnection.setReadTimeout(60000);
             urlConnection.setConnectTimeout(5 * 1000);
             urlConnection.setRequestMethod("POST");

@@ -1,12 +1,14 @@
 package jahrulnr.animeWatch.Class;
 
+import androidx.annotation.NonNull;
+
 import java.io.Serializable;
 
 public class animeList implements Serializable {
     private static final long serialVersionUID = 60599L;
     public String nama, link, img_link, status;
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return nama == null;
     }
 
@@ -34,6 +36,7 @@ public class animeList implements Serializable {
         return img_link;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "animeList{" +

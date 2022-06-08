@@ -38,13 +38,14 @@ public class animeClick {
     private JahrulnrLib it;
     private boolean episodeClicked = false;
 
-    public animeClick(){}
+    public animeClick() {
+    }
 
     public animeClick(Activity act, JahrulnrLib it, ViewGroup viewGroup, animeList animelist) {
         this.act = act;
         this.it = it;
         this.viewGroup = viewGroup;
-        Animation animation = AnimationUtils.loadAnimation(act,R.anim.grid_animation);
+        Animation animation = AnimationUtils.loadAnimation(act, R.anim.grid_animation);
         LayoutAnimationController controller = new LayoutAnimationController(animation);
         loading = act.findViewById(R.id.loadingContainer);
         animeDetailView = act.findViewById(R.id.episode_view);
@@ -78,19 +79,19 @@ public class animeClick {
             List<episodeList> episodelist;
             Matcher getAnimeID = JahrulnrLib.preg_match(h.replaceAll("\n", ""),
                     "\\Qname=\"series_id\" value=\"\\E([0-9]+?)\\Q\">\\E");
-            if(getAnimeID.find()) {
+            if (getAnimeID.find()) {
                 String p = "misha_number_of_results=100000" +
                         "&misha_order_by=date-DESC" +
                         "&action=mishafilter" +
                         "&series_id=" + getAnimeID.group(1);
                 episodelist = getEpisode(p, config.episode_pattern1, true);
-                if(episodelist != null) pattern = true;
-            }else {
+                if (episodelist != null) pattern = true;
+            } else {
                 episodelist = getEpisode(h, config.episode_pattern2, false);
-                if(episodelist != null) pattern = true;
+                if (episodelist != null) pattern = true;
             }
 
-            if(pattern){
+            if (pattern) {
                 // Detail
                 animeEpsListAdapter adapter = new animeEpsListAdapter(act, episodelist);
                 act.runOnUiThread(() -> {
@@ -117,13 +118,13 @@ public class animeClick {
         });
     }
 
-    public List<episodeList> getEpisode(@Nullable String post, String pattern, boolean useLink){
+    public List<episodeList> getEpisode(@Nullable String post, String pattern, boolean useLink) {
         HashMap<String, String> p = new HashMap<>();
         p.put("Referer", "https://75.119.159.228/");
         List<episodeList> episodelist = new ArrayList<>();
 
         String h;
-        if(useLink == true) {
+        if (useLink == true) {
             h = JahrulnrLib.getRequest(config.apiLink, post, p);
             JSONObject epsData = null;
             try {
@@ -132,7 +133,7 @@ public class animeClick {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             h = post;
         }
         Matcher episodeM = JahrulnrLib.preg_match(h, pattern);

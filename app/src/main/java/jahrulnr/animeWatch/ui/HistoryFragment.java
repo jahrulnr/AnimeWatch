@@ -45,7 +45,7 @@ public class HistoryFragment extends Fragment {
 
         act = getActivity();
         it = new JahrulnrLib(act);
-        ((RelativeLayout) root.findViewById(R.id.episode_preview)).setVisibility(View.GONE);
+        root.findViewById(R.id.episode_preview).setVisibility(View.GONE);
         RelativeLayout loading = root.findViewById(R.id.loadingContainer);
         container = root.findViewById(R.id.historyContainer);
         gridView = root.findViewById(R.id.historyWatch);
@@ -55,7 +55,7 @@ public class HistoryFragment extends Fragment {
 
         dbFiles dbFiles = new dbFiles(act);
         List<episodeList> epsList = dbFiles.getList();
-        if(!epsList.isEmpty()) {
+        if (!epsList.isEmpty()) {
             ViewGroup finalContainer = container;
             animeHistoryAdapter adapter = new animeHistoryAdapter(getActivity(), epsList);
             gridView.setAdapter(adapter);
@@ -65,8 +65,7 @@ public class HistoryFragment extends Fragment {
                 episodePreview = new episodePreview(act, it, finalContainer, eps, null);
             });
             textView.setVisibility(View.GONE);
-        }
-        else {
+        } else {
             gridView.setVisibility(View.GONE);
             textView.setVisibility(View.VISIBLE);
         }

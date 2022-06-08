@@ -62,7 +62,7 @@ public class animeHomeListAdapter extends BaseAdapter {
                 Picasso.get().load(item.animeList.img_link).into(cover);
                 status.setText(item.animeList.status);
             }
-        } catch (java.lang.NullPointerException e){
+        } catch (java.lang.NullPointerException e) {
             e.printStackTrace();
         }
 

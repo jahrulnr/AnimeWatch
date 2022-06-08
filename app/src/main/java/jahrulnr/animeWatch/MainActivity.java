@@ -1,5 +1,6 @@
 package jahrulnr.animeWatch;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
@@ -8,7 +9,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -18,11 +18,14 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.github.javiersantos.appupdater.AppUpdater;
+import com.github.javiersantos.appupdater.enums.UpdateFrom;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import jahrulnr.animeWatch.Class.dbFiles;
 import jahrulnr.animeWatch.databinding.ActivityMainBinding;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding binding;
     private RelativeLayout splashContainer;
 
+    @SuppressLint("SourceLockedOrientationActivity")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -48,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         splashContainer = root.findViewById(R.id.splashContainer);
         ImageView splashImg = splashContainer.findViewById(R.id.splash_image);
         ActionBar actionBar = getSupportActionBar();
+        assert actionBar != null;
         actionBar.hide();
         JahrulnrLib.checkNetwork(this);
         binding.navView.setVisibility(View.GONE);
@@ -63,9 +68,12 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        it.timerExecuter(() -> runOnUiThread(() -> {
-            Toast.makeText(act, "Koneksi lambat, mohon bersabar", Toast.LENGTH_LONG).show();
-        }), 15000, 15000);
+        AtomicInteger count = new AtomicInteger(1);
+        it.timerExecuter(() ->
+            runOnUiThread(() ->{
+                if(count.getAndIncrement() % 15 == 0)
+                    Toast.makeText(act, "Koneksi lambat, mohon bersabar", Toast.LENGTH_LONG).show();
+        }), 1000, 1000);
 
         it.executer(() -> {
             String post = "action=loadmore&type=home&page=0";
@@ -86,47 +94,50 @@ public class MainActivity extends AppCompatActivity {
                     NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
                     NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
                     NavigationUI.setupWithNavController(binding.navView, navController);
-                }else{
+                    updateCheck();
+                } else {
                     onStart();
                 }
             });
         });
     }
 
-    private void closeLayout(ViewGroup viewGroup, View view){
+    private void closeLayout(ViewGroup viewGroup, View view) {
         view.setVisibility(View.GONE);
         it.animate(viewGroup, true);
     }
 
     @Override
     public void onBackPressed() {
-        if(splashContainer != null && splashContainer.getVisibility() == View.GONE) {
+        if (splashContainer != null && splashContainer.getVisibility() == View.GONE) {
             RelativeLayout episode_preview = root.findViewById(R.id.episode_preview);
-            if(root.findViewById(R.id.fragment_home) != null
+            if (root.findViewById(R.id.fragment_home) != null
                     && episode_preview.getVisibility() == View.VISIBLE)
-                closeLayout((SwipeRefreshLayout) root.findViewById(R.id.pullRefresh), episode_preview);
-            else if(root.findViewById(R.id.fragment_list) != null){
-                if(episode_preview.getVisibility() == View.VISIBLE) {
-                    closeLayout((RelativeLayout) root.findViewById(R.id.episode_view), episode_preview);
-                }else{
-                    closeLayout((LinearLayout) root.findViewById(R.id.animeListContainer),
-                            (RelativeLayout) root.findViewById(R.id.episode_view));
+                closeLayout(root.findViewById(R.id.pullRefresh), episode_preview);
+            else if (root.findViewById(R.id.fragment_list) != null) {
+                if (episode_preview.getVisibility() == View.VISIBLE) {
+                    closeLayout(root.findViewById(R.id.episode_view), episode_preview);
+                } else {
+                    closeLayout(root.findViewById(R.id.animeListContainer),
+                            root.findViewById(R.id.episode_view));
                 }
-            }
-            else if(root.findViewById(R.id.fragment_history) != null
+            } else if (root.findViewById(R.id.fragment_history) != null
                     && episode_preview.getVisibility() == View.VISIBLE)
-                closeLayout((RelativeLayout) root.findViewById(R.id.historyContainer), episode_preview);
+                closeLayout(root.findViewById(R.id.historyContainer), episode_preview);
             else {
                 new AlertDialog.Builder(this)
                         .setTitle("Konfirmasi")
                         .setMessage("Ingin keluar dari aplikasi ini?")
                         .setPositiveButton("Tidak", null)
-                        .setNegativeButton("Ya", (dialogInterface, i) -> {
-                            finish();
-                        }).show();
+                        .setNegativeButton("Ya", (dialogInterface, i) -> finish()).show();
             }
-
-
         }
+    }
+
+    private void updateCheck(){
+        new AppUpdater(this)
+            .setUpdateFrom(UpdateFrom.GITHUB)
+            .setGitHubUserAndRepo("jahrulnr", "AnimeWatch")
+            .start();
     }
 }

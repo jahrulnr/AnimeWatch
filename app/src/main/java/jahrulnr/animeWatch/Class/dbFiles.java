@@ -27,14 +27,14 @@ public class dbFiles {
     private final File dbFile;
     private List<episodeList> epsList = new ArrayList<>();
 
-    public dbFiles(Activity activity){
+    public dbFiles(Activity activity) {
         this.activity = activity;
         this.db = activity.getFilesDir().getPath() + db;
         this.dbFile = new File(this.db);
         this.epsList = new ArrayList<>();
     }
 
-    public boolean exists(){
+    public boolean exists() {
         return dbFile.exists();
     }
 
@@ -42,19 +42,19 @@ public class dbFiles {
         return db;
     }
 
-    public void add(episodeList episodelist){
-        if(epsList.isEmpty())
+    public void add(episodeList episodelist) {
+        if (epsList.isEmpty())
             epsList = getList();
         epsList.removeIf(episodeList -> episodeList.getLink().equals(episodelist.link));
         epsList.add(episodelist);
     }
 
-    public void save(){
+    public void save() {
         ObjectOutput out = null;
 
         try {
             out = new ObjectOutputStream(new FileOutputStream(path()));
-            out.writeObject((Object) epsList);
+            out.writeObject(epsList);
             out.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -63,10 +63,10 @@ public class dbFiles {
         }
     }
 
-    public List<episodeList> getList(){
+    public List<episodeList> getList() {
         List<episodeList> epsList = new ArrayList<>();
 
-        if(new File(path()).exists()){
+        if (new File(path()).exists()) {
             ObjectInputStream in = null;
             try {
                 in = new ObjectInputStream(new FileInputStream(path()));
@@ -82,12 +82,12 @@ public class dbFiles {
         return epsList;
     }
 
-    public episodeList getItem(int i){
+    public episodeList getItem(int i) {
         List<episodeList> epsList = getList();
         return epsList.get(i);
     }
 
-    public boolean writeSource(String source, String filename){
+    public boolean writeSource(String source, String filename) {
         boolean success = false;
         try {
             OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
@@ -95,34 +95,32 @@ public class dbFiles {
             outputStreamWriter.write(source);
             outputStreamWriter.close();
             success = true;
-        }
-        catch (IOException | IllegalArgumentException e) {
+        } catch (IOException | IllegalArgumentException e) {
             System.err.println("dbFiles: File write failed: " + e);
         }
 
         return success;
     }
 
-    public String readSource(String filename){
+    public String readSource(String filename) {
         String ret = "";
         try {
             InputStream inputStream = activity.openFileInput(filename);
 
-            if ( inputStream != null ) {
+            if (inputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String receiveString = "";
                 StringBuilder stringBuilder = new StringBuilder();
 
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                while ((receiveString = bufferedReader.readLine()) != null) {
                     stringBuilder.append(receiveString);
                 }
 
                 inputStream.close();
                 ret = stringBuilder.toString();
             }
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             System.err.println("dbFiles: File not found: " + e);
         } catch (IOException e) {
             System.err.println("dbFiles: Can not read file: " + e);

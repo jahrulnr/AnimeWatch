@@ -40,7 +40,7 @@ import jahrulnr.animeWatch.config;
 public class nontonView extends AppCompatActivity {
 
     private JahrulnrLib it;
-    private RelativeLayout loadingFullscreen,  loadingGridView;
+    private RelativeLayout loadingFullscreen, loadingGridView;
     private ImageButton moreEps, serverBtn;
     private WebView webView;
     private RelativeLayout epsContainer;
@@ -63,21 +63,21 @@ public class nontonView extends AppCompatActivity {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN
-                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                        | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                        | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY // hide status bar and nav bar after a short delay, or if the user interacts with the middle of the screen
-                );
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
+                | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY // hide status bar and nav bar after a short delay, or if the user interacts with the middle of the screen
+        );
         getSupportActionBar().hide();
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_nonton_view);
     }
 
-    private void setup(){
+    private void setup() {
         it.animate(loadingFullscreen, true);
         nameEps.setText(animelist.nama);
         thisEps.setText(epsList.episode);
@@ -176,7 +176,7 @@ public class nontonView extends AppCompatActivity {
         serverContainer = findViewById(R.id.serverContainer);
         gridView = findViewById(R.id.EpsGridview);
         webView = findViewById(R.id.nontonAnime);
-        nameEps  = findViewById(R.id.tEpsLain);
+        nameEps = findViewById(R.id.tEpsLain);
         thisEps = findViewById(R.id.thisEps);
         serverGridView = serverContainer.findViewById(R.id.serverGridview);
         epsContainer.setLayoutAnimation(animationController);
@@ -219,7 +219,7 @@ public class nontonView extends AppCompatActivity {
         webView.setOnLongClickListener(view -> {
             unregisterForContextMenu(webView);
             WebView.HitTestResult result = webView.getHitTestResult();
-            if(result.getType() == 7){
+            if (result.getType() == 7) {
                 registerForContextMenu(webView);
             }
 
@@ -237,10 +237,10 @@ public class nontonView extends AppCompatActivity {
 
         serverBtn = findViewById(R.id.videoServer);
         serverBtn.setOnClickListener(view -> {
-            if(serverContainer.getVisibility() == View.GONE){
+            if (serverContainer.getVisibility() == View.GONE) {
                 serverBtn.setColorFilter(getResources().getColor(R.color.info));
                 it.animate(serverContainer, true);
-            }else{
+            } else {
                 serverBtn.setColorFilter(getResources().getColor(R.color.white));
                 it.animate(serverContainer, false);
             }
@@ -254,10 +254,9 @@ public class nontonView extends AppCompatActivity {
                             .replaceAll("\\Q<script\\E(.*?)\\Q</script>\\E", "");
                     Matcher sM = JahrulnrLib.preg_match(s, "(.*)\\Qsrc=\"\\E((http)?(s)?(:)?//.*?/.*?)\\\" ?");
                     runOnUiThread(() -> {
-                        if(sM.find()){
+                        if (sM.find()) {
                             webView.loadUrl(sM.group(3) == null ? "https:" + s : sM.group(2));
-                        }
-                        else{
+                        } else {
                             webView.loadData("<html><body style=\"padding: 0; margin: 0;width: 100%; height:100%;background:black\">" +
                                     s +
                                     "</body></html>", "text/html", "UTF-8");
@@ -284,7 +283,7 @@ public class nontonView extends AppCompatActivity {
         epsContainer.setOnClickListener(view -> epsMenu());
     }
 
-    private void epsMenu(){
+    private void epsMenu() {
         if (epsShow) {
             webView.resumeTimers();
             moreEps.setColorFilter(getResources().getColor(R.color.white));
@@ -300,10 +299,10 @@ public class nontonView extends AppCompatActivity {
         epsContainer.startLayoutAnimation();
         it.animate(epsContainer, true);
         epsShow = true;
-        if(idEps > -1) {
+        if (idEps > -1) {
             gridView.post(() -> {
                 int tempId = idEps;
-                if(tempId + 3 < eps.size()){
+                if (tempId + 3 < eps.size()) {
                     tempId += 3;
                 }
                 gridView.smoothScrollToPosition(tempId);
@@ -313,7 +312,7 @@ public class nontonView extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if(epsShow)
+        if (epsShow)
             epsMenu();
         else
             finish();

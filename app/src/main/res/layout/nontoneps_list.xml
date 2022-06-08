@@ -15,9 +15,11 @@
         app:cardBackgroundColor="@color/gray_700"
         app:cardCornerRadius="5dp"
         android:id="@+id/EpsContainer">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -32,7 +34,7 @@
                 android:textSize="20dp"
                 android:textColor="@color/white"
                 android:autoSizeTextType="uniform"
-                android:id="@+id/episode"/>
+                android:id="@+id/episode" />
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 

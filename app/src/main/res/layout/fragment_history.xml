@@ -11,11 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/historyContainer">
+
         <GridView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/historyWatch"
-            android:animateLayoutChanges="true"/>
+            android:animateLayoutChanges="true" />
 
         <TextView
             android:layout_width="match_parent"
@@ -26,11 +27,11 @@
             android:textColor="@color/white"
             android:textSize="20dp"
             android:visibility="gone"
-            android:animateLayoutChanges="true"/>
+            android:animateLayoutChanges="true" />
 
     </RelativeLayout>
-    
-    <include layout="@layout/episode_preview"/>
+
+    <include layout="@layout/episode_preview" />
 
     <include layout="@layout/loading" />
 

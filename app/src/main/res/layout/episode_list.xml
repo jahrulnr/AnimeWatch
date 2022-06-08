@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="@color/gray_700"
         app:cardCornerRadius="5dp">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -21,7 +22,7 @@
             android:textSize="20dp"
             android:textColor="@color/white"
             android:autoSizeTextType="uniform"
-            android:id="@+id/episode"/>
+            android:id="@+id/episode" />
     </androidx.cardview.widget.CardView>
 
 

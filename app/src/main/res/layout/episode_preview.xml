@@ -19,13 +19,14 @@
             android:layout_height="127dp"
             android:layout_gravity="center_vertical"
             app:cardCornerRadius="3dp">
+
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:scaleType="centerCrop"
                 android:src="@drawable/no_image"
-                android:id="@+id/animeEpsCover"/>
+                android:id="@+id/animeEpsCover" />
         </androidx.cardview.widget.CardView>
 
         <RelativeLayout
@@ -53,26 +54,28 @@
                 android:textColor="@color/white"
                 android:autoSizeTextType="uniform"
                 android:autoSizeMaxTextSize="20dp"
-                android:fontFamily="sans-serif"/>
+                android:fontFamily="sans-serif" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/animeTitle"
                 android:orientation="horizontal">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingEnd="10dp"
                     android:text="Episode"
                     android:textColor="@color/white"
-                    android:fontFamily="sans-serif"/>
+                    android:fontFamily="sans-serif" />
+
                 <TextView
                     android:id="@+id/animeEpisode"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:text=": ##"/>
+                    android:text=": ##" />
             </LinearLayout>
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
@@ -85,6 +88,7 @@
         app:cardCornerRadius="5dp"
         android:backgroundTint="@color/gray_700"
         android:id="@+id/serverCard">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -104,7 +108,7 @@
                 android:layout_height="2dp"
                 android:layout_below="@id/tServer"
                 android:layout_marginTop="4dp"
-                android:background="@color/gray_600"/>
+                android:background="@color/gray_600" />
 
             <GridView
                 android:layout_width="match_parent"
@@ -112,7 +116,7 @@
                 android:layout_below="@+id/tServer"
                 android:layout_marginTop="10dp"
                 android:numColumns="auto_fit"
-                android:id="@+id/serverGridview"/>
+                android:id="@+id/serverGridview" />
 
         </RelativeLayout>
 

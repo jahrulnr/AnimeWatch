@@ -36,9 +36,9 @@
         <flag name="clip_horizontal" value="0x08" />
     </attr>
     <!-- Default GridView style. -->
-        <attr name="gridViewStyle" format="reference" />
+    <attr name="gridViewStyle" format="reference" />
     <declare-styleable name="TwoWayAbsListView">
-         <!-- Drawable used to indicate the currently selected item in the list. -->
+        <!-- Drawable used to indicate the currently selected item in the list. -->
         <attr name="listSelector" format="color|reference" />
         <!-- When set to true, the selector will be drawn over the selected item.
              Otherwise the selector is drawn behind the selected item. The default
@@ -57,7 +57,7 @@
              scrolls to the bottom to make new items visible when they are added. -->
         <attr name="transcriptMode">
             <!-- Disables transcript mode. This is the default value. -->
-            <enum name="disabled" value="0"/>
+            <enum name="disabled" value="0" />
             <!-- The list will automatically scroll to the bottom when
                  a data set change notification is received and only if the last item is
                  already visible on screen. -->
@@ -86,23 +86,23 @@
              portrait orientation -->
         <attr name="scrollDirectionPortrait">
             <!-- Scroll up vertically. This is the default value. -->
-            <enum name="vertical" value="0"/>
+            <enum name="vertical" value="0" />
             <!-- Scroll horizontally. -->
             <enum name="horizontal" value="1" />
         </attr>
         <attr name="scrollDirectionLandscape">
             <!-- Scroll up vertically. This is the default value. -->
-            <enum name="vertical" value="0"/>
+            <enum name="vertical" value="0" />
             <!-- Scroll horizontally. -->
             <enum name="horizontal" value="1" />
         </attr>
     </declare-styleable>
-    
+
     <declare-styleable name="TwoWayGridView">
         <attr name="horizontalSpacing" format="dimension" />
         <attr name="verticalSpacing" format="dimension" />
         <attr name="stretchMode">
-            <enum name="none" value="0"/>
+            <enum name="none" value="0" />
             <enum name="spacingWidth" value="1" />
             <enum name="columnWidth" value="2" />
             <enum name="spacingWidthUniform" value="3" />
@@ -117,5 +117,5 @@
         </attr>
         <attr name="gravity" />
     </declare-styleable>
-    
+
 </resources>

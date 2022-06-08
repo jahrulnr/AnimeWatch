@@ -26,6 +26,7 @@ public class nontonEpsListAdapter extends BaseAdapter {
         this.epsList = epsList;
         this.layoutInflater = LayoutInflater.from(activity);
     }
+
     @Override
     public int getCount() {
         return epsList.size();
@@ -43,7 +44,7 @@ public class nontonEpsListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        if(view == null)
+        if (view == null)
             view = layoutInflater.inflate(R.layout.nontoneps_list, null);
 
         TextView episode = view.findViewById(R.id.episode);

@@ -41,7 +41,7 @@ public class episodePreview {
         this.it = it;
         this.viewGroup = viewGroup;
         this.This = this;
-        Animation animation = AnimationUtils.loadAnimation(act,R.anim.grid_animation);
+        Animation animation = AnimationUtils.loadAnimation(act, R.anim.grid_animation);
         LayoutAnimationController controller = new LayoutAnimationController(animation);
         animeList animelist = episodelist.animeList;
         relativeLayout = act.findViewById(R.id.loadingContainer);
@@ -49,7 +49,7 @@ public class episodePreview {
         episode_preview.setVisibility(View.GONE);
         ImageView iv_cover = act.findViewById(R.id.animeEpsCover);
         TextView tv_title = act.findViewById(R.id.animeTitle),
-                      tv_episode = act.findViewById(R.id.animeEpisode);
+                tv_episode = act.findViewById(R.id.animeEpisode);
         episode_preview.setLayoutAnimation(controller);
         it.animate(relativeLayout, true);
 
@@ -60,7 +60,7 @@ public class episodePreview {
 
             episodeM = JahrulnrLib.preg_match(h, "\\\"episodeNumber\\\":\\\"?(.*?)\\\"");
             episode = episodeM.find() ? episodeM.group(1) : "";
-            if(animelist.nama == null) {
+            if (animelist.nama == null) {
                 coverM = JahrulnrLib.preg_match(h, Pattern.quote("\"primaryImageOfPage\":{\"@id\":\"") + "?(.*?).(jpe?g|png)" + Pattern.quote("\"}"));
                 namaM = JahrulnrLib.preg_match(h, Pattern.quote("\"caption\":\"") + "?(.*?)" + Pattern.quote("\","));
                 animeLinkM = JahrulnrLib.preg_match(h, "\\Q\"url\":\"https://75.119.159.228/anime/\\E(.*?)\\Q\"},\"video\"\\E");
@@ -68,7 +68,7 @@ public class episodePreview {
                 cover = coverM.find() ? coverM.group(1) + "." + coverM.group(2) : "";
                 nama = namaM.find() ? namaM.group(1) : "";
                 animeLink = animeLinkM.find() ? "https://75.119.159.228/anime/" + animeLinkM.group(1) : "";
-            }else{
+            } else {
                 cover = animelist.img_link;
                 nama = animelist.nama;
                 animeLink = animelist.link;
@@ -82,8 +82,8 @@ public class episodePreview {
                 Picasso.get().load(cover).into(iv_cover);
                 String epsPattern = "(.*?)\\s+Episode\\s+([0-9]+)?( ?Sub Indo)?";
                 String spacePattern = "  +";
-                String finalNama = nama.replaceAll(spacePattern,  "").replaceAll(epsPattern, "$1");
-                String e = episode.replaceAll(spacePattern,  "").replaceAll(epsPattern, "Episode $2");
+                String finalNama = nama.replaceAll(spacePattern, "").replaceAll(epsPattern, "$1");
+                String e = episode.replaceAll(spacePattern, "").replaceAll(epsPattern, "Episode $2");
                 tv_title.setText(finalNama);
                 tv_episode.setText(": " + e);
                 viewGroup.setVisibility(View.GONE);
@@ -115,7 +115,7 @@ public class episodePreview {
         }
     }
 
-    public static List<episodeServerList> getServer(String source){
+    public static List<episodeServerList> getServer(String source) {
         Matcher server = JahrulnrLib.preg_match(source,
                 Pattern.quote("id=\"player-option-") + "([0-9])" +
                         Pattern.quote("\" data-post=\"") + "([0-9]+)" +
@@ -126,7 +126,7 @@ public class episodePreview {
 
         List<episodeServerList> serverLists = new ArrayList<>();
         while (server.find()) {
-            String p = "action=player_ajax&post="+server.group(2)+
+            String p = "action=player_ajax&post=" + server.group(2) +
                     "&type=" + server.group(3) +
                     "&nume=" + server.group(4);
             episodeServerList epl = new episodeServerList();
@@ -138,11 +138,12 @@ public class episodePreview {
         return serverLists;
     }
 
-    public static class episodeServerAdapter extends BaseAdapter{
+    public static class episodeServerAdapter extends BaseAdapter {
         Activity activity;
         List<episodeServerList> episodeServerLists;
         LayoutInflater inflater;
-        public episodeServerAdapter(Activity activity, List<episodeServerList> episodeServerLists){
+
+        public episodeServerAdapter(Activity activity, List<episodeServerList> episodeServerLists) {
             this.activity = activity;
             this.episodeServerLists = episodeServerLists;
             inflater = LayoutInflater.from(activity);
@@ -165,7 +166,7 @@ public class episodePreview {
 
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
-            if(view == null)
+            if (view == null)
                 view = inflater.inflate(R.layout.episode_server_list, null);
             TextView textView = view.findViewById(R.id.serverName);
             textView.setText(episodeServerLists.get(i).nama);

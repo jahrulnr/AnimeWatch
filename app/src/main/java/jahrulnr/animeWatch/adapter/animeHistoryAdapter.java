@@ -44,13 +44,13 @@ public class animeHistoryAdapter extends BaseAdapter {
 
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
-        if(view == null)
+        if (view == null)
             view = layoutInflater.inflate(R.layout.history_list, null);
 
         ImageView imageView = view.findViewById(R.id.animeCover);
         TextView anime = view.findViewById(R.id.anime);
         TextView episode = view.findViewById(R.id.episode);
-        if(epsList.get(i).getImg_link() != null)
+        if (epsList.get(i).getImg_link() != null)
             Picasso.get().load(epsList.get(i).getImg_link()).into(imageView);
         anime.setText(epsList.get(i).getNama());
         episode.setText(epsList.get(i).episode);
