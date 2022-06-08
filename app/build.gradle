@@ -3,18 +3,27 @@ plugins {
 }
 
 // Load keystore
+def File = ""
+def Password = ""
+def Alias = ""
+def aliasPassword = ""
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
-if (keystorePropertiesFile.exists())
+if (keystorePropertiesFile.exists()){
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+    File = file(keystoreProperties['storeFile']);
+    Password = keystoreProperties['storePassword'];
+    Alias = keystoreProperties['keyAlias'];
+    aliasPassword = keystoreProperties['keyPassword'];
+}
 
 android {
     signingConfigs {
         release {
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
+            storeFile File
+            storePassword Password
+            keyAlias Alias
+            keyPassword aliasPassword
         }
     }
     compileSdk 32
