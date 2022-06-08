@@ -11,10 +11,10 @@ def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 if (keystorePropertiesFile.exists()){
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-    File = file(keystoreProperties['storeFile']);
-    Password = keystoreProperties['storePassword'];
-    Alias = keystoreProperties['keyAlias'];
-    aliasPassword = keystoreProperties['keyPassword'];
+    File = file(keystoreProperties['storeFile'])
+    Password = keystoreProperties['storePassword']
+    Alias = keystoreProperties['keyAlias']
+    aliasPassword = keystoreProperties['keyPassword']
 }
 
 android {
@@ -29,9 +29,6 @@ android {
     compileSdk 32
     compileSdkVersion 32
 
-    lintOptions {
-        abortOnError false
-    }
 
     defaultConfig {
         applicationId "jahrulnr.animeWatch"
@@ -62,7 +59,11 @@ android {
         }
         debug {
             debuggable true
+            signingConfig signingConfigs.debug
         }
+    }
+    lint {
+        abortOnError false
     }
 }
 
