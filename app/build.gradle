@@ -33,7 +33,7 @@ android {
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         testFunctionalTest false
-        multiDexEnabled false
+        multiDexEnabled true
         signingConfig signingConfigs.debug
         testHandleProfiling false
     }
