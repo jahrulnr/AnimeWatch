@@ -2,28 +2,19 @@ plugins {
     id 'com.android.application'
 }
 
-// Load keystore
-def File = ""
-def Password = ""
-def Alias = ""
-def aliasPassword = ""
 def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
-if (keystorePropertiesFile.exists()){
-    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
-    File = file(keystoreProperties['storeFile'])
-    Password = keystoreProperties['storePassword']
-    Alias = keystoreProperties['keyAlias']
-    aliasPassword = keystoreProperties['keyPassword']
-}
 
 android {
     signingConfigs {
         release {
-            storeFile File
-            storePassword Password
-            keyAlias Alias
-            keyPassword aliasPassword
+            keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+            if(keystorePropertiesFile.exists()){
+                storeFile file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            }
         }
     }
     compileSdk 32
@@ -38,8 +29,10 @@ android {
         versionName '1.1'
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
-        testFunctionalTest true
-        multiDexEnabled true
+        testFunctionalTest false
+        multiDexEnabled false
+        signingConfig signingConfigs.debug
+        testHandleProfiling false
     }
 
     compileOptions {
@@ -56,15 +49,27 @@ android {
         release {
             debuggable false
             signingConfig signingConfigs.release
+            jniDebuggable false
+            renderscriptDebuggable false
+            minifyEnabled false
         }
         debug {
             debuggable true
             signingConfig signingConfigs.debug
+            jniDebuggable true
+            renderscriptDebuggable true
+            minifyEnabled false
         }
     }
     lint {
         abortOnError false
     }
+    dependenciesInfo {
+        includeInApk true
+        includeInBundle true
+    }
+    buildToolsVersion '32.0.0'
+    ndkVersion '21.4.7075529'
 }
 
 dependencies {
