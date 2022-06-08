@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,10 +20,11 @@
             android:layout_height="50dp"
             android:padding="10dp"
             android:text="Episode 1"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:textColor="@color/white"
             android:autoSizeTextType="uniform"
-            android:id="@+id/episode" />
+            android:id="@+id/episode"
+            tools:ignore="HardcodedText" />
     </androidx.cardview.widget.CardView>
 
 

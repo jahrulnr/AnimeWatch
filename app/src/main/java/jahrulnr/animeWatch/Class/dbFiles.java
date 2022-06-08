@@ -24,18 +24,12 @@ public class dbFiles {
     public static String listSource = "listSource";
     private String db = "/db.json";
     private final Activity activity;
-    private final File dbFile;
-    private List<episodeList> epsList = new ArrayList<>();
+    private List<episodeList> epsList;
 
     public dbFiles(Activity activity) {
         this.activity = activity;
         this.db = activity.getFilesDir().getPath() + db;
-        this.dbFile = new File(this.db);
         this.epsList = new ArrayList<>();
-    }
-
-    public boolean exists() {
-        return dbFile.exists();
     }
 
     public String path() {
@@ -50,14 +44,12 @@ public class dbFiles {
     }
 
     public void save() {
-        ObjectOutput out = null;
+        ObjectOutput out;
 
         try {
             out = new ObjectOutputStream(new FileOutputStream(path()));
             out.writeObject(epsList);
             out.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -67,24 +59,17 @@ public class dbFiles {
         List<episodeList> epsList = new ArrayList<>();
 
         if (new File(path()).exists()) {
-            ObjectInputStream in = null;
+            ObjectInputStream in;
             try {
                 in = new ObjectInputStream(new FileInputStream(path()));
                 epsList = (List<episodeList>) in.readObject();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
+            } catch (IOException | ClassNotFoundException e) {
                 e.printStackTrace();
             }
             Collections.reverse(epsList);
         }
 
         return epsList;
-    }
-
-    public episodeList getItem(int i) {
-        List<episodeList> epsList = getList();
-        return epsList.get(i);
     }
 
     public boolean writeSource(String source, String filename) {
@@ -110,7 +95,7 @@ public class dbFiles {
             if (inputStream != null) {
                 InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                String receiveString = "";
+                String receiveString;
                 StringBuilder stringBuilder = new StringBuilder();
 
                 while ((receiveString = bufferedReader.readLine()) != null) {

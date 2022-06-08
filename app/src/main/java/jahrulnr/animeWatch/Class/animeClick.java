@@ -1,5 +1,6 @@
 package jahrulnr.animeWatch.Class;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,11 +37,11 @@ public class animeClick {
     private RelativeLayout animeDetailView;
     private episodePreview episodePreview = null;
     private JahrulnrLib it;
-    private boolean episodeClicked = false;
 
     public animeClick() {
     }
 
+    @SuppressLint("SetTextI18n")
     public animeClick(Activity act, JahrulnrLib it, ViewGroup viewGroup, animeList animelist) {
         this.act = act;
         this.it = it;
@@ -103,12 +104,11 @@ public class animeClick {
                     tv_rilis.setText(": " + rilis);
                     eps.setAdapter(adapter);
                     eps.setOnItemClickListener((adapterView, view, i, l) -> {
-                        episodeClicked = true;
                         episodeList epsPrev = new episodeList();
                         epsPrev.animeList = animelist;
                         epsPrev.animeList.img_link = cover;
                         epsPrev.link = episodelist.get(i).link;
-                        episodePreview = new episodePreview(act, it, animeDetailView, epsPrev, this);
+                        episodePreview = new episodePreview(act, it, animeDetailView, epsPrev);
                     });
                     viewGroup.setVisibility(View.GONE);
                     it.animate(loading, false);

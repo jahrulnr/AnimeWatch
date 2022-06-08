@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
@@ -17,13 +18,15 @@
             android:layout_height="match_parent"
             android:src="@drawable/no_image"
             android:scaleType="centerCrop"
-            android:background="#00000000" />
+            android:background="#00000000"
+            tools:ignore="ContentDescription" />
 
         <androidx.cardview.widget.CardView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="top|right"
-            app:cardCornerRadius="5dp">
+            app:cardCornerRadius="5dp"
+            tools:ignore="RtlHardcoded">
 
             <TextView
                 android:id="@+id/status"
@@ -33,11 +36,12 @@
                 android:padding="2dp"
                 android:alpha="0.95"
                 android:typeface="serif"
-                android:textSize="10dp"
+                android:textSize="10sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"
                 android:gravity="center"
-                android:text="Ongoing" />
+                android:text="Ongoing"
+                tools:ignore="HardcodedText,SmallSp" />
         </androidx.cardview.widget.CardView>
 
         <TextView
@@ -57,7 +61,8 @@
             android:shadowDx="1"
             android:shadowDy="1"
             android:shadowRadius="2"
-            android:layout_below="@+id/animeCover" />
+            android:layout_below="@+id/animeCover"
+            tools:ignore="HardcodedText" />
 
     </androidx.cardview.widget.CardView>
 

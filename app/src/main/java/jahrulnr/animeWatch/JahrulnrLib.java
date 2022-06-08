@@ -12,13 +12,11 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.HashMap;
@@ -33,10 +31,8 @@ public class JahrulnrLib {
     private static Activity activity;
     private static String text = "";
     public static config config = new config();
-    private Timer T;
 
-    public JahrulnrLib() {
-    }
+    private Timer T;
 
     public JahrulnrLib(Activity act) {
         activity = act;
@@ -86,19 +82,15 @@ public class JahrulnrLib {
         return null;
     }
 
-    public static boolean checkNetwork(Activity act) {
-        boolean connected = false;
+    public static void checkNetwork(Activity act) {
         ConnectivityManager connectivityManager = (ConnectivityManager) act.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE).getState() == NetworkInfo.State.CONNECTED ||
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
-            connected = true;
             Log.i("Internet", "Connected");
         } else {
             Toast.makeText(act.getApplicationContext(), "Internet tidak tersedia.", Toast.LENGTH_LONG).show();
             Log.i("Internet", "Not connected");
         }
-
-        return connected;
     }
 
     public void executer(Runnable run) {
@@ -134,24 +126,16 @@ public class JahrulnrLib {
             urlConnection.setConnectTimeout(5 * 1000);
             urlConnection.setRequestMethod("GET");
             urlConnection.addRequestProperty("User-Agent", jahrulnr.animeWatch.config.userAgent);
-            getRequestProperties(properties).forEach((s, s2) -> {
-                urlConnection.addRequestProperty(s, s2);
-            });
+            getRequestProperties(properties).forEach(urlConnection::addRequestProperty);
             BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             String input;
-            StringBuffer stringBuffer = new StringBuffer();
+            StringBuilder stringBuffer = new StringBuilder();
             while ((input = in.readLine()) != null) {
                 stringBuffer.append(input);
             }
             in.close();
             urlConnection.disconnect();
             text = stringBuffer.toString();
-        } catch (SocketTimeoutException e) {
-            e.printStackTrace();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -164,7 +148,7 @@ public class JahrulnrLib {
         StrictMode.setThreadPolicy(policy);
 
         BufferedReader reader = null;
-        URL url = null;
+        URL url;
         try {
             // Defined URL  where to send data
             url = new URL(link);
@@ -178,9 +162,7 @@ public class JahrulnrLib {
             urlConnection.setConnectTimeout(5 * 1000);
             urlConnection.setRequestMethod("POST");
             urlConnection.addRequestProperty("User-Agent", jahrulnr.animeWatch.config.userAgent);
-            getRequestProperties(properties).forEach((s, s2) -> {
-                urlConnection.addRequestProperty(s, s2);
-            });
+            getRequestProperties(properties).forEach(urlConnection::addRequestProperty);
 
             OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
             wr.write(data);
@@ -189,7 +171,7 @@ public class JahrulnrLib {
             // Get the server response
             reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             StringBuilder sb = new StringBuilder();
-            String line = null;
+            String line;
 
             // Read Server Response
             while ((line = reader.readLine()) != null) {
@@ -218,11 +200,12 @@ public class JahrulnrLib {
             return "";
         } finally {
             try {
+                assert reader != null;
                 reader.close();
             } catch (Exception ex) {
                 Log.e("getRequest_2", ex.toString());
                 Toast.makeText(activity, "Ada masalah. Silakan refresh.", Toast.LENGTH_LONG).show();
-                return "";
+                text = "";
             }
         }
 

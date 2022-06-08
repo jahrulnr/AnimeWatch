@@ -1,5 +1,6 @@
 package jahrulnr.animeWatch.ui;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -37,7 +38,6 @@ public class HomeFragment extends Fragment {
     private FragmentHomeBinding binding;
     private Activity act;
     private JahrulnrLib it;
-    private final episodePreview episodePreview = null;
     private TextView loadMore;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -51,7 +51,7 @@ public class HomeFragment extends Fragment {
         root.findViewById(R.id.episode_preview).setVisibility(View.GONE);
         RelativeLayout loading = root.findViewById(R.id.loadingContainer);
         GridViewWithHeaderAndFooter gridView = root.findViewById(R.id.animeHome);
-        View footerView = LayoutInflater.from(getContext()).inflate(R.layout.more_text, null, false);
+        @SuppressLint("InflateParams") View footerView = LayoutInflater.from(getContext()).inflate(R.layout.more_text, null, false);
         ProgressBar gridLoad = footerView.findViewById(R.id.loadData);
         gridLoad.setVisibility(View.GONE);
         loadMore = footerView.findViewById(R.id.loadMore);
@@ -64,7 +64,7 @@ public class HomeFragment extends Fragment {
         act = getActivity();
         it = new JahrulnrLib(this.getActivity());
         List<episodeList> episodelist = new ArrayList<>();
-        animeHomeListAdapter adapter = new animeHomeListAdapter(act, it, episodelist);
+        animeHomeListAdapter adapter = new animeHomeListAdapter(act, episodelist);
         String post = "action=loadmore&type=home&page=";
         String source = new dbFiles(act).readSource(dbFiles.updateSource);
         it.executer(() -> {
@@ -76,7 +76,6 @@ public class HomeFragment extends Fragment {
                 episodelist.addAll(getAnime(config.apiLink, post + 0));
             }
 
-            episodelist.addAll(episodelist);
             act.runOnUiThread(() -> {
                 gridView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
@@ -84,9 +83,8 @@ public class HomeFragment extends Fragment {
             });
         });
 
-        gridView.setOnItemClickListener((adapterView, view, i, l) -> {
-            new episodePreview(act, it, refreshLayout, episodelist.get(i), null);
-        });
+        gridView.setOnItemClickListener((adapterView, view, i, l) ->
+                new episodePreview(act, it, refreshLayout, episodelist.get(i)));
 
         AtomicInteger page = new AtomicInteger(1);
         loadMore.setOnClickListener(view -> {

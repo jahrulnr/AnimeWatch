@@ -1,5 +1,6 @@
 package jahrulnr.animeWatch.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import com.jess.ui.TwoWayGridView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 
 import jahrulnr.animeWatch.Class.animeClick;
@@ -46,7 +48,6 @@ public class nontonView extends AppCompatActivity {
     private RelativeLayout epsContainer;
     private LinearLayout serverContainer;
     private TextView nameEps, thisEps;
-    private GridView serverGridView;
     private TwoWayGridView gridView;
     private boolean epsShow = false;
     private final animeList animelist = new animeList();
@@ -70,7 +71,7 @@ public class nontonView extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY // hide status bar and nav bar after a short delay, or if the user interacts with the middle of the screen
         );
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
@@ -110,9 +111,7 @@ public class nontonView extends AppCompatActivity {
                                             h +
                                             "</body></html>", "text/html", "UTF-8");
                         }
-                        webView.post(() -> {
-                            it.animate(loadingFullscreen, false);
-                        });
+                        webView.post(() -> it.animate(loadingFullscreen, false));
                     } catch (IllegalStateException e) {
                         e.printStackTrace();
                         finish();
@@ -163,6 +162,7 @@ public class nontonView extends AppCompatActivity {
         });
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onStart() {
         super.onStart();
@@ -178,11 +178,11 @@ public class nontonView extends AppCompatActivity {
         webView = findViewById(R.id.nontonAnime);
         nameEps = findViewById(R.id.tEpsLain);
         thisEps = findViewById(R.id.thisEps);
-        serverGridView = serverContainer.findViewById(R.id.serverGridview);
+        GridView serverGridView = serverContainer.findViewById(R.id.serverGridview);
         epsContainer.setLayoutAnimation(animationController);
         serverContainer.setLayoutAnimation(animationController);
         epsContainer.setVisibility(View.GONE);
-        epsListAdapter = new nontonEpsListAdapter(this, animelist, eps);
+        epsListAdapter = new nontonEpsListAdapter(this, eps);
         gridView.setAdapter(epsListAdapter);
 
         it = new JahrulnrLib(this);

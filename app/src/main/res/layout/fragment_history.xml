@@ -25,9 +25,10 @@
             android:textAlignment="center"
             android:text="Tidak ada history"
             android:textColor="@color/white"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:visibility="gone"
-            android:animateLayoutChanges="true" />
+            android:animateLayoutChanges="true"
+            tools:ignore="HardcodedText" />
 
     </RelativeLayout>
 

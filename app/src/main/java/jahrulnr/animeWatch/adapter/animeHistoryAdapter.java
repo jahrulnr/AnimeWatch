@@ -1,5 +1,6 @@
 package jahrulnr.animeWatch.adapter;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +18,10 @@ import jahrulnr.animeWatch.R;
 
 public class animeHistoryAdapter extends BaseAdapter {
 
-    private final Activity activity;
     private final List<episodeList> epsList;
     private final LayoutInflater layoutInflater;
 
     public animeHistoryAdapter(Activity activity, List<episodeList> epsList) {
-        this.activity = activity;
         this.epsList = epsList;
         this.layoutInflater = LayoutInflater.from(activity);
     }
@@ -42,6 +41,7 @@ public class animeHistoryAdapter extends BaseAdapter {
         return i;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         if (view == null)

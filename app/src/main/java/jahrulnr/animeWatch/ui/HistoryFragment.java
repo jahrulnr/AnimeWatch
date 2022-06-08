@@ -29,10 +29,7 @@ public class HistoryFragment extends Fragment {
 
     private Activity act;
     private JahrulnrLib it;
-    private GridView gridView;
-    private ViewGroup container;
     private FragmentHistoryBinding binding;
-    private episodePreview episodePreview = null;
     boolean animeClicked = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -48,7 +45,7 @@ public class HistoryFragment extends Fragment {
         root.findViewById(R.id.episode_preview).setVisibility(View.GONE);
         RelativeLayout loading = root.findViewById(R.id.loadingContainer);
         container = root.findViewById(R.id.historyContainer);
-        gridView = root.findViewById(R.id.historyWatch);
+        GridView gridView = root.findViewById(R.id.historyWatch);
         TextView textView = root.findViewById(R.id.emptyList);
         loading.setVisibility(View.VISIBLE);
         container.setLayoutAnimation(animationController);
@@ -62,7 +59,7 @@ public class HistoryFragment extends Fragment {
             gridView.setOnItemClickListener((adapterView, view, i, l) -> {
                 episodeList eps = epsList.get(i);
                 animeClicked = true;
-                episodePreview = new episodePreview(act, it, finalContainer, eps, null);
+                new episodePreview(act, it, finalContainer, eps);
             });
             textView.setVisibility(View.GONE);
         } else {

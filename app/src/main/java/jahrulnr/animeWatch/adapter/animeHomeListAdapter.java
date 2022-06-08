@@ -1,5 +1,6 @@
 package jahrulnr.animeWatch.adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +14,14 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import jahrulnr.animeWatch.Class.episodeList;
-import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
 
 public class animeHomeListAdapter extends BaseAdapter {
 
-    private final Context context;
     private final List<episodeList> animehomelist;
-    private final JahrulnrLib it;
     LayoutInflater inflter;
 
-    public animeHomeListAdapter(Context context, JahrulnrLib it, List<episodeList> episodelist) {
-        this.context = context;
-        this.it = it;
+    public animeHomeListAdapter(Context context, List<episodeList> episodelist) {
         this.animehomelist = episodelist;
         inflter = LayoutInflater.from(context);
     }
@@ -45,6 +41,7 @@ public class animeHomeListAdapter extends BaseAdapter {
         return i;
     }
 
+    @SuppressLint("InflateParams")
     @Override
     public View getView(int i, View view, ViewGroup viewGroup) {
         if (view == null) {

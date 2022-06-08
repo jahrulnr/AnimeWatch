@@ -1,5 +1,6 @@
 package jahrulnr.animeWatch.Class;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -14,7 +15,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.squareup.picasso.Picasso;
 
@@ -30,17 +31,10 @@ import jahrulnr.animeWatch.ui.nontonView;
 public class episodePreview {
 
     private final RelativeLayout relativeLayout;
-    private final ViewGroup viewGroup;
     private final RelativeLayout episode_preview;
-    private final animeClick ac;
-    private final JahrulnrLib it;
-    private final episodePreview This;
 
-    public episodePreview(Activity act, JahrulnrLib it, ViewGroup viewGroup, episodeList episodelist, @Nullable animeClick ac) {
-        this.ac = ac;
-        this.it = it;
-        this.viewGroup = viewGroup;
-        this.This = this;
+    @SuppressLint("SetTextI18n")
+    public episodePreview(Activity act, JahrulnrLib it, ViewGroup viewGroup, episodeList episodelist) {
         Animation animation = AnimationUtils.loadAnimation(act, R.anim.grid_animation);
         LayoutAnimationController controller = new LayoutAnimationController(animation);
         animeList animelist = episodelist.animeList;
@@ -82,7 +76,9 @@ public class episodePreview {
                 Picasso.get().load(cover).into(iv_cover);
                 String epsPattern = "(.*?)\\s+Episode\\s+([0-9]+)?( ?Sub Indo)?";
                 String spacePattern = "  +";
+                assert nama != null;
                 String finalNama = nama.replaceAll(spacePattern, "").replaceAll(epsPattern, "$1");
+                assert episode != null;
                 String e = episode.replaceAll(spacePattern, "").replaceAll(epsPattern, "Episode $2");
                 tv_title.setText(finalNama);
                 tv_episode.setText(": " + e);
@@ -109,6 +105,7 @@ public class episodePreview {
     public static class episodeServerList {
         public String nama, server;
 
+        @NonNull
         @Override
         public String toString() {
             return "{\"nama\":\"" + nama + "\", \"server\":\"" + server + "\"}";
@@ -164,6 +161,7 @@ public class episodePreview {
             return i;
         }
 
+        @SuppressLint("InflateParams")
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             if (view == null)

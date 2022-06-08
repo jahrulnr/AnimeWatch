@@ -43,20 +43,22 @@
                     android:text="Episode Lainnya"
                     android:textColor="@color/white"
                     android:textStyle="bold"
-                    android:id="@+id/tEpsLain" />
+                    android:id="@+id/tEpsLain"
+                    tools:ignore="HardcodedText" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_toLeftOf="@+id/videoServer"
+                    android:layout_toStartOf="@+id/videoServer"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:clickable="true"
                     android:text="Episode 00"
                     android:textColor="@color/info"
                     android:textStyle="bold"
-                    android:id="@+id/thisEps" />
+                    android:id="@+id/thisEps"
+                    tools:ignore="HardcodedText" />
 
                 <ImageButton
                     android:layout_width="wrap_content"
@@ -64,7 +66,8 @@
                     android:layout_alignParentEnd="true"
                     android:src="@drawable/ic_video_setting"
                     android:backgroundTint="@color/transparent"
-                    android:id="@+id/videoServer" />
+                    android:id="@+id/videoServer"
+                    tools:ignore="ContentDescription" />
 
                 <com.jess.ui.TwoWayGridView
                     android:layout_width="match_parent"
@@ -100,7 +103,8 @@
         android:layout_alignParentEnd="true"
         android:backgroundTint="@color/transparent"
         android:src="@drawable/ic_more"
-        android:id="@+id/moreEps" />
+        android:id="@+id/moreEps"
+        tools:ignore="ContentDescription" />
 
     <LinearLayout
         android:layout_width="400dp"
@@ -134,7 +138,8 @@
                     android:layout_marginBottom="5dp"
                     android:text="Pilih Server"
                     android:textStyle="bold"
-                    android:textColor="@color/white" />
+                    android:textColor="@color/white"
+                    tools:ignore="HardcodedText"/>
 
                 <GridView
                     android:layout_width="match_parent"
