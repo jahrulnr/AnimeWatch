@@ -1,4 +1,5 @@
 <resources>
+    <string name="app_update">https://raw.githubusercontent.com/jahrulnr/AnimeWatch/main/app/update-changelog.json</string>
     <string name="app_name">AnimeWatch</string>
     <string name="title_home">Baru Update</string>
     <string name="nav_home">Beranda</string>

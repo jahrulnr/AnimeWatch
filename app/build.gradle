@@ -3,10 +3,10 @@ plugins {
 }
 
 // Load keystore
-def keystorePropertiesFile = rootProject.file("keystore.properties");
+def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
-if ( keystorePropertiesFile.exists() )
-keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+if (keystorePropertiesFile.exists())
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
     signingConfigs {
@@ -28,7 +28,7 @@ android {
         minSdk 26
         targetSdk 32
         versionCode 1
-        versionName "1.0"
+        versionName '1.1'
 
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         testFunctionalTest true
@@ -43,7 +43,7 @@ android {
     buildFeatures {
         viewBinding true
     }
-    dataBinding{
+    dataBinding {
         enabled true
     }
     buildTypes {
@@ -62,11 +62,12 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'in.srain.cube:grid-view-with-header-footer:1.0.12'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'com.github.javiersantos:AppUpdater:2.7'
 
-    implementation 'androidx.lifecycle:lifecycle-livedata:2.0.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.0.0'
-    implementation 'androidx.navigation:navigation-fragment:2.0.0-rc02'
-    implementation 'androidx.navigation:navigation-ui:2.0.0-rc02'
+    implementation 'androidx.lifecycle:lifecycle-livedata:2.4.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel:2.4.1'
+    implementation 'androidx.navigation:navigation-fragment:2.5.0-rc01'
+    implementation 'androidx.navigation:navigation-ui:2.5.0-rc01'
     testImplementation 'junit:junit:4.13.2'
 
 }
