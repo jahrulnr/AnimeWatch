@@ -6,10 +6,15 @@ def keystorePropertiesFile = rootProject.file("keystore.properties")
 def keystoreProperties = new Properties()
 
 android {
+    compileSdk 32
+    compileSdkVersion 32
+    buildToolsVersion '32.0.0'
+    ndkVersion '21.4.7075529'
+
     signingConfigs {
         release {
-            keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
             if(keystorePropertiesFile.exists()){
+                keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
                 storeFile file(keystoreProperties['storeFile'])
                 storePassword keystoreProperties['storePassword']
                 keyAlias keystoreProperties['keyAlias']
@@ -17,8 +22,6 @@ android {
             }
         }
     }
-    compileSdk 32
-    compileSdkVersion 32
 
 
     defaultConfig {
@@ -68,8 +71,6 @@ android {
         includeInApk true
         includeInBundle true
     }
-    buildToolsVersion '32.0.0'
-    ndkVersion '21.4.7075529'
 }
 
 dependencies {

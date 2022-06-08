@@ -6,10 +6,3 @@ plugins {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
-/*
- bug
- - searching v
- - movie v
- - home img v
- */
