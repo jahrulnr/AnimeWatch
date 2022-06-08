@@ -1,2 +1,5 @@
 # AnimeWatch
-I'm newbie developer. If u found some bug, so sorry and i will try to fix it.
+Fitur:
+- Anime terbaru, Daftar anime, History
+Subtitle:
+- Indonesia
