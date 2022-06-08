@@ -1,5 +1,5 @@
 # AnimeWatch
-Fitur:
+## Fitur:
 - Anime terbaru, Daftar anime, History
-Subtitle:
+## Subtitle:
 - Indonesia
