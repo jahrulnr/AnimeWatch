@@ -15,6 +15,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jahrulnr.animeWatch.Class.dbFiles;
@@ -29,8 +30,15 @@ public class HistoryFragment extends Fragment {
 
     private Activity act;
     private JahrulnrLib it;
+    dbFiles dbFiles;
     private FragmentHistoryBinding binding;
     boolean animeClicked = false;
+    animeHistoryAdapter adapter;
+    List<episodeList> epsList = new ArrayList<>();
+    View root;
+    RelativeLayout loading;
+    GridView gridView;
+    TextView textView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -38,23 +46,24 @@ public class HistoryFragment extends Fragment {
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.grid_animation);
         LayoutAnimationController animationController = new LayoutAnimationController(animation);
         binding = FragmentHistoryBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        root = binding.getRoot();
 
         act = getActivity();
         it = new JahrulnrLib(act);
         root.findViewById(R.id.episode_preview).setVisibility(View.GONE);
-        RelativeLayout loading = root.findViewById(R.id.loadingContainer);
+        loading = root.findViewById(R.id.loadingContainer);
         container = root.findViewById(R.id.historyContainer);
-        GridView gridView = root.findViewById(R.id.historyWatch);
-        TextView textView = root.findViewById(R.id.emptyList);
+        gridView = root.findViewById(R.id.historyWatch);
+        textView = root.findViewById(R.id.emptyList);
         loading.setVisibility(View.VISIBLE);
         container.setLayoutAnimation(animationController);
 
-        dbFiles dbFiles = new dbFiles(act);
-        List<episodeList> epsList = dbFiles.getList();
+        dbFiles = new dbFiles(act);
+        epsList.clear();
+        epsList.addAll(dbFiles.getList());
         if (!epsList.isEmpty()) {
             ViewGroup finalContainer = container;
-            animeHistoryAdapter adapter = new animeHistoryAdapter(getActivity(), epsList);
+            adapter = new animeHistoryAdapter(getActivity(), epsList);
             gridView.setAdapter(adapter);
             gridView.setOnItemClickListener((adapterView, view, i, l) -> {
                 episodeList eps = epsList.get(i);
@@ -69,6 +78,21 @@ public class HistoryFragment extends Fragment {
         it.animate(loading, false);
 
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(epsList.isEmpty()){
+            epsList.addAll(dbFiles.getList());
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        epsList.clear();
     }
 
     @Override

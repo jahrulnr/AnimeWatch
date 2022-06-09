@@ -43,20 +43,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
-
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        Activity act = this;
         root = binding.getRoot();
         it = new JahrulnrLib(this);
         splashContainer = root.findViewById(R.id.splashContainer);
+        JahrulnrLib.checkNetwork(this);
+        binding.navView.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         ImageView splashImg = splashContainer.findViewById(R.id.splash_image);
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
         actionBar.hide();
-        JahrulnrLib.checkNetwork(this);
-        binding.navView.setVisibility(View.GONE);
-
         try {
             String splash_path = "splash";
             String[] splash_list = getAssets().list(splash_path);
@@ -68,38 +70,40 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        AtomicInteger count = new AtomicInteger(1);
-        it.timerExecuter(() ->
-            runOnUiThread(() ->{
-                if(count.getAndIncrement() % 15 == 0)
-                    Toast.makeText(act, "Koneksi lambat, mohon bersabar", Toast.LENGTH_LONG).show();
-        }), 1000, 1000);
+        if(splashContainer.getVisibility()==View.VISIBLE && root.findViewById(R.id.fragment_home) != null) {
+            AtomicInteger count = new AtomicInteger(1);
+            it.timerExecuter(() ->
+                    runOnUiThread(() -> {
+                        if (count.getAndIncrement() % 15 == 0)
+                            Toast.makeText(this, "Koneksi lambat, mohon bersabar", Toast.LENGTH_LONG).show();
+                    }), 1000, 1000);
 
-        it.executer(() -> {
-            String post = "action=loadmore&type=home&page=0";
-            String updateSource = JahrulnrLib.getRequest(config.apiLink, post, null);
-            String listSource = JahrulnrLib.getRequest(config.list, null);
-            boolean success = new dbFiles(act).writeSource(updateSource, dbFiles.updateSource)
-                    && new dbFiles(act).writeSource(listSource, dbFiles.listSource);
-            runOnUiThread(() -> {
-                it.timerCancel();
-                if (success) {
-                    actionBar.show();
-                    binding.navView.setVisibility(View.VISIBLE);
-                    it.animate(splashContainer, false);
+            it.executer(() -> {
+                String post = "action=loadmore&type=home&page=0";
+                String updateSource = JahrulnrLib.getRequest(config.apiLink, post, null);
+                String listSource = JahrulnrLib.getRequest(config.list, null);
+                boolean success = new dbFiles(this).writeSource(updateSource, dbFiles.updateSource)
+                        && new dbFiles(this).writeSource(listSource, dbFiles.listSource);
+                runOnUiThread(() -> {
+                    it.timerCancel();
+                    if (success) {
+                        actionBar.show();
+                        binding.navView.setVisibility(View.VISIBLE);
+                        it.animate(splashContainer, false);
 
-                    AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
-                            R.id.navigation_home, R.id.navigation_list, R.id.navigation_history)
-                            .build();
-                    NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
-                    NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
-                    NavigationUI.setupWithNavController(binding.navView, navController);
-                    updateCheck();
-                } else {
-                    onStart();
-                }
+                        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                                R.id.navigation_home, R.id.navigation_list, R.id.navigation_history)
+                                .build();
+                        NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
+                        NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
+                        NavigationUI.setupWithNavController(binding.navView, navController);
+                        updateCheck();
+                    } else {
+                        onStart();
+                    }
+                });
             });
-        });
+        }
     }
 
     private void closeLayout(ViewGroup viewGroup, View view) {
