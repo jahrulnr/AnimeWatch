@@ -24,12 +24,11 @@ public class dbFiles {
     public static String listSource = "listSource";
     private String db = "/db.json";
     private final Activity activity;
-    private List<episodeList> epsList;
+    private List<episodeList> epsList = new ArrayList<>();
 
     public dbFiles(Activity activity) {
         this.activity = activity;
         this.db = activity.getFilesDir().getPath() + db;
-        this.epsList = new ArrayList<>();
     }
 
     public String path() {
@@ -38,8 +37,8 @@ public class dbFiles {
 
     public void add(episodeList episodelist) {
         if (epsList.isEmpty())
-            epsList = getList();
-        epsList.removeIf(episodeList -> episodeList.getLink().equals(episodelist.link));
+            epsList = getList(false);
+        epsList.removeIf(epsList -> epsList.getLink().equals(episodelist.link));
         epsList.add(episodelist);
     }
 
@@ -56,20 +55,24 @@ public class dbFiles {
     }
 
     public List<episodeList> getList() {
-        List<episodeList> epsList = new ArrayList<>();
+        return getList(true);
+    }
+
+    public List<episodeList> getList(boolean reverse) {
+        List<episodeList> epslist = new ArrayList<>();
 
         if (new File(path()).exists()) {
             ObjectInputStream in;
             try {
                 in = new ObjectInputStream(new FileInputStream(path()));
-                epsList = (List<episodeList>) in.readObject();
+                epslist = (List<episodeList>) in.readObject();
+                if(reverse) Collections.reverse(epslist);
             } catch (IOException | ClassNotFoundException e) {
-                e.printStackTrace();
+                System.err.println(e.toString());
             }
-            Collections.reverse(epsList);
         }
 
-        return epsList;
+        return epslist;
     }
 
     public boolean writeSource(String source, String filename) {

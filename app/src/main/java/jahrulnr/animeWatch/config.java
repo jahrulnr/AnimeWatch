@@ -2,7 +2,7 @@ package jahrulnr.animeWatch;
 
 import java.util.regex.Pattern;
 
-public class config {
+public class config { 
     public static String home = "https://75.119.159.228/";
     public static String apiLink = home + "wp-admin/admin-ajax.php";
     public static String list = home + "anime/?mode=list";

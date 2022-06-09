@@ -23,7 +23,6 @@ android {
         }
     }
 
-
     defaultConfig {
         applicationId "jahrulnr.animeWatch"
         minSdk 26
@@ -50,18 +49,16 @@ android {
     }
     buildTypes {
         release {
+            resValue "string", "app_name", "AnimeWatch"
             debuggable false
             signingConfig signingConfigs.release
-            jniDebuggable false
-            renderscriptDebuggable false
-            minifyEnabled false
         }
         debug {
-            debuggable true
+            resValue "string", "app_name", "AnimeWatch Beta"
+            applicationIdSuffix '.debug'
+            versionNameSuffix '.debug'
             signingConfig signingConfigs.debug
-            jniDebuggable true
-            renderscriptDebuggable true
-            minifyEnabled false
+            debuggable true
         }
     }
     lint {

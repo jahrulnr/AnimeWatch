@@ -3,12 +3,15 @@ package jahrulnr.animeWatch.ui;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LayoutAnimationController;
+import android.webkit.ConsoleMessage;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.GridView;
@@ -23,6 +26,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.jess.ui.TwoWayGridView;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +48,7 @@ import jahrulnr.animeWatch.config;
 public class nontonView extends AppCompatActivity {
 
     private JahrulnrLib it;
+    private String htmlWebView = "";
     private RelativeLayout loadingFullscreen, loadingGridView;
     private ImageButton moreEps, serverBtn;
     private WebView webView;
@@ -60,7 +67,7 @@ public class nontonView extends AppCompatActivity {
     private episodePreview.episodeServerAdapter episodeServerAdapter;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         View decorView = getWindow().getDecorView();
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -95,28 +102,7 @@ public class nontonView extends AppCompatActivity {
             }
 
             if (server != null) {
-                // set history
-                String h = JahrulnrLib.getRequest(config.apiLink, server, null);
-                runOnUiThread(() -> {
-                    try {
-                        String s = h.replaceAll("\\Q<script\\E(.*?)\\Q</script>\\E", "");
-                        Matcher sM = JahrulnrLib.preg_match(s, "(.*)\\Qsrc=\"\\E((http)?(s)?(:)?//.*?/.*?)\\\" ?");
-                        if (sM.find()) {
-                            s = sM.group(2);
-                            if (sM.group(3) == null) s = "https:" + s;
-                            webView.loadUrl(s);
-                        } else {
-                            webView.loadData(
-                                    "<html><body style=\"padding: 0; margin: 0;width: 100%; height:100%;background:black\">" +
-                                            h +
-                                            "</body></html>", "text/html", "UTF-8");
-                        }
-                        webView.post(() -> it.animate(loadingFullscreen, false));
-                    } catch (IllegalStateException e) {
-                        e.printStackTrace();
-                        finish();
-                    }
-
+                setWebURL(server, () -> {
                     // save history
                     dbFiles db = new dbFiles(this);
                     db.add(epsList);
@@ -138,13 +124,14 @@ public class nontonView extends AppCompatActivity {
                         eps.addAll(anm.getEpisode(s, config.episode_pattern2, false));
                     }
                     Collections.reverse(eps);
-                    idEps = 0;
-                    for (episodeList e : this.eps) {
-                        if (e.episode.contains(epsList.episode)) {
-                            break;
-                        }
-                        idEps++;
-                    }
+                    idEps = eps.indexOf(epsList);
+//                    idEps = 0;
+//                    for (episodeList e : eps) {
+//                        if (e.episode.contains(epsList.episode)) {
+//                            break;
+//                        }
+//                        idEps++;
+//                    }
                 }
 
                 if (!eps.isEmpty()) {
@@ -166,6 +153,18 @@ public class nontonView extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
+
+        try {
+            BufferedReader r = new BufferedReader(new InputStreamReader(getAssets().open("webView/nontonWebView.html")));
+            StringBuilder total = new StringBuilder();
+            for (String line; (line = r.readLine()) != null; ) {
+                total.append(line).append('\n');
+            }
+            htmlWebView = total.toString();
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+        }
+
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.grid_animation);
         LayoutAnimationController animationController = new LayoutAnimationController(animation);
 
@@ -197,34 +196,38 @@ public class nontonView extends AppCompatActivity {
 
         // set webview
         webView.setNetworkAvailable(true);
+        webView.setBackgroundColor(Color.BLACK);
         webView.getSettings().setUseWideViewPort(true);
         webView.getSettings().setAppCacheEnabled(true);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setBuiltInZoomControls(true);
-        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setDomStorageEnabled(false);
         webView.getSettings().setDisplayZoomControls(false);
         webView.getSettings().setLoadWithOverviewMode(true);
-        webView.getSettings().setSupportMultipleWindows(false);
-        webView.getSettings().setAllowUniversalAccessFromFileURLs(false);
+        webView.getSettings().setSupportMultipleWindows(true);
         webView.getSettings().setAppCachePath(getCacheDir().getAbsolutePath());
-        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        webView.getSettings().setUserAgentString(new WebView(this).getSettings().getUserAgentString());
-        webView.loadData("<html><body style=\"padding: 0; margin: 0;width: 100%; height:100%;background:black\"></body></html>",
-                "text/html", "UTF-8");
+        System.out.println(getCacheDir().getAbsolutePath());
+        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                super.onProgressChanged(view, newProgress);
+                if (newProgress == 100) {
+                    it.animate(loadingFullscreen, false);
+                } else if(loadingFullscreen.getVisibility()==View.GONE){
+                    it.animate(loadingFullscreen, true);
+                }
+            }
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                System.out.println("console.log: "+ consoleMessage.message());
+                return true;
+            }
+        });
 
         episodeServerAdapter = new episodePreview.episodeServerAdapter(this, serverList);
         serverGridView.setAdapter(episodeServerAdapter);
         setup();
-
-        webView.setOnLongClickListener(view -> {
-            unregisterForContextMenu(webView);
-            WebView.HitTestResult result = webView.getHitTestResult();
-            if (result.getType() == 7) {
-                registerForContextMenu(webView);
-            }
-
-            return false;
-        });
 
         moreEps = findViewById(R.id.moreEps);
         moreEps.setOnClickListener(view -> epsMenu());
@@ -246,41 +249,36 @@ public class nontonView extends AppCompatActivity {
             }
         });
 
-        serverGridView.setOnItemClickListener((adapterView, view, i, l) -> {
-            try {
-                it.animate(loadingFullscreen, true);
-                it.executer(() -> {
-                    String s = JahrulnrLib.getRequest(config.apiLink, serverList.get(i).server, null)
-                            .replaceAll("\\Q<script\\E(.*?)\\Q</script>\\E", "");
-                    Matcher sM = JahrulnrLib.preg_match(s, "(.*)\\Qsrc=\"\\E((http)?(s)?(:)?//.*?/.*?)\\\" ?");
-                    runOnUiThread(() -> {
-                        if (sM.find()) {
-                            webView.loadUrl(sM.group(3) == null ? "https:" + s : sM.group(2));
-                        } else {
-                            webView.loadData("<html><body style=\"padding: 0; margin: 0;width: 100%; height:100%;background:black\">" +
-                                    s +
-                                    "</body></html>", "text/html", "UTF-8");
-                        }
-                        epsMenu();
-                        it.animate(loadingFullscreen, false);
-                    });
-                });
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-                finish();
-            }
-        });
-
         gridView.setOnItemClickListener((parent, view, position, id) -> {
             this.epsList = this.eps.get(position);
             this.epsList.animeList = this.animelist;
             this.server = null;
             setup();
             epsMenu();
-            System.out.println(epsList);
         });
 
         epsContainer.setOnClickListener(view -> epsMenu());
+        serverGridView.setOnItemClickListener((adapterView, view, i, l)
+                -> setWebURL(serverList.get(i).server, ()->epsMenu()));
+    }
+
+    private void setWebURL(String request, @Nullable Runnable code) {
+        it.executer(() -> {
+            String s = JahrulnrLib.getRequest(config.apiLink, request, null)
+                    .replaceAll("\\Q<script\\E(.*?)\\Q</script>\\E", "")
+                    .replace("src=\"//", "src=\"https://");
+            runOnUiThread(() -> {
+                if (!htmlWebView.isEmpty()) {
+                    webView.loadData(htmlWebView.replace("__code__", s), "text/html", "UTF-8");
+                    System.out.println(htmlWebView.replace("__code__", s));
+                } else {
+                    webView.loadData(s, "text/html", "UTF-8");
+                }
+
+                if(code != null)
+                    code.run();
+            });
+        });
     }
 
     private void epsMenu() {
@@ -299,15 +297,9 @@ public class nontonView extends AppCompatActivity {
         epsContainer.startLayoutAnimation();
         it.animate(epsContainer, true);
         epsShow = true;
-        if (idEps > -1) {
-            gridView.post(() -> {
-                int tempId = idEps;
-                if (tempId + 3 < eps.size()) {
-                    tempId += 3;
-                }
-                gridView.smoothScrollToPosition(tempId);
-            });
-        }
+        if (idEps > -1)
+            gridView.post(()
+                    -> gridView.smoothScrollToPosition(idEps + 3 < eps.size() ? idEps + 3 : idEps));
     }
 
     @Override

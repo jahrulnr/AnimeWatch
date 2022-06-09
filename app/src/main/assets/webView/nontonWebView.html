@@ -1,0 +1,36 @@
+<html>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        $.each($('iframe'), function() {
+            this.contentWindow.open = function (url, windowName, windowFeatures) {
+                console.log("iframe window.open caught!");
+            }
+        });
+
+        window.open = function (url, windowName, windowFeatures) {
+            console.log("window.open caught!");
+        };
+
+        // setTimeout = function(f, i){
+        //     console.log("setTimeout caught!");
+        //     console.log(f.toString());
+        // };
+
+        console.log("Setup done!");
+    </script> 
+    <style type="text/css">
+        body, iframe {
+            width: 100% !important;
+            height: 100% !important;
+            padding: 0 !important; 
+            margin: 0 !important;
+        }
+        body {
+            background: black;
+            color: white;
+        }
+    </style>
+    <body>
+         __code__
+    </body>
+</html>

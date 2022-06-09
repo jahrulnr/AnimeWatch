@@ -26,10 +26,11 @@ import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.net.ssl.SSLProtocolException;
+
 public class JahrulnrLib {
     @SuppressLint("StaticFieldLeak")
     private static Activity activity;
-    private static String text = "";
     public static config config = new config();
 
     private Timer T;
@@ -114,7 +115,7 @@ public class JahrulnrLib {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        text = "";
+        String text = "";
         URL url;
         try {
             url = new URL(link);
@@ -125,7 +126,6 @@ public class JahrulnrLib {
             urlConnection.setReadTimeout(60000);
             urlConnection.setConnectTimeout(5 * 1000);
             urlConnection.setRequestMethod("GET");
-            urlConnection.addRequestProperty("User-Agent", jahrulnr.animeWatch.config.userAgent);
             getRequestProperties(properties).forEach(urlConnection::addRequestProperty);
             BufferedReader in = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             String input;
@@ -149,6 +149,7 @@ public class JahrulnrLib {
 
         BufferedReader reader = null;
         URL url;
+        String text = "";
         try {
             // Defined URL  where to send data
             url = new URL(link);
@@ -161,7 +162,6 @@ public class JahrulnrLib {
             urlConnection.setReadTimeout(60000);
             urlConnection.setConnectTimeout(5 * 1000);
             urlConnection.setRequestMethod("POST");
-            urlConnection.addRequestProperty("User-Agent", jahrulnr.animeWatch.config.userAgent);
             getRequestProperties(properties).forEach(urlConnection::addRequestProperty);
 
             OutputStreamWriter wr = new OutputStreamWriter(urlConnection.getOutputStream());
@@ -179,33 +179,28 @@ public class JahrulnrLib {
                 sb.append(line);
             }
             text = sb.toString();
-        } catch (SocketTimeoutException e) {
-            Log.e("SocketTimeoutException", e.toString());
+        }
+        catch (SocketTimeoutException e) {
+            System.err.println("SocketTimeoutException: " + e.toString());
             Toast.makeText(activity, "Koneksi timeout. Silakan refresh.", Toast.LENGTH_LONG).show();
-            return "";
+        } catch (SSLProtocolException e){
+            System.err.println("SSLProtocolException: " + e.toString());
+            Toast.makeText(activity, "Gagal memuat data. Silakan refresh.", Toast.LENGTH_LONG).show();
         } catch (UnsupportedEncodingException e) {
-            Log.e("UnsupportEncoding", e.toString());
-            e.printStackTrace();
+            System.err.println("UnsupportEncoding: " + e.toString());
             Toast.makeText(activity, "Ada masalah, coba lagi.", Toast.LENGTH_LONG).show();
-            return "";
         } catch (IOException e) {
-            Log.e("IOException", e.toString());
-            e.printStackTrace();
+            System.err.println("IOException: " + e.toString());
             Toast.makeText(activity, "Ada masalah, coba lagi.", Toast.LENGTH_LONG).show();
-            return "";
         } catch (Exception ex) {
-            Log.e("getRequest_1", ex.getMessage());
-            ex.printStackTrace();
+            System.err.println("Exception: " + ex.toString());
             Toast.makeText(activity, "Ada masalah, coba lagi.", Toast.LENGTH_LONG).show();
-            return "";
         } finally {
             try {
-                assert reader != null;
                 reader.close();
             } catch (Exception ex) {
-                Log.e("getRequest_2", ex.toString());
+                System.err.println("Exception: " + ex.toString());
                 Toast.makeText(activity, "Ada masalah. Silakan refresh.", Toast.LENGTH_LONG).show();
-                text = "";
             }
         }
 
