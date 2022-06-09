@@ -92,7 +92,8 @@ public class MainActivity extends AppCompatActivity {
                         NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
                         NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
                         NavigationUI.setupWithNavController(binding.navView, navController);
-                        it.animate(root.findViewById(R.id.animeHome), true);
+                        if(root.findViewById(R.id.animeHome) != null)
+                            it.animate(root.findViewById(R.id.animeHome), true);
 
                         updateCheck();
                     } else {
