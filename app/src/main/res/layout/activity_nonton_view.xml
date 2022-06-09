@@ -174,8 +174,7 @@
         android:layout_height="match_parent"
         android:id="@+id/loadingFullscreen">
 
-        <include layout="@layout/loading"
-            android:visibility="gone"/>
+        <include layout="@layout/loading"/>
 
     </RelativeLayout>
 
