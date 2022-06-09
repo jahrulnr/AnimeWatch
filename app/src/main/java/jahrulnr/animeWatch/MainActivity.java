@@ -1,7 +1,6 @@
 package jahrulnr.animeWatch;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.pm.ActivityInfo;
 import android.graphics.BitmapFactory;
@@ -43,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         super.onCreate(savedInstanceState);
+        System.out.println("MainActivity Created");
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         root = binding.getRoot();
@@ -50,11 +50,7 @@ public class MainActivity extends AppCompatActivity {
         splashContainer = root.findViewById(R.id.splashContainer);
         JahrulnrLib.checkNetwork(this);
         binding.navView.setVisibility(View.GONE);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
         ImageView splashImg = splashContainer.findViewById(R.id.splash_image);
         ActionBar actionBar = getSupportActionBar();
         assert actionBar != null;
@@ -67,10 +63,10 @@ public class MainActivity extends AppCompatActivity {
             splashImg.setImageBitmap(
                     BitmapFactory.decodeStream(getAssets().open(splash_img)));
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("IOException: " + e);
         }
 
-        if(splashContainer.getVisibility()==View.VISIBLE && root.findViewById(R.id.fragment_home) != null) {
+        if(splashContainer.getVisibility()==View.VISIBLE) {
             AtomicInteger count = new AtomicInteger(1);
             it.timerExecuter(() ->
                     runOnUiThread(() -> {
@@ -90,20 +86,27 @@ public class MainActivity extends AppCompatActivity {
                         actionBar.show();
                         binding.navView.setVisibility(View.VISIBLE);
                         it.animate(splashContainer, false);
-
                         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                                 R.id.navigation_home, R.id.navigation_list, R.id.navigation_history)
                                 .build();
                         NavController navController = Navigation.findNavController(MainActivity.this, R.id.nav_host_fragment_activity_main);
                         NavigationUI.setupActionBarWithNavController(MainActivity.this, navController, appBarConfiguration);
                         NavigationUI.setupWithNavController(binding.navView, navController);
+                        it.animate(root.findViewById(R.id.animeHome), true);
+
                         updateCheck();
                     } else {
-                        onStart();
+                        Toast.makeText(this, "Tidak dapat memuat data.", Toast.LENGTH_LONG).show();
+                        finish();
                     }
                 });
             });
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
     }
 
     private void closeLayout(ViewGroup viewGroup, View view) {
@@ -116,9 +119,11 @@ public class MainActivity extends AppCompatActivity {
         if (splashContainer != null && splashContainer.getVisibility() == View.GONE) {
             RelativeLayout episode_preview = root.findViewById(R.id.episode_preview);
             if (root.findViewById(R.id.fragment_home) != null
-                    && episode_preview.getVisibility() == View.VISIBLE)
-                closeLayout(root.findViewById(R.id.pullRefresh), episode_preview);
-            else if (root.findViewById(R.id.fragment_list) != null) {
+                    && episode_preview.getVisibility() == View.VISIBLE) {
+                episode_preview.setVisibility(View.GONE);
+                root.findViewById(R.id.pullRefresh).setVisibility(View.VISIBLE);
+                it.animate(root.findViewById(R.id.animeHome), true);
+            } else if (root.findViewById(R.id.fragment_list) != null) {
                 if (episode_preview.getVisibility() == View.VISIBLE) {
                     closeLayout(root.findViewById(R.id.episode_view), episode_preview);
                 } else {
