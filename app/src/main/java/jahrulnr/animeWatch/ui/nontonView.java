@@ -124,14 +124,13 @@ public class nontonView extends AppCompatActivity {
                         eps.addAll(anm.getEpisode(s, config.episode_pattern2, false));
                     }
                     Collections.reverse(eps);
-                    idEps = eps.indexOf(epsList);
-//                    idEps = 0;
-//                    for (episodeList e : eps) {
-//                        if (e.episode.contains(epsList.episode)) {
-//                            break;
-//                        }
-//                        idEps++;
-//                    }
+                    idEps = 0;
+                    for (episodeList e : eps) {
+                        if (e.episode.contains(epsList.episode)) {
+                            break;
+                        }
+                        idEps++;
+                    }
                 }
 
                 if (!eps.isEmpty()) {
@@ -234,7 +233,10 @@ public class nontonView extends AppCompatActivity {
         thisEps.setOnClickListener(view -> {
             if (!eps.isEmpty()) {
                 gridView.requestFocus();
-                gridView.smoothScrollToPosition(idEps);
+                gridView.post(() -> {
+                    if(loadingGridView.getVisibility()==View.GONE)
+                        gridView.smoothScrollToPosition(idEps);
+                });
             }
         });
 
@@ -298,8 +300,10 @@ public class nontonView extends AppCompatActivity {
         it.animate(epsContainer, true);
         epsShow = true;
         if (idEps > -1)
-            gridView.post(()
-                    -> gridView.smoothScrollToPosition(idEps + 3 < eps.size() ? idEps + 3 : idEps));
+            gridView.post(() -> {
+                if(loadingGridView.getVisibility()==View.GONE)
+                    gridView.smoothScrollToPosition(idEps + 3 < eps.size() ? idEps + 3 : idEps);
+            });
     }
 
     @Override

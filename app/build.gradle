@@ -51,7 +51,9 @@ android {
         release {
             resValue "string", "app_name", "AnimeWatch"
             debuggable false
+            minifyEnabled true
             signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
         debug {
             resValue "string", "app_name", "AnimeWatch Beta"

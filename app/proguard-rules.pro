@@ -19,3 +19,9 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-keep class jahrulnr.animeWatch.Class.animeList { *; }
+-keep class jahrulnr.animeWatch.Class.episodeList { *; }
+-assumenosideeffects class java.io.PrintStream {
+     public void println(%);
+     public void println(**);
+ }
