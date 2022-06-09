@@ -25,6 +25,31 @@
         android:id="@+id/EpsContainer">
 
         <androidx.cardview.widget.CardView
+            android:layout_width="50dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="24dp"
+            android:layout_alignParentEnd="true"
+            app:cardCornerRadius="50dp"
+            app:cardBackgroundColor="@color/dark">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="50dp">
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_video_setting"
+                    android:backgroundTint="@color/transparent"
+                    android:id="@+id/videoServer"
+                    tools:ignore="ContentDescription" />
+
+            </RelativeLayout>
+
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_alignParentBottom="true"
@@ -51,7 +76,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="20dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_toStartOf="@+id/videoServer"
+                    android:layout_alignParentEnd="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:clickable="true"
@@ -60,15 +85,6 @@
                     android:textStyle="bold"
                     android:id="@+id/thisEps"
                     tools:ignore="HardcodedText" />
-
-                <ImageButton
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_video_setting"
-                    android:backgroundTint="@color/transparent"
-                    android:id="@+id/videoServer"
-                    tools:ignore="ContentDescription" />
 
                 <com.jess.ui.TwoWayGridView
                     android:layout_width="match_parent"
@@ -158,7 +174,8 @@
         android:layout_height="match_parent"
         android:id="@+id/loadingFullscreen">
 
-        <include layout="@layout/loading" />
+        <include layout="@layout/loading"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
