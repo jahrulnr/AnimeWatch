@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -97,7 +98,8 @@ public class animeClick {
                 animeEpsListAdapter adapter = new animeEpsListAdapter(act, episodelist);
                 act.runOnUiThread(() -> {
                     GridView eps = act.findViewById(R.id.episode_list);
-                    Picasso.get().load(cover).into(iv_cover);
+                    Picasso.get().load(StringEscapeUtils.unescapeJava(cover)).into(iv_cover);
+                    System.out.println(StringEscapeUtils.unescapeJava(cover));
                     tv_title.setText(animelist.nama);
                     tv_genre.setText(": " + genreFinal);
                     tv_studio.setText(": " + studio);

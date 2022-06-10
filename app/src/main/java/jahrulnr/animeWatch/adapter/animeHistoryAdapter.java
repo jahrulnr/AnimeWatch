@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.util.List;
 
 import jahrulnr.animeWatch.Class.episodeList;
@@ -51,8 +53,8 @@ public class animeHistoryAdapter extends BaseAdapter {
         TextView anime = view.findViewById(R.id.anime);
         TextView episode = view.findViewById(R.id.episode);
         if (epsList.get(i).getImg_link() != null)
-            Picasso.get().load(epsList.get(i).getImg_link()).into(imageView);
-        anime.setText(epsList.get(i).getNama());
+            Picasso.get().load(StringEscapeUtils.unescapeJava(epsList.get(i).getImg_link())).into(imageView);
+        anime.setText(StringEscapeUtils.unescapeJava(epsList.get(i).getNama()));
         episode.setText(epsList.get(i).episode);
 
         return view;

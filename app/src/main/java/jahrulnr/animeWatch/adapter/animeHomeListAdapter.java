@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.util.List;
 
 import jahrulnr.animeWatch.Class.episodeList;
@@ -56,8 +58,8 @@ public class animeHomeListAdapter extends BaseAdapter {
         try {
             if (item.episode != null) {
                 anime.setText(item.episode);
-                Picasso.get().load(item.animeList.img_link).into(cover);
-                status.setText(item.animeList.status);
+                Picasso.get().load(StringEscapeUtils.unescapeJava(item.animeList.img_link)).into(cover);
+                status.setText(StringEscapeUtils.unescapeJava(item.animeList.status));
             }
         } catch (java.lang.NullPointerException e) {
             e.printStackTrace();

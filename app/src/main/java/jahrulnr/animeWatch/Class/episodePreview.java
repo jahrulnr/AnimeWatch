@@ -19,6 +19,8 @@ import androidx.annotation.NonNull;
 
 import com.squareup.picasso.Picasso;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -73,13 +75,13 @@ public class episodePreview {
 
             // Detail
             act.runOnUiThread(() -> {
-                Picasso.get().load(cover).into(iv_cover);
+                Picasso.get().load(StringEscapeUtils.unescapeJava(cover)).into(iv_cover);
+                System.out.println(StringEscapeUtils.unescapeJava(cover));
                 String epsPattern = "(.*?)\\s+Episode\\s+([0-9]+)?( ?Sub Indo)?";
-                String spacePattern = "  +";
                 assert nama != null;
-                String finalNama = nama.replaceAll(spacePattern, "").replaceAll(epsPattern, "$1");
+                String finalNama = StringEscapeUtils.unescapeJava(nama.replaceAll(epsPattern, "$1"));
                 assert episode != null;
-                String e = episode.replaceAll(spacePattern, "").replaceAll(epsPattern, "Episode $2");
+                String e = episode.replaceAll(epsPattern, "Episode $2");
                 tv_title.setText(finalNama);
                 tv_episode.setText(": " + e);
                 viewGroup.setVisibility(View.GONE);

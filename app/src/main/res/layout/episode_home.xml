@@ -6,6 +6,7 @@
     android:id="@+id/episode_view"
     android:animateLayoutChanges="true"
     android:visibility="gone">
+<!--    android:visibility="gone"-->
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -51,8 +52,7 @@
                 android:textSize="20dp"
                 android:textColor="@color/white"
                 android:autoSizeTextType="uniform"
-                android:autoSizeMaxTextSize="20dp"
-                android:fontFamily="sans-serif" />
+                android:autoSizeMaxTextSize="20dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"

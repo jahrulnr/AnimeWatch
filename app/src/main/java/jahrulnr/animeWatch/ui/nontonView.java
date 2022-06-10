@@ -26,6 +26,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.jess.ui.TwoWayGridView;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -185,8 +187,8 @@ public class nontonView extends AppCompatActivity {
 
         it = new JahrulnrLib(this);
         Intent intent = getIntent();
-        animelist.nama = intent.getStringExtra("nama");
-        animelist.img_link = intent.getStringExtra("img_link");
+        animelist.nama = StringEscapeUtils.unescapeJava(intent.getStringExtra("nama"));
+        animelist.img_link = StringEscapeUtils.unescapeJava(intent.getStringExtra("img_link"));
         animelist.link = intent.getStringExtra("anime_link");
         epsList.animeList = animelist;
         epsList.episode = intent.getStringExtra("episode");

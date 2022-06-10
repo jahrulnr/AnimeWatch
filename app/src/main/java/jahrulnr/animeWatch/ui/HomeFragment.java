@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import org.apache.commons.lang.StringEscapeUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -120,8 +122,8 @@ public class HomeFragment extends Fragment {
         if (updateListM != null) {
             while (updateListM.find()) {
                 episodeList al = new episodeList();
-                al.episode = updateListM.group(8);
-                al.animeList.img_link = updateListM.group(6);
+                al.episode = StringEscapeUtils.unescapeJava(updateListM.group(8));
+                al.animeList.img_link = StringEscapeUtils.unescapeJava(updateListM.group(6));
                 al.link = updateListM.group(2);
                 al.animeList.status = updateListM.group(4);
                 episodeLists.add(al);
