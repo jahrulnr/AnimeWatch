@@ -18,7 +18,7 @@
         <activity
             android:name=".ui.nontonView"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_nonton_view"
             android:theme="@style/Theme.AnimeWatch" />
         <activity

@@ -35,6 +35,8 @@ public class JahrulnrLib {
 
     private Timer T;
 
+    public JahrulnrLib() {
+    }
     public JahrulnrLib(Activity act) {
         activity = act;
     }

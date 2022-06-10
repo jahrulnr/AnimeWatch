@@ -20,6 +20,7 @@ public class animeList implements Serializable {
         return nama;
     }
 
+
     public void setLink(String link) {
         this.link = link;
     }

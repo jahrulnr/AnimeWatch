@@ -26,15 +26,15 @@ android {
     defaultConfig {
         applicationId "jahrulnr.animeWatch"
         minSdk 26
-        targetSdk 32
+        targetSdk 30
         versionCode 1
         versionName '1.1'
 
-        testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         testFunctionalTest false
         multiDexEnabled true
         signingConfig signingConfigs.debug
         testHandleProfiling false
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     compileOptions {
@@ -83,6 +83,10 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel:2.4.1'
     implementation 'androidx.navigation:navigation-fragment:2.5.0-rc01'
     implementation 'androidx.navigation:navigation-ui:2.5.0-rc01'
-    testImplementation 'junit:junit:4.13.2'
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'androidx.test.ext:junit:1.1.4-alpha07'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.4-alpha07'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0-alpha07'
 
 }
