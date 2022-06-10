@@ -22,14 +22,14 @@ jobs:
       - name: Assemble App APK
         run: ./gradlew assembleDebug
       - name: Upload App APK
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: app-debug
           path: app/build/outputs/apk/debug/app-debug.apk
       - name: Assemble Android Instrumented Unit Test
         run: ./gradlew assembleDebugAndroidTest
       - name: Upload Android Test APK
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: app-debug-androidTest
           path: app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk
