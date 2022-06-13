@@ -28,7 +28,7 @@ import java.util.regex.Matcher;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
 import jahrulnr.animeWatch.adapter.animeEpsListAdapter;
-import jahrulnr.animeWatch.config;
+import jahrulnr.animeWatch.configAnime;
 
 public class animeClick {
 
@@ -43,7 +43,7 @@ public class animeClick {
     }
 
     @SuppressLint("SetTextI18n")
-    public animeClick(Activity act, JahrulnrLib it, ViewGroup viewGroup, animeList animelist) {
+    public animeClick(Activity act, JahrulnrLib it, ViewGroup viewGroup, _anime animelist) {
         this.act = act;
         this.it = it;
         this.viewGroup = viewGroup;
@@ -61,10 +61,10 @@ public class animeClick {
 
         it.executer(() -> {
             String h = JahrulnrLib.getRequest(animelist.link, null);
-            Matcher coverM = JahrulnrLib.preg_match(h, config.img_pattern),
-                    studioM = JahrulnrLib.preg_match(h, config.studio_pattern),
-                    rilisM = JahrulnrLib.preg_match(h, config.rilis_pattern),
-                    genre = JahrulnrLib.preg_match(h, config.genre_pattern);
+            Matcher coverM = JahrulnrLib.preg_match(h, configAnime.img_pattern),
+                    studioM = JahrulnrLib.preg_match(h, configAnime.studio_pattern),
+                    rilisM = JahrulnrLib.preg_match(h, configAnime.rilis_pattern),
+                    genre = JahrulnrLib.preg_match(h, configAnime.genre_pattern);
 
             String cover = coverM.find() ? coverM.group(1) : "",
                     studio = studioM.find() ? studioM.group(1) : "",
@@ -78,7 +78,7 @@ public class animeClick {
             String genreFinal = genreText;
 
             boolean pattern = false;
-            List<episodeList> episodelist;
+            List<_anime.animeEpisode> episodelist;
             Matcher getAnimeID = JahrulnrLib.preg_match(h.replaceAll("\n", ""),
                     "\\Qname=\"series_id\" value=\"\\E([0-9]+?)\\Q\">\\E");
             if (getAnimeID.find()) {
@@ -86,10 +86,10 @@ public class animeClick {
                         "&misha_order_by=date-DESC" +
                         "&action=mishafilter" +
                         "&series_id=" + getAnimeID.group(1);
-                episodelist = getEpisode(p, config.episode_pattern1, true);
+                episodelist = getEpisode(p, configAnime.episode_pattern1, true);
                 if (episodelist != null) pattern = true;
             } else {
-                episodelist = getEpisode(h, config.episode_pattern2, false);
+                episodelist = getEpisode(h, configAnime.episode_pattern2, false);
                 if (episodelist != null) pattern = true;
             }
 
@@ -106,9 +106,9 @@ public class animeClick {
                     tv_rilis.setText(": " + rilis);
                     eps.setAdapter(adapter);
                     eps.setOnItemClickListener((adapterView, view, i, l) -> {
-                        episodeList epsPrev = new episodeList();
-                        epsPrev.animeList = animelist;
-                        epsPrev.animeList.img_link = cover;
+                        _anime.animeEpisode epsPrev = new _anime.animeEpisode();
+                        epsPrev.anime = animelist;
+                        epsPrev.anime.img_link = cover;
                         epsPrev.link = episodelist.get(i).link;
                         episodePreview = new episodePreview(act, it, animeDetailView, epsPrev);
                     });
@@ -120,14 +120,14 @@ public class animeClick {
         });
     }
 
-    public List<episodeList> getEpisode(@Nullable String post, String pattern, boolean useLink) {
+    public List<_anime.animeEpisode> getEpisode(@Nullable String post, String pattern, boolean useLink) {
         HashMap<String, String> p = new HashMap<>();
         p.put("Referer", "https://75.119.159.228/");
-        List<episodeList> episodelist = new ArrayList<>();
+        List<_anime.animeEpisode> episodelist = new ArrayList<>();
 
         String h;
         if (useLink == true) {
-            h = JahrulnrLib.getRequest(config.apiLink, post, p);
+            h = JahrulnrLib.getRequest(configAnime.apiLink, post, p);
             JSONObject epsData = null;
             try {
                 epsData = new JSONObject(h);
@@ -140,7 +140,7 @@ public class animeClick {
         }
         Matcher episodeM = JahrulnrLib.preg_match(h, pattern);
         while (episodeM.find()) {
-            episodeList al = new episodeList();
+            _anime.animeEpisode al = new _anime.animeEpisode();
             al.episode = episodeM.group(2)
                     .replaceAll("(.*?) Episode( +)Sub Indo", "Episode ?")
                     .replaceAll("(.*?)\\QEpisode \\E([0-9]+)(\\sSub\\sIndo)?", "Episode $2");

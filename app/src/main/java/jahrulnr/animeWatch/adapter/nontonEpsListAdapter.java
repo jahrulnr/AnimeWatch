@@ -10,15 +10,15 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import jahrulnr.animeWatch.Class.episodeList;
+import jahrulnr.animeWatch.Class._anime;
 import jahrulnr.animeWatch.R;
 
 public class nontonEpsListAdapter extends BaseAdapter {
 
-    private final List<episodeList> epsList;
+    private final List<_anime.animeEpisode> epsList;
     private final LayoutInflater layoutInflater;
 
-    public nontonEpsListAdapter(Activity activity, List<episodeList> epsList) {
+    public nontonEpsListAdapter(Activity activity, List<_anime.animeEpisode> epsList) {
         this.epsList = epsList;
         this.layoutInflater = LayoutInflater.from(activity);
     }

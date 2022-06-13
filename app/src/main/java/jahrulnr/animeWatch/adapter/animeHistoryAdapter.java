@@ -15,15 +15,15 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 import java.util.List;
 
-import jahrulnr.animeWatch.Class.episodeList;
+import jahrulnr.animeWatch.Class._anime;
 import jahrulnr.animeWatch.R;
 
 public class animeHistoryAdapter extends BaseAdapter {
 
-    private final List<episodeList> epsList;
+    private final List<_anime.animeEpisode> epsList;
     private final LayoutInflater layoutInflater;
 
-    public animeHistoryAdapter(Activity activity, List<episodeList> epsList) {
+    public animeHistoryAdapter(Activity activity, List<_anime.animeEpisode> epsList) {
         this.epsList = epsList;
         this.layoutInflater = LayoutInflater.from(activity);
     }

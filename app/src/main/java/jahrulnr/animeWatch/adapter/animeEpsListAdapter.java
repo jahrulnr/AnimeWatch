@@ -10,16 +10,16 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import jahrulnr.animeWatch.Class.episodeList;
+import jahrulnr.animeWatch.Class._anime;
 import jahrulnr.animeWatch.R;
 
 public class animeEpsListAdapter extends BaseAdapter {
 
     Context context;
-    List<episodeList> episodelist;
+    List<_anime.animeEpisode> episodelist;
     LayoutInflater inflter;
 
-    public animeEpsListAdapter(Context context, List<episodeList> episodelist) {
+    public animeEpsListAdapter(Context context, List<_anime.animeEpisode> episodelist) {
         this.context = context;
         this.episodelist = episodelist;
         inflter = LayoutInflater.from(context);
@@ -46,7 +46,7 @@ public class animeEpsListAdapter extends BaseAdapter {
         if (view == null) {
             view = inflter.inflate(R.layout.episode_list, null);
         }
-        episodeList item = episodelist.get(i);
+        _anime.animeEpisode item = episodelist.get(i);
         TextView episode = view.findViewById(R.id.episode);
         if (item.episode != null)
             episode.setText(item.episode.replace("Subtitle Indonesia", ""));

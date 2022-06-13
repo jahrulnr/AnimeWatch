@@ -21,12 +21,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 
+import jahrulnr.animeWatch.Class.MessageEvent;
 import jahrulnr.animeWatch.Class.animeClick;
-import jahrulnr.animeWatch.Class.animeList;
+import jahrulnr.animeWatch.Class._anime;
 import jahrulnr.animeWatch.Class.dbFiles;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
@@ -47,6 +50,7 @@ public class ListFragment extends Fragment {
         this.container = container;
         binding = FragmentListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        EventBus.getDefault().post(new MessageEvent(root.getId()));
         act = getActivity();
 
         ((RelativeLayout) root.findViewById(R.id.episode_preview)).setVisibility(View.GONE);
@@ -73,19 +77,19 @@ public class ListFragment extends Fragment {
         textView.setHintTextColor(getResources().getColor(R.color.gray_600));
 
         it = new JahrulnrLib(this.getActivity());
-        List<animeList> animelist = new ArrayList<>();
+        List<_anime> animelist = new ArrayList<>();
         animeAllListAdapter adapter = new animeAllListAdapter(act, animelist);
-        String h = new dbFiles(act).readSource(dbFiles.listSource);
+        String h = new dbFiles(act).readSource(dbFiles.animeListSource);
         it.executer(() -> {
             Matcher m;
             if (!h.isEmpty())
-                m = JahrulnrLib.preg_match(h, JahrulnrLib.config.list_pattern);
+                m = JahrulnrLib.preg_match(h, JahrulnrLib.configAnime.list_pattern);
             else
-                m = JahrulnrLib.preg_match(JahrulnrLib.getRequest(JahrulnrLib.config.list, null),
-                        JahrulnrLib.config.list_pattern);
+                m = JahrulnrLib.preg_match(JahrulnrLib.getRequest(JahrulnrLib.configAnime.list, null),
+                        JahrulnrLib.configAnime.list_pattern);
             if (m != null) {
                 while (m.find()) {
-                    animeList al = new animeList();
+                    _anime al = new _anime();
                     al.nama = m.group(3);
                     al.link = m.group(2);
                     animelist.add(al);
@@ -125,10 +129,10 @@ public class ListFragment extends Fragment {
 
     class animeAllListAdapter extends BaseAdapter {
         Context context;
-        List<animeList> animelist, animelists_original;
+        List<_anime> animelist, animelists_original;
         LayoutInflater inflter;
 
-        public animeAllListAdapter(Context applicationContext, List<animeList> animelist_in) {
+        public animeAllListAdapter(Context applicationContext, List<_anime> animelist_in) {
             this.context = applicationContext;
             this.animelists_original = animelist_in;
             this.animelist = animelists_original;
@@ -141,11 +145,11 @@ public class ListFragment extends Fragment {
         }
 
         @Override
-        public animeList getItem(int i) {
+        public _anime getItem(int i) {
             return animelist.get(i);
         }
 
-        public List<animeList> getItems() {
+        public List<_anime> getItems() {
             return animelist;
         }
 
@@ -159,7 +163,7 @@ public class ListFragment extends Fragment {
             if (view == null) {
                 view = inflter.inflate(R.layout.animealllist_view, null);
             }
-            animeList item = animelist.get(i);
+            _anime item = animelist.get(i);
             TextView namaAnime = view.findViewById(R.id.animeName);
 
             namaAnime.setText(item.nama.replace("Sub Indonesia", ""));
@@ -172,7 +176,7 @@ public class ListFragment extends Fragment {
             if (text.length() == 0) {
                 animelist = animelists_original;
             } else {
-                for (animeList m : animelists_original) {
+                for (_anime m : animelists_original) {
                     if (m.nama.toLowerCase().contains(query)) {
                         animelist.add(m);
                     }

@@ -20,11 +20,13 @@ import java.util.Collections;
 import java.util.List;
 
 public class dbFiles {
-    public static String updateSource = "updateSource";
-    public static String listSource = "listSource";
+    public static String animeUpdateSource = "animeUpdateSource";
+    public static String animeListSource = "animeListSource";
+    public static String mangaUpdateSource = "mangaUpdateSource";
+    public static String mangaListSource = "mangaListSource";
     private String db = "/db.json";
     private final Activity activity;
-    private List<episodeList> epsList = new ArrayList<>();
+    private List<_anime.animeEpisode> epsList = new ArrayList<>();
 
     public dbFiles(Activity activity) {
         this.activity = activity;
@@ -35,7 +37,7 @@ public class dbFiles {
         return db;
     }
 
-    public void add(episodeList episodelist) {
+    public void add(_anime.animeEpisode episodelist) {
         if (epsList.isEmpty())
             epsList = getList(false);
         epsList.removeIf(epsList -> epsList.getLink().equals(episodelist.link));
@@ -54,18 +56,18 @@ public class dbFiles {
         }
     }
 
-    public List<episodeList> getList() {
+    public List<_anime.animeEpisode> getList() {
         return getList(true);
     }
 
-    public List<episodeList> getList(boolean reverse) {
-        List<episodeList> epslist = new ArrayList<>();
+    public List<_anime.animeEpisode> getList(boolean reverse) {
+        List<_anime.animeEpisode> epslist = new ArrayList<>();
 
         if (new File(path()).exists()) {
             ObjectInputStream in;
             try {
                 in = new ObjectInputStream(new FileInputStream(path()));
-                epslist = (List<episodeList>) in.readObject();
+                epslist = (List<_anime.animeEpisode>) in.readObject();
                 if(reverse) Collections.reverse(epslist);
             } catch (IOException | ClassNotFoundException e) {
                 System.err.println(e.toString());

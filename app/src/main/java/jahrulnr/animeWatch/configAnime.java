@@ -2,14 +2,14 @@ package jahrulnr.animeWatch;
 
 import java.util.regex.Pattern;
 
-public class config { 
+public class configAnime {
     public static String home = "https://75.119.159.228/";
     public static String apiLink = home + "wp-admin/admin-ajax.php";
     public static String list = home + "anime/?mode=list";
     public static String userAgent = "Mozilla/5.0 (Linux; Android 9; SAMSUNG SM-A505F Build/PPR1.180610.011) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/9.4 Chrome/87.0.3396.87 Mobile Safari/537.36";
 
     // Home
-    public static String update_pattern = Pattern.quote("<article class=\"animeseries") +
+    public static String updatePattern = Pattern.quote("<article class=\"animeseries") +
             // trash
             "(.*?)" +
             Pattern.quote("<a href=\"") +

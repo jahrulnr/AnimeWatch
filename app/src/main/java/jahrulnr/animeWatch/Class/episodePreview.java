@@ -36,10 +36,10 @@ public class episodePreview {
     private final RelativeLayout episode_preview;
 
     @SuppressLint("SetTextI18n")
-    public episodePreview(Activity act, JahrulnrLib it, ViewGroup viewGroup, episodeList episodelist) {
+    public episodePreview(Activity act, JahrulnrLib it, ViewGroup viewGroup, _anime.animeEpisode episodelist) {
         Animation animation = AnimationUtils.loadAnimation(act, R.anim.grid_animation);
         LayoutAnimationController controller = new LayoutAnimationController(animation);
-        animeList animelist = episodelist.animeList;
+        _anime animelist = episodelist.anime;
         relativeLayout = act.findViewById(R.id.loadingContainer);
         episode_preview = act.findViewById(R.id.episode_preview);
         episode_preview.setVisibility(View.GONE);

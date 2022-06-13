@@ -31,7 +31,7 @@ import javax.net.ssl.SSLProtocolException;
 public class JahrulnrLib {
     @SuppressLint("StaticFieldLeak")
     private static Activity activity;
-    public static config config = new config();
+    public static configAnime configAnime = new configAnime();
 
     private Timer T;
 
@@ -91,7 +91,7 @@ public class JahrulnrLib {
                 connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI).getState() == NetworkInfo.State.CONNECTED) {
             Log.i("Internet", "Connected");
         } else {
-            Toast.makeText(act.getApplicationContext(), "Internet tidak tersedia.", Toast.LENGTH_LONG).show();
+            act.runOnUiThread(() -> Toast.makeText(act.getApplicationContext(), "Internet tidak tersedia.", Toast.LENGTH_LONG).show());
             Log.i("Internet", "Not connected");
         }
     }
@@ -102,7 +102,7 @@ public class JahrulnrLib {
 
     private static HashMap<String, String> getRequestProperties(HashMap<String, String> properties) {
         HashMap<String, String> requestProperties = new HashMap<>();
-        requestProperties.put("User-Agent", jahrulnr.animeWatch.config.userAgent);
+        requestProperties.put("User-Agent", configAnime.userAgent);
 //        requestProperties.put("X-Requested-With", "XMLHttpRequest");
 
         if (properties != null) {
@@ -138,10 +138,11 @@ public class JahrulnrLib {
             in.close();
             urlConnection.disconnect();
             text = stringBuffer.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("JahrulnrLib.getRequest(get): " + e.toString());
+            activity.runOnUiThread(() -> Toast.makeText(activity, "Koneksi bermasalah. Silakan refresh.", Toast.LENGTH_LONG).show());
         }
-        return text.replaceAll("\n", "").replaceAll("  +", " ");
+        return text.replaceAll("\n", "").replaceAll("\\s\\s+", " ");
     }
 
     // With Data
@@ -149,7 +150,6 @@ public class JahrulnrLib {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);
 
-        BufferedReader reader = null;
         URL url;
         String text = "";
         try {
@@ -171,6 +171,7 @@ public class JahrulnrLib {
             wr.flush();
 
             // Get the server response
+            BufferedReader reader = null;
             reader = new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
             StringBuilder sb = new StringBuilder();
             String line;
@@ -180,32 +181,14 @@ public class JahrulnrLib {
                 // Append server response in string
                 sb.append(line);
             }
+            reader.close();
             text = sb.toString();
         }
-        catch (SocketTimeoutException e) {
-            System.err.println("SocketTimeoutException: " + e.toString());
-            Toast.makeText(activity, "Koneksi timeout. Silakan refresh.", Toast.LENGTH_LONG).show();
-        } catch (SSLProtocolException e){
-            System.err.println("SSLProtocolException: " + e.toString());
-            Toast.makeText(activity, "Gagal memuat data. Silakan refresh.", Toast.LENGTH_LONG).show();
-        } catch (UnsupportedEncodingException e) {
-            System.err.println("UnsupportEncoding: " + e.toString());
-            Toast.makeText(activity, "Ada masalah, coba lagi.", Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
-            System.err.println("IOException: " + e.toString());
-            Toast.makeText(activity, "Ada masalah, coba lagi.", Toast.LENGTH_LONG).show();
-        } catch (Exception ex) {
-            System.err.println("Exception: " + ex.toString());
-            Toast.makeText(activity, "Ada masalah, coba lagi.", Toast.LENGTH_LONG).show();
-        } finally {
-            try {
-                reader.close();
-            } catch (Exception ex) {
-                System.err.println("Exception: " + ex.toString());
-                Toast.makeText(activity, "Ada masalah. Silakan refresh.", Toast.LENGTH_LONG).show();
-            }
+        catch (Exception e) {
+            System.err.println("JahrulnrLib.getRequest(post): " + e.toString());
+            activity.runOnUiThread(() -> Toast.makeText(activity, "Koneksi bermasalah. Silakan refresh.", Toast.LENGTH_LONG).show());
         }
 
-        return text.replaceAll("\n", "").replaceAll("  +", " ");
+        return text.replaceAll("\n", "").replaceAll("\\s\\s+", " ");
     }
 }

@@ -1,0 +1,70 @@
+<RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:padding="5dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="200dp"
+        android:layout_height="300dp"
+        app:cardCornerRadius="10dp"
+        android:paddingBottom="10dp">
+
+        <ImageView
+            android:id="@+id/mangaCover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/no_image"
+            android:scaleType="centerCrop"
+            android:background="#00000000"
+            tools:ignore="ContentDescription" />
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|right"
+            app:cardCornerRadius="5dp"
+            tools:ignore="RtlHardcoded">
+
+            <TextView
+                android:id="@+id/mangaChapter"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/green"
+                android:padding="2dp"
+                android:alpha="0.95"
+                android:typeface="serif"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:text="Chapter ##"
+                tools:ignore="HardcodedText,SmallSp" />
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:id="@+id/mangaName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
+            android:layout_centerHorizontal="true"
+            android:text="Nama"
+            android:textStyle="bold"
+            android:gravity="bottom|center"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="14dp"
+            android:textColor="@color/white"
+            android:shadowColor="@color/black"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:layout_below="@+id/animeCover"
+            tools:ignore="HardcodedText" />
+
+    </androidx.cardview.widget.CardView>
+
+
+</RelativeLayout>

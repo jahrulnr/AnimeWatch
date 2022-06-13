@@ -18,7 +18,17 @@
     <ProgressBar
         android:layout_width="match_parent"
         android:layout_height="50dp"
+        android:layout_marginBottom="20dp"
         android:layout_below="@+id/splash_image"
         android:id="@+id/splash_progress" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/splash_progress"
+        android:gravity="center_horizontal"
+        android:text="Mengunduh data"
+        android:textColor="@color/white"
+        android:id="@+id/splash_proses"/>
 
 </RelativeLayout>

@@ -16,4 +16,3 @@ dependencyResolutionManagement {
 }
 rootProject.name = "AnimeWatch"
 include ':app'
-include ':twowaygridview'

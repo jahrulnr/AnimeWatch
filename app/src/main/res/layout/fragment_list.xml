@@ -34,6 +34,38 @@
                 android:id="@+id/searchAnime" />
         </androidx.cardview.widget.CardView>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:orientation="horizontal"
+            android:gravity="center_horizontal"
+            android:id="@+id/btnContainer">
+
+            <Button
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Anime"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/gray_700"
+                android:id="@+id/btnAnime"
+                style="@style/CardView.Dark"
+                tools:ignore="HardcodedText" />
+
+            <Button
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:text="Manga/Komik"
+                android:textColor="@color/white"
+                android:textAllCaps="false"
+                android:backgroundTint="@color/gray_700"
+                android:id="@+id/btnManga"
+                style="@style/CardView.Dark"
+                tools:ignore="HardcodedText" />
+
+        </LinearLayout>
+
         <GridView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -42,12 +74,21 @@
             android:numColumns="auto_fit"
             android:animateLayoutChanges="true"
             android:id="@+id/animeList" />
+
+        <GridView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="-5dp"
+            android:layout_marginEnd="-5dp"
+            android:numColumns="auto_fit"
+            android:animateLayoutChanges="true"
+            android:id="@+id/mangaList" />
     </LinearLayout>
 
-    <include layout="@layout/episode_home" />
+    <include layout="@layout/episode_home"  android:visibility="gone"/>
 
-    <include layout="@layout/episode_preview" />
+    <include layout="@layout/episode_preview" android:visibility="gone"/>
 
-    <include layout="@layout/loading" />
+    <include layout="@layout/loading" android:visibility="gone"/>
 
 </RelativeLayout>

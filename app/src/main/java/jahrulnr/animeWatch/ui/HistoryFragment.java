@@ -15,11 +15,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import jahrulnr.animeWatch.Class.MessageEvent;
+import jahrulnr.animeWatch.Class._anime;
 import jahrulnr.animeWatch.Class.dbFiles;
-import jahrulnr.animeWatch.Class.episodeList;
 import jahrulnr.animeWatch.Class.episodePreview;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
@@ -34,7 +37,7 @@ public class HistoryFragment extends Fragment {
     private FragmentHistoryBinding binding;
     boolean animeClicked = false;
     animeHistoryAdapter adapter;
-    List<episodeList> epsList = new ArrayList<>();
+    List<_anime.animeEpisode> epsList = new ArrayList<>();
     View root;
     RelativeLayout loading;
     GridView gridView;
@@ -47,6 +50,7 @@ public class HistoryFragment extends Fragment {
         LayoutAnimationController animationController = new LayoutAnimationController(animation);
         binding = FragmentHistoryBinding.inflate(inflater, container, false);
         root = binding.getRoot();
+        EventBus.getDefault().post(new MessageEvent(root.getId()));
 
         act = getActivity();
         it = new JahrulnrLib(act);
@@ -66,7 +70,7 @@ public class HistoryFragment extends Fragment {
             adapter = new animeHistoryAdapter(getActivity(), epsList);
             gridView.setAdapter(adapter);
             gridView.setOnItemClickListener((adapterView, view, i, l) -> {
-                episodeList eps = epsList.get(i);
+                _anime.animeEpisode eps = epsList.get(i);
                 animeClicked = true;
                 new episodePreview(act, it, finalContainer, eps);
             });
@@ -85,7 +89,8 @@ public class HistoryFragment extends Fragment {
         super.onResume();
         if(epsList.isEmpty()){
             epsList.addAll(dbFiles.getList());
-            adapter.notifyDataSetChanged();
+            if(adapter != null)
+                adapter.notifyDataSetChanged();
         }
     }
 

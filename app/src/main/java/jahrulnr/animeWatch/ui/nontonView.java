@@ -1,6 +1,7 @@
 package jahrulnr.animeWatch.ui;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
@@ -38,14 +39,13 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 
 import jahrulnr.animeWatch.Class.animeClick;
-import jahrulnr.animeWatch.Class.animeList;
+import jahrulnr.animeWatch.Class._anime;
 import jahrulnr.animeWatch.Class.dbFiles;
-import jahrulnr.animeWatch.Class.episodeList;
 import jahrulnr.animeWatch.Class.episodePreview;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
 import jahrulnr.animeWatch.adapter.nontonEpsListAdapter;
-import jahrulnr.animeWatch.config;
+import jahrulnr.animeWatch.configAnime;
 
 public class nontonView extends AppCompatActivity {
 
@@ -59,9 +59,9 @@ public class nontonView extends AppCompatActivity {
     private TextView nameEps, thisEps;
     private TwoWayGridView gridView;
     private boolean epsShow = false;
-    private final animeList animelist = new animeList();
-    private episodeList epsList = new episodeList();
-    private final List<episodeList> eps = new ArrayList<>();
+    private final _anime animelist = new _anime();
+    private _anime.animeEpisode epsList = new _anime.animeEpisode();
+    private final List<_anime.animeEpisode> eps = new ArrayList<>();
     private nontonEpsListAdapter epsListAdapter;
     private int idEps = -1;
     private String server;
@@ -121,13 +121,13 @@ public class nontonView extends AppCompatActivity {
                                 "&misha_order_by=date-DESC" +
                                 "&action=mishafilter" +
                                 "&series_id=" + getAnimeID.group(1);
-                        eps.addAll(anm.getEpisode(p, config.episode_pattern1, true));
+                        eps.addAll(anm.getEpisode(p, configAnime.episode_pattern1, true));
                     } else {
-                        eps.addAll(anm.getEpisode(s, config.episode_pattern2, false));
+                        eps.addAll(anm.getEpisode(s, configAnime.episode_pattern2, false));
                     }
                     Collections.reverse(eps);
                     idEps = 0;
-                    for (episodeList e : eps) {
+                    for (_anime.animeEpisode e : eps) {
                         if (e.episode.contains(epsList.episode)) {
                             break;
                         }
@@ -190,7 +190,7 @@ public class nontonView extends AppCompatActivity {
         animelist.nama = StringEscapeUtils.unescapeJava(intent.getStringExtra("nama"));
         animelist.img_link = StringEscapeUtils.unescapeJava(intent.getStringExtra("img_link"));
         animelist.link = intent.getStringExtra("anime_link");
-        epsList.animeList = animelist;
+        epsList.anime = animelist;
         epsList.episode = intent.getStringExtra("episode");
         epsList.link = intent.getStringExtra("episode_link");
         server = intent.getStringExtra("server");
@@ -208,7 +208,7 @@ public class nontonView extends AppCompatActivity {
         webView.getSettings().setSupportMultipleWindows(true);
         webView.getSettings().setAppCachePath(getCacheDir().getAbsolutePath());
         System.out.println(getCacheDir().getAbsolutePath());
-        webView.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
+        webView.getSettings().setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
         webView.setWebChromeClient(new WebChromeClient() {
             @Override
             public void onProgressChanged(WebView view, int newProgress) {
@@ -255,7 +255,7 @@ public class nontonView extends AppCompatActivity {
 
         gridView.setOnItemClickListener((parent, view, position, id) -> {
             this.epsList = this.eps.get(position);
-            this.epsList.animeList = this.animelist;
+            this.epsList.anime = this.animelist;
             this.server = null;
             setup();
             epsMenu();
@@ -268,7 +268,7 @@ public class nontonView extends AppCompatActivity {
 
     private void setWebURL(String request, @Nullable Runnable code) {
         it.executer(() -> {
-            String s = JahrulnrLib.getRequest(config.apiLink, request, null)
+            String s = JahrulnrLib.getRequest(configAnime.apiLink, request, null)
                     .replaceAll("\\Q<script\\E(.*?)\\Q</script>\\E", "")
                     .replace("src=\"//", "src=\"https://");
             runOnUiThread(() -> {
@@ -313,7 +313,11 @@ public class nontonView extends AppCompatActivity {
         if (epsShow)
             epsMenu();
         else
-            finish();
+            new AlertDialog.Builder(this)
+                    .setTitle("Konfirmasi")
+                    .setMessage("Akhiri tontonan?")
+                    .setPositiveButton("Tidak", null)
+                    .setNegativeButton("Ya", (dialogInterface, i) -> finish()).show();
     }
 
     @Override
