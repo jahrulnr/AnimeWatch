@@ -84,17 +84,17 @@ public class MainActivity extends AppCompatActivity {
 
             it.executer(() -> {
                 // anime source setup
-                String animePost = "action=loadmore&type=home&page=0";
-                String animeUpdateSource = JahrulnrLib.getRequest(configAnime.apiLink, animePost, null);
                 runOnUiThread(() -> splashProses.setText("Mengunduh daftar anime terbaru"));
-                String animeListSource = JahrulnrLib.getRequest(configAnime.list, null);
+                String animeUpdateSource = JahrulnrLib.getRequest(configAnime.apiLink,  "action=loadmore&type=home&page=0", null);
                 runOnUiThread(() -> splashProses.setText("Mengunduh semua daftar anime"));
+                String animeListSource = JahrulnrLib.getRequest(configAnime.list, null);
 
                 // manga source setup
-                String mangaUpdateSource = JahrulnrLib.getRequest(configManga.update, null);
                 runOnUiThread(() -> splashProses.setText("Mengunduh daftar manga dan komik terbaru"));
-                String mangaListSource = JahrulnrLib.getRequest(configManga.list, null);
+                String mangaUpdateSource = JahrulnrLib.getRequest(configManga.update, null);
                 runOnUiThread(() -> splashProses.setText("Mengunduh semua daftar manga"));
+                String mangaListSource = JahrulnrLib.getRequest(configManga.list, null);
+                runOnUiThread(() -> splashProses.setText("Unduhan selesai"));
 
                 dbFiles db = new dbFiles(this);
                 boolean success = db.writeSource(animeUpdateSource, dbFiles.animeUpdateSource)
