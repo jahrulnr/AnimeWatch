@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMessageEvent(MessageEvent event) {
         activeFragment = event.getId();
-        System.out.println(activeFragment == R.id.fragment_list);
+        System.out.println(activeFragment);
     }
 
     private void closeLayout(ViewGroup viewGroup, View view) {
@@ -176,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
                 closeLayout(root.findViewById(R.id.episode_view), episode_preview);
                 canExit = false;
             } else {
-                closeLayout(root.findViewById(R.id.animeListContainer),
+                closeLayout(root.findViewById(R.id.listContainer),
                         root.findViewById(R.id.episode_view));
             }
         } else if (activeFragment == R.id.fragment_history

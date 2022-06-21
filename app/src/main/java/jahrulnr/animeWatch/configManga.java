@@ -20,4 +20,14 @@ public class configManga {
             "<a href=\\\"(.*?) title(.*?)" +
             // no. chapter 13
             "<span>Chapter ([0-9]+)</span>";
+
+    public static String listPattern = "class=\\\"ls4v\\\">" +
+            // link 1
+            "<a href=\\\"(.*?)\\\"><img class=\\\"lazy(.*?)" +
+            // img 3
+            "data-src=\\\"(.*?)\\\">(.*?)" +
+            // nama 6
+            "a href=\\\"(.*?)\\\">(.*?)</a>(.*?)" +
+            // status 9
+            "class=\\\"ls4s\\\"(.*?)\\\">([a-zA-Z\\s]+)</span>";
 }

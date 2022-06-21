@@ -49,7 +49,7 @@ public class homeListAdapter {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             if (view == null) {
-                view = inflter.inflate(R.layout.animelist_view, null);
+                view = inflter.inflate(R.layout.anime_listview, null);
             }
 
             _anime.animeEpisode item = animehomelist.get(i);

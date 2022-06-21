@@ -8,9 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.GridLayoutAnimationController;
 import android.view.animation.LayoutAnimationController;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,11 +29,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 
 import jahrulnr.animeWatch.Class.MessageEvent;
-import jahrulnr.animeWatch.Class.animeClick;
 import jahrulnr.animeWatch.Class._anime;
+import jahrulnr.animeWatch.Class._manga;
+import jahrulnr.animeWatch.Class.animeClick;
 import jahrulnr.animeWatch.Class.dbFiles;
 import jahrulnr.animeWatch.JahrulnrLib;
 import jahrulnr.animeWatch.R;
+import jahrulnr.animeWatch.adapter.listAdapter;
+import jahrulnr.animeWatch.configManga;
 import jahrulnr.animeWatch.databinding.FragmentListBinding;
 
 public class ListFragment extends Fragment {
@@ -40,14 +44,17 @@ public class ListFragment extends Fragment {
     private Activity act;
     private FragmentListBinding binding;
     private JahrulnrLib it;
-    private ViewGroup container;
+    private RelativeLayout loading;
+    private LayoutAnimationController animationController;
+    private GridLayoutAnimationController gridAnimationController;
+    private SearchView searchView;
+    private LinearLayout listContainer;
     private GridView gridView;
     private animeClick animeClick = null;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        this.container = container;
         binding = FragmentListBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
         EventBus.getDefault().post(new MessageEvent(root.getId()));
@@ -55,20 +62,21 @@ public class ListFragment extends Fragment {
 
         ((RelativeLayout) root.findViewById(R.id.episode_preview)).setVisibility(View.GONE);
         Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.grid_animation);
-        LayoutAnimationController animationController = new LayoutAnimationController(animation);
-        RelativeLayout loading = root.findViewById(R.id.loadingContainer);
-        LinearLayout linearLayout = root.findViewById(R.id.animeListContainer);
-        gridView = root.findViewById(R.id.animeList);
-        SearchView searchView = root.findViewById(R.id.searchAnime);
-        linearLayout.setVisibility(View.GONE);
+        animationController = new LayoutAnimationController(animation);
+        gridAnimationController = new GridLayoutAnimationController(animation, 0.2f, 0.1f);
+        loading = root.findViewById(R.id.loadingContainer);
+        listContainer = root.findViewById(R.id.listContainer);
+        gridView = root.findViewById(R.id.itemGridView);
+        searchView = root.findViewById(R.id.searchAnime);
+        listContainer.setVisibility(View.GONE);
         loading.setVisibility(View.VISIBLE);
 
-        int iconId = searchView.getContext().getResources().getIdentifier("android:id/search_mag_icon", null, null);
-        int iconCloseId = searchView.getContext().getResources().getIdentifier("android:id/search_close_btn", null, null);
-        int textViewId = searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null);
-        TextView textView = searchView.findViewById(textViewId);
-        ImageView iconSV = searchView.findViewById(iconId);
-        ImageView iconCSV = searchView.findViewById(iconCloseId);
+        ImageView iconSV = searchView.findViewById(
+                searchView.getContext().getResources().getIdentifier("android:id/search_mag_icon", null, null));
+        TextView textView = searchView.findViewById(
+                searchView.getContext().getResources().getIdentifier("android:id/search_src_text", null, null));
+        ImageView iconCSV = searchView.findViewById(
+                searchView.getContext().getResources().getIdentifier("android:id/search_close_btn", null, null));
         iconSV.setColorFilter(getResources().getColor(R.color.white));
         iconCSV.setColorFilter(getResources().getColor(R.color.white));
 
@@ -77,8 +85,20 @@ public class ListFragment extends Fragment {
         textView.setHintTextColor(getResources().getColor(R.color.gray_600));
 
         it = new JahrulnrLib(this.getActivity());
+        setupAnimeList();
+        listContainer.setVisibility(View.VISIBLE);
+        Button btnAnime = root.findViewById(R.id.btnAnime);
+        Button btnManga = root.findViewById(R.id.btnManga);
+        btnAnime.setOnClickListener(v -> setupAnimeList());
+        btnManga.setOnClickListener(v -> setupMangaList());
+
+        return root;
+    }
+
+    private void setupAnimeList() {
+        gridView.setNumColumns(2);
         List<_anime> animelist = new ArrayList<>();
-        animeAllListAdapter adapter = new animeAllListAdapter(act, animelist);
+        listAdapter.animeListAdapter adapter = new listAdapter.animeListAdapter(act, animelist);
         String h = new dbFiles(act).readSource(dbFiles.animeListSource);
         it.executer(() -> {
             Matcher m;
@@ -99,8 +119,7 @@ public class ListFragment extends Fragment {
                 gridView.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
                 it.animate(loading, false);
-                linearLayout.setLayoutAnimation(animationController);
-                linearLayout.setVisibility(View.VISIBLE);
+                gridView.setLayoutAnimation(gridAnimationController);
             });
         });
 
@@ -121,68 +140,37 @@ public class ListFragment extends Fragment {
         });
 
         gridView.setOnItemClickListener((adapterView, view, i, l) -> {
-            animeClick = new animeClick(act, it, linearLayout, adapter.getItems().get(i));
+            animeClick = new animeClick(act, it, listContainer, adapter.getItems().get(i));
         });
-
-        return root;
     }
 
-    class animeAllListAdapter extends BaseAdapter {
-        Context context;
-        List<_anime> animelist, animelists_original;
-        LayoutInflater inflter;
-
-        public animeAllListAdapter(Context applicationContext, List<_anime> animelist_in) {
-            this.context = applicationContext;
-            this.animelists_original = animelist_in;
-            this.animelist = animelists_original;
-            inflter = (LayoutInflater.from(applicationContext));
-        }
-
-        @Override
-        public int getCount() {
-            return animelist.size();
-        }
-
-        @Override
-        public _anime getItem(int i) {
-            return animelist.get(i);
-        }
-
-        public List<_anime> getItems() {
-            return animelist;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            if (view == null) {
-                view = inflter.inflate(R.layout.animealllist_view, null);
-            }
-            _anime item = animelist.get(i);
-            TextView namaAnime = view.findViewById(R.id.animeName);
-
-            namaAnime.setText(item.nama.replace("Sub Indonesia", ""));
-            return view;
-        }
-
-        public void filter(String text) {
-            String query = text.toLowerCase();
-            animelist = new ArrayList<>();
-            if (text.length() == 0) {
-                animelist = animelists_original;
-            } else {
-                for (_anime m : animelists_original) {
-                    if (m.nama.toLowerCase().contains(query)) {
-                        animelist.add(m);
-                    }
+    private void setupMangaList() {
+        gridView.setNumColumns(3);
+        List<_manga> mangalist = new ArrayList<>();
+        listAdapter.mangaListAdapter adapter = new listAdapter.mangaListAdapter(act, mangalist);
+        String h = new dbFiles(act).readSource(dbFiles.mangaListSource);
+        it.executer(() -> {
+            Matcher m;
+            if (!h.isEmpty())
+                m = JahrulnrLib.preg_match(h, configManga.listPattern);
+            else
+                m = JahrulnrLib.preg_match(JahrulnrLib.getRequest(configManga.list, null),
+                        configManga.listPattern);
+            if (m != null) {
+                while (m.find()) {
+                    _manga al = new _manga();
+                    al.manga = m.group(6);
+                    al.img = m.group(3);
+                    al.link = m.group(1);
+                    mangalist.add(al);
                 }
             }
-        }
+            act.runOnUiThread(() -> {
+                gridView.setAdapter(adapter);
+                it.animate(loading, false);
+                gridView.setLayoutAnimation(gridAnimationController);
+            });
+        });
     }
 
     @Override
